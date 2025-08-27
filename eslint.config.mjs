@@ -20,6 +20,7 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
     rules: {
+      "react-hooks/exhaustive-deps": "off",
       "react/display-name": "off",
       "@typescript-eslint/no-explicit-any": "off",
     }

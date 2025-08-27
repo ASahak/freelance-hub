@@ -42,8 +42,7 @@ export const GlobalVariablesProvider = ({ children }: IChildren) => {
   )
   const _value = useMemo(
     () => ({
-      // isMobile: !!(isMobile && isMobileNative),
-      isMobile,
+      isMobile: !!(isMobile && isMobileNative),
       navDrawerIsOpen,
       setNavDrawerIsOpen
     }),

@@ -15,7 +15,6 @@ import {
   Flex
 } from '@chakra-ui/react'
 import { MobileBottomDrawer } from '@/components/features'
-import { POPUP_TYPES } from '@/common/constants/popup'
 import { usePopup } from '@/providers/popupProvider'
 import { useGlobalVariables } from '@/providers/globalVariables'
 
@@ -26,8 +25,9 @@ type IProps = {
 function Popup({ isNested }: IProps) {
   const { isMobile } = useGlobalVariables()
   const { motionPreset, nested, onCloseComplete, ...rest } = usePopup()
-  const { popupData, popupSettings, popupTitle, popupType, isOpen, onClose } =
-    isNested ? nested : rest
+  const { popupSettings, popupTitle, popupType, isOpen, onClose } = isNested
+    ? nested
+    : rest
 
   const isCentered = popupSettings.isCenter ?? true
   const modalRef = useRef(null)

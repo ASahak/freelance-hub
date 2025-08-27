@@ -1,7 +1,5 @@
 import { isMobile } from 'react-device-detect'
 
-import { mode } from '@chakra-ui/theme-tools'
-
 import theme from '@/styles/theme'
 
 export default {

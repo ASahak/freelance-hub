@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, VStack, Heading, Text, Button, Flex } from '@chakra-ui/react'
+import { VStack, Heading, Text, Button, Flex } from '@chakra-ui/react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 import { ROUTES } from '@/common/constants/routes'
