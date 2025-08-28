@@ -1,5 +1,6 @@
 node_modules
 
+dist
 dest
 build
 
@@ -9,4 +10,11 @@ build
 
 .vscode
 .idea
+
+# Test files
+/server/**/*.spec.js
+/server/**/*.spec.ts
+**/*.test.js
+**/*.test.ts
+**/__tests__/**
 

@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      String   @default("freelancer")
+  jobs      Job[]
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  budget      Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  client      User     @relation(fields: [clientId], references: [id])
+  clientId    String
+  status      String   @default("open")
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
