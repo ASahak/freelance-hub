@@ -1,3 +1,12 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
-npm run pre-push
+echo "Building backend..."
+
+(cd server && npm run pre-push)
+
+echo "Backend's job is done."
+
+echo "Building frontend..."
+
+(cd app && npm run pre-push)
+echo "Frontends job is done."

@@ -6,15 +6,17 @@ build
 
 .husky
 
-.next
-
 .vscode
 .idea
 
 # Test files
-/server/**/*.spec.js
-/server/**/*.spec.ts
+**/*.spec.js
+**/*spec.js
+**/*.spec.ts
+*spec.ts
 **/*.test.js
+**/*test.js
 **/*.test.ts
+**/*test.ts
 **/__tests__/**
 

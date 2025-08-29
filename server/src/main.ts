@@ -20,3 +20,5 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 5000)
 }
 bootstrap()
+  .then(() => console.log('Initialized!'))
+  .catch((err) => console.error(err))

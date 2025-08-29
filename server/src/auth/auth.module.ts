@@ -14,7 +14,7 @@ import { EXPIRES_IN } from '@/common/constants/auth'
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('jwt.secret'),
         signOptions: {
           expiresIn: EXPIRES_IN
