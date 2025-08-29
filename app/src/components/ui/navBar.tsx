@@ -12,6 +12,7 @@ import {
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import { memo } from 'react'
 import NextLink from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ROUTES } from '@/common/constants/routes'
 import { RemoveScroll } from 'react-remove-scroll'
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'motion/react'
@@ -52,6 +53,7 @@ const drawerTransition = {
 }
 export const NavBar = memo(({ isMobile }: IProps) => {
   const { isOpen, onToggle } = useDisclosure()
+  const router = useRouter()
 
   return (
     <Flex
@@ -92,7 +94,9 @@ export const NavBar = memo(({ isMobile }: IProps) => {
         >
           Log in
         </Link>
-        <Button variant="primary">Sign Up</Button>
+        <Button variant="primary" onClick={() => router.push(ROUTES.SIGN_UP)}>
+          Sign Up
+        </Button>
       </Flex>
       <Flex display={isMobile ? 'flex' : 'none'}>
         <Button

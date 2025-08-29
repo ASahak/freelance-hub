@@ -31,16 +31,6 @@ const Header = () => {
           <NavBar isMobile={isMobile} />
         </Flex>
       </Container>
-
-      {/*/!*Mobile Menu button*!/*/}
-      {/*<Box display={{ base: 'flex', md: 'none' }}>*/}
-      {/*  <Button variant="unstyled" display="flex" onClick={() => setNavDrawerIsOpen(true)}>*/}
-      {/*    <Icon as={RxHamburgerMenu} fontSize="3rem"/>*/}
-      {/*  </Button>*/}
-      {/*</Box>*/}
-      {/*/!**!/*/}
-
-      {/*<Box display={{ base: 'none', md: 'flex' }}/>*/}
     </Box>
   )
 }

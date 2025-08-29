@@ -8,10 +8,9 @@ async function bootstrap() {
     origin: 'http://localhost:3000' // Allow your frontend origin
   })
   const config = new DocumentBuilder()
-    .setTitle('Your API Title')
-    .setDescription('Your API description')
+    .setTitle('FreelanceHub API')
     .setVersion('1.0')
-    .addTag('Your API Tag') // Optional: Add tags for categorization
+    .addBearerAuth()
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
@@ -20,5 +19,5 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 5000)
 }
 bootstrap()
-  .then(() => console.log('Initialized!'))
+  .then(() => console.log(`App running on port:${process.env.PORT ?? 5000}`))
   .catch((err) => console.error(err))

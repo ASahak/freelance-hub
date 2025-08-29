@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { IChildren } from '@/common/types/global'
+import NudeLayout from '@/components/layout/nude'
 
 export const metadata: Metadata = {
   title: 'FreelanceHub | SignIn',
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 }
 
 export default function AuthLayout({ children }: Readonly<IChildren>) {
-  return children
+  return <NudeLayout>{children}</NudeLayout>
 }

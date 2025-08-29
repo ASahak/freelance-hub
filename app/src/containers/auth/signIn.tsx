@@ -63,7 +63,7 @@ const SignIn = () => {
         <CardBody>
           <VStack spacing={6}>
             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-              <VStack spacing={4}>
+              <VStack spacing={6}>
                 <FormControl isRequired>
                   <FormLabel htmlFor="email" fontSize="1.4rem">
                     Email

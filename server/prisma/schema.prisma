@@ -5,7 +5,7 @@ generator client {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  name      String?
+  name      String
   password  String
   role      String   @default("freelancer")
   jobs      Job[]
