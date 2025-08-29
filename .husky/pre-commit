@@ -1,2 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
+echo "Running prettier on backend... 🎨"
+(cd server && npm run format)
