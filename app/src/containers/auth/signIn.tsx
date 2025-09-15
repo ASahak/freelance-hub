@@ -35,7 +35,6 @@ const SignIn = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    // Authentication logic will be handled by Supabase integration
     console.log('Sign in attempt:', formData)
   }
 

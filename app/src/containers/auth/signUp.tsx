@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
 import NextLink from 'next/link'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -12,7 +13,6 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  HStack,
   Icon,
   Input,
   InputGroup,
@@ -26,41 +26,45 @@ import {
   VStack,
   Divider
 } from '@chakra-ui/react'
-import {
-  FaBriefcase,
-  FaEnvelope,
-  FaLock,
-  FaEye,
-  FaEyeSlash,
-  FaGoogle,
-  FaFacebook,
-  FaUser
-} from 'react-icons/fa'
-import { ROUTES } from '@/common/constants/routes'
-import { Logo } from '@/components/ui'
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
+import { ErrorMessage } from '@hookform/error-message'
 import { FcGoogle } from 'react-icons/fc'
+import { SignUpSchema } from '@/utils/validators'
+import { USER_TYPE } from '@/common/enums/auth'
+import { Logo } from '@/components/ui'
+import { ROUTES } from '@/common/constants/routes'
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    userType: 'freelancer'
+
+  const {
+    handleSubmit,
+    register,
+    watch,
+    control,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    mode: 'onSubmit',
+    resolver: yupResolver(SignUpSchema),
+    defaultValues: {
+      userType: USER_TYPE.GEEK,
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    }
   })
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    // Authentication logic will be handled by Supabase integration
-    console.log('Sign up attempt:', formData)
+  const onSubmit = (data) => {
+    // This function will only be called if the form is valid.
+    console.log('Sign up attempt with validated data:', data)
   }
 
   return (
     <VStack spacing={8} w="full" maxW="2xl" position="relative" zIndex={1}>
-      <Logo />
+      {/*<Logo />*/}
 
       <Card
         p={8}
@@ -81,197 +85,279 @@ const SignUp = () => {
         </CardHeader>
         <CardBody>
           <VStack spacing={6}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <VStack spacing={6}>
-                <FormControl as="fieldset" isRequired>
+                <FormControl as="fieldset">
                   <FormLabel as="legend" fontSize="1.6rem">
                     I want to:
                   </FormLabel>
-                  <RadioGroup
-                    value={formData.userType}
-                    onChange={(value) =>
-                      setFormData({ ...formData, userType: value })
-                    }
-                  >
-                    <SimpleGrid columns={2} spacing={4}>
-                      <Radio value="freelancer">
-                        <Text as="span" fontSize="1.4rem">
-                          Find Work
-                        </Text>
-                      </Radio>
-                      <Radio value="client">
-                        <Text as="span" fontSize="1.4rem">
-                          Hire Talent
-                        </Text>
-                      </Radio>
-                    </SimpleGrid>
-                  </RadioGroup>
+                  <Controller
+                    name="userType"
+                    control={control}
+                    render={({ field }) => (
+                      <RadioGroup {...field}>
+                        <SimpleGrid columns={2} spacing={4}>
+                          <Radio value={USER_TYPE.GEEK}>
+                            <Text as="span" fontSize="1.4rem">
+                              Find Work
+                            </Text>
+                          </Radio>
+                          <Radio value={USER_TYPE.CLIENT}>
+                            <Text as="span" fontSize="1.4rem">
+                              Hire Talent
+                            </Text>
+                          </Radio>
+                        </SimpleGrid>
+                      </RadioGroup>
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="userType"
+                    render={({ message }) => (
+                      <Text w="full" color="red.300" fontSize="1.3rem">
+                        {message}
+                      </Text>
+                    )}
+                  />
                 </FormControl>
 
                 <SimpleGrid columns={2} spacing={4} w="full">
-                  <FormControl isRequired>
+                  <FormControl>
                     <FormLabel htmlFor="firstName" fontSize="1.4rem">
                       First Name
                     </FormLabel>
-                    <InputGroup>
-                      <InputLeftElement
-                        pointerEvents="none"
-                        left={2}
-                        bottom={0}
-                        m="auto"
-                      >
-                        <Icon as={FaUser} color="gray.400" fontSize="1.6rem" />
-                      </InputLeftElement>
-                      <Input
-                        id="firstName"
-                        variant="base"
-                        pl={14}
-                        placeholder="John"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            firstName: e.target.value
-                          })
-                        }
-                      />
-                    </InputGroup>
+                    <Controller
+                      name="firstName"
+                      control={control}
+                      render={({ field }) => (
+                        <InputGroup>
+                          <InputLeftElement
+                            pointerEvents="none"
+                            left={2}
+                            bottom={0}
+                            m="auto"
+                          >
+                            <Icon
+                              as={FaUser}
+                              color="gray.400"
+                              fontSize="1.6rem"
+                            />
+                          </InputLeftElement>
+                          <Input
+                            id="firstName"
+                            variant="base"
+                            pl={14}
+                            placeholder="John"
+                            {...field}
+                          />
+                        </InputGroup>
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name="firstName"
+                      render={({ message }) => (
+                        <Text w="full" color="red.300" fontSize="1.3rem">
+                          {message}
+                        </Text>
+                      )}
+                    />
                   </FormControl>
-                  <FormControl isRequired>
+
+                  <FormControl>
                     <FormLabel htmlFor="lastName" fontSize="1.4rem">
                       Last Name
                     </FormLabel>
-                    <Input
-                      id="lastName"
-                      variant="base"
-                      placeholder="Doe"
-                      value={formData.lastName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, lastName: e.target.value })
-                      }
+                    <Controller
+                      name="lastName"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          id="lastName"
+                          variant="base"
+                          placeholder="Doe"
+                          {...field}
+                        />
+                      )}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name="lastName"
+                      render={({ message }) => (
+                        <Text w="full" color="red.300" fontSize="1.3rem">
+                          {message}
+                        </Text>
+                      )}
                     />
                   </FormControl>
                 </SimpleGrid>
 
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel htmlFor="email" fontSize="1.4rem">
                     Email
                   </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      left={2}
-                      bottom={0}
-                      m="auto"
-                    >
-                      <Icon
-                        as={FaEnvelope}
-                        color="gray.400"
-                        fontSize="1.6rem"
-                      />
-                    </InputLeftElement>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      variant="base"
-                      pl={14}
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                    />
-                  </InputGroup>
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup>
+                        <InputLeftElement
+                          pointerEvents="none"
+                          left={2}
+                          bottom={0}
+                          m="auto"
+                        >
+                          <Icon
+                            as={FaEnvelope}
+                            color="gray.400"
+                            fontSize="1.6rem"
+                          />
+                        </InputLeftElement>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="your@email.com"
+                          variant="base"
+                          pl={14}
+                          {...field}
+                        />
+                      </InputGroup>
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="email"
+                    render={({ message }) => (
+                      <Text w="full" color="red.300" fontSize="1.3rem">
+                        {message}
+                      </Text>
+                    )}
+                  />
                 </FormControl>
 
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel htmlFor="password" fontSize="1.4rem">
                     Password
                   </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      left={2}
-                      bottom={0}
-                      m="auto"
-                    >
-                      <Icon as={FaLock} color="gray.400" fontSize="1.6rem" />
-                    </InputLeftElement>
-                    <Input
-                      id="password"
-                      variant="base"
-                      pl={14}
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Create a password"
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                    />
-                    <InputRightElement right={2} bottom={0} m="auto">
-                      <Button
-                        variant="unstyled"
-                        size="lg"
-                        display="flex"
-                        h="fit-content"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon
-                          as={showPassword ? FaEyeSlash : FaEye}
-                          color="gray.500"
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup>
+                        <InputLeftElement
+                          pointerEvents="none"
+                          left={2}
+                          bottom={0}
+                          m="auto"
+                        >
+                          <Icon
+                            as={FaLock}
+                            color="gray.400"
+                            fontSize="1.6rem"
+                          />
+                        </InputLeftElement>
+                        <Input
+                          id="password"
+                          variant="base"
+                          pl={14}
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="Create a password"
+                          {...field}
                         />
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
+                        <InputRightElement right={2} bottom={0} m="auto">
+                          <Button
+                            variant="unstyled"
+                            size="lg"
+                            display="flex"
+                            h="fit-content"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon
+                              as={showPassword ? FaEyeSlash : FaEye}
+                              color="gray.500"
+                            />
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="password"
+                    render={({ message }) => (
+                      <Text w="full" color="red.300" fontSize="1.3rem">
+                        {message}
+                      </Text>
+                    )}
+                  />
                 </FormControl>
 
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel htmlFor="confirmPassword" fontSize="1.4rem">
                     Confirm Password
                   </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      left={2}
-                      bottom={0}
-                      m="auto"
-                    >
-                      <Icon as={FaLock} color="gray.400" fontSize="1.6rem" />
-                    </InputLeftElement>
-                    <Input
-                      id="confirmPassword"
-                      variant="base"
-                      pl={14}
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder="Create a password"
-                      value={formData.confirmPassword}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          confirmPassword: e.target.value
-                        })
-                      }
-                    />
-                    <InputRightElement right={2} bottom={0} m="auto">
-                      <Button
-                        variant="unstyled"
-                        size="lg"
-                        display="flex"
-                        h="fit-content"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                      >
-                        <Icon
-                          as={showConfirmPassword ? FaEyeSlash : FaEye}
-                          color="gray.500"
+                  <Controller
+                    name="confirmPassword"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup>
+                        <InputLeftElement
+                          pointerEvents="none"
+                          left={2}
+                          bottom={0}
+                          m="auto"
+                        >
+                          <Icon
+                            as={FaLock}
+                            color="gray.400"
+                            fontSize="1.6rem"
+                          />
+                        </InputLeftElement>
+                        <Input
+                          id="confirmPassword"
+                          variant="base"
+                          pl={14}
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          placeholder="Confirm your password"
+                          {...field}
                         />
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
+                        <InputRightElement right={2} bottom={0} m="auto">
+                          <Button
+                            variant="unstyled"
+                            size="lg"
+                            display="flex"
+                            h="fit-content"
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                          >
+                            <Icon
+                              as={showConfirmPassword ? FaEyeSlash : FaEye}
+                              color="gray.500"
+                            />
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="confirmPassword"
+                    render={({ message }) => (
+                      <Text w="full" color="red.300" fontSize="1.3rem">
+                        {message}
+                      </Text>
+                    )}
+                  />
                 </FormControl>
 
-                <Button type="submit" w="full" variant="primary">
+                <Button
+                  type="submit"
+                  w="full"
+                  variant="primary"
+                  isLoading={isSubmitting}
+                >
                   Create Account
                 </Button>
               </VStack>
