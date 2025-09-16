@@ -33,7 +33,7 @@ import { SignUpSchema } from '@/utils/validators'
 import { USER_TYPE } from '@/common/enums/auth'
 import { Logo } from '@/components/ui'
 import { ROUTES } from '@/common/constants/routes'
-
+console.log(process.env.NEXT_PUBLIC_API_URL);
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -57,10 +57,16 @@ const SignUp = () => {
     }
   })
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     // This function will only be called if the form is valid.
     console.log('Sign up attempt with validated data:', data)
   }
+
+  const onHandleGoogleAuth = async (event: any) => {
+
+    event.preventDefault();
+    // window.location.href = `${process.env.API_URL}/auth/callback/google`;
+  };
 
   return (
     <VStack spacing={8} w="full" maxW="2xl" position="relative" zIndex={1}>
@@ -381,7 +387,7 @@ const SignUp = () => {
               w="full"
               justifyContent="center"
               gap={3}
-              onClick={() => console.log('google')}
+              onClick={onHandleGoogleAuth}
             >
               <Icon as={FcGoogle} fontSize="1.6rem" />
               Sign Up with Google

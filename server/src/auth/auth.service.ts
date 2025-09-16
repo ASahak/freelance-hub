@@ -6,6 +6,7 @@ import {
 import { UsersService } from '@/users/users.service'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,10 @@ export class AuthService {
     private jwtService: JwtService,
     private usersService: UsersService
   ) {}
+
+  async jwtSign (user: Partial<User>) {
+      return this.jwtService.sign({ ...user });
+  }
 
   async login(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(email)
@@ -24,7 +29,8 @@ export class AuthService {
         throw new UnauthorizedException('Invalid password')
       }
 
-      return { accessToken: this.jwtService.sign({ userId: user.id }) }
+      const accessToken = await this.jwtSign({ id: user.id })
+      return { accessToken }
     } else {
       throw new NotFoundException(`No user found for email: ${email}`)
     }

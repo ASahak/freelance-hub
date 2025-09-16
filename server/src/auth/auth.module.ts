@@ -7,8 +7,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
 import { PrismaModule } from '@/prisma/prisma.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { EXPIRES_IN } from '@/common/constants/auth'
-import { JwtStrategy } from './jwt.strategy'
+import { JwtStrategy } from './guards/jwt.strategy'
 import { UsersModule } from '@/users/users.module'
+import { GoogleStrategy } from '@/auth/guards/google-oauth.strategy';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { UsersModule } from '@/users/users.module'
     UsersModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtService, UsersService, JwtStrategy, ConfigService]
+  providers: [AuthService, JwtService, UsersService, JwtStrategy, ConfigService, GoogleStrategy]
 })
 export class AuthModule {}
