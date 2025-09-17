@@ -17,7 +17,7 @@ const NotFound = () => {
   }, [pathname])
 
   return (
-    <Flex w="full" alignItems="center" justifyContent="center">
+    <Flex w="full" alignItems="center" justifyContent="center" h="100dvh">
       <VStack spacing={6} textAlign="center">
         <Heading size="4xl" color="gray.500">
           404

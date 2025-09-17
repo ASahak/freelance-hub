@@ -33,7 +33,7 @@ import { SignUpSchema } from '@/utils/validators'
 import { USER_TYPE } from '@/common/enums/auth'
 import { Logo } from '@/components/ui'
 import { ROUTES } from '@/common/constants/routes'
-console.log(process.env.NEXT_PUBLIC_API_URL);
+
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -62,10 +62,8 @@ const SignUp = () => {
     console.log('Sign up attempt with validated data:', data)
   }
 
-  const onHandleGoogleAuth = async (event: any) => {
-
-    event.preventDefault();
-    // window.location.href = `${process.env.API_URL}/auth/callback/google`;
+  const onHandleGoogleAuth = async () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`;
   };
 
   return (
