@@ -28,6 +28,6 @@ import { GoogleStrategy } from '@/auth/guards/google-oauth.strategy';
     UsersModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtService, UsersService, JwtStrategy, ConfigService, GoogleStrategy]
+  providers: [AuthService, UsersService, JwtStrategy, ConfigService, GoogleStrategy]
 })
 export class AuthModule {}

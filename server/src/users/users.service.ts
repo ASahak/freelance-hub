@@ -4,16 +4,19 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { ROUNDS_OF_HASHING } from '@/common/constants/auth'
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    createUserDto.password = await bcrypt.hash(
-      createUserDto.password,
-      ROUNDS_OF_HASHING
-    )
+    if (createUserDto.password) {
+      createUserDto.password = await bcrypt.hash(
+        createUserDto.password,
+        ROUNDS_OF_HASHING
+      )
+    }
 
     return this.prisma.user.create({
       data: createUserDto
@@ -24,8 +27,8 @@ export class UsersService {
     return this.prisma.user.findMany()
   }
 
-  findOne(id: string) {
-    return this.prisma.user.findUnique({ where: { id } })
+  findOne(where: Prisma.UserWhereUniqueInput) {
+    return this.prisma.user.findUnique({ where })
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

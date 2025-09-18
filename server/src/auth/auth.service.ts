@@ -7,6 +7,8 @@ import { UsersService } from '@/users/users.service'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { User } from '@prisma/client';
+import { CreateUserDto, RegisterUserDto } from '@/auth/dto/register.dto';
+import { AUTH_PROVIDERS } from '@/common/enums/auth';
 
 @Injectable()
 export class AuthService {
@@ -19,8 +21,16 @@ export class AuthService {
       return this.jwtService.sign({ ...user });
   }
 
+  async register(registerUserDto: RegisterUserDto) {
+    return this.usersService.create({ ...registerUserDto, provider: AUTH_PROVIDERS.NATIVE });
+  }
+
+  async create(createUserDto: CreateUserDto) { // creation is google auth for example
+    return this.usersService.create({ ...createUserDto, provider: AUTH_PROVIDERS.GOOGLE });
+  }
+
   async login(email: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(email)
+    const user = await this.usersService.findOne({ email })
 
     if (user) {
       const isPasswordValid = await bcrypt.compare(pass, user.password)
