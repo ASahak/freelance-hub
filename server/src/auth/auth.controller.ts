@@ -7,7 +7,7 @@ import { LoginDto } from './dto/login.dto'
 import { GoogleOauthGuard } from '@/auth/guards/google-oauth.guard';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@/users/users.service';
-import { RegisterUserDto } from '@/auth/dto/register.dto';
+import { RegisterUserDto } from '@/auth/dto/register-user.dto';
 import { UserRole } from '@/common/enums/user';
 
 @Controller('auth')
@@ -33,7 +33,7 @@ export class AuthController {
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req, @Res() res: Response) {
     try {
-      const user = await this.usersService.findOne(req.user.email)
+      const user = await this.usersService.findOne({ email: req.user.email })
       if (!user) {
         await this.authService.create({
           provider: req.user.provider,

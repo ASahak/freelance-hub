@@ -46,7 +46,7 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async findOne(@Param('id', ParseIntPipe) id: string) {
-    return new UserEntity((await this.usersService.findOne(id))!)
+    return new UserEntity((await this.usersService.findOne({ id }))!)
   }
 
   @Patch(':id')

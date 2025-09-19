@@ -1,7 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator'
+import { UserRole } from '@/common/enums/user';
+import { AUTH_PROVIDERS } from '@/common/enums/auth';
 
 export class RegisterUserDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  provider: AUTH_PROVIDERS
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -10,7 +17,7 @@ export class RegisterUserDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  role: string
+  role: UserRole
 
   @IsString()
   @IsNotEmpty()
@@ -29,12 +36,17 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  provider: AUTH_PROVIDERS
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name: string
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  role: string
+  role: UserRole
 
   @IsString()
   @IsNotEmpty()
