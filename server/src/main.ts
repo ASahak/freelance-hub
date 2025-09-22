@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.enableCors({
-    origin: 'http://localhost:3000' // Allow your frontend origin
+    origin: process.env.APP_ORIGIN // Allow your frontend origin
   })
   const config = new DocumentBuilder()
     .setTitle('FreelanceHub API')
@@ -13,6 +14,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build()
 
+  app.use(cookieParser())
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api-docs', app, document) // 'api-docs' is the path where Swagger UI will be served
 

@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator'
-import { UserRole } from '@/common/enums/user';
-import { AUTH_PROVIDERS } from '@/common/enums/auth';
+import { UserRole } from '@/common/enums/user'
+import { AuthProvider } from '@prisma/client'
 
 export class RegisterUserDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  provider: AUTH_PROVIDERS
+  provider: AuthProvider
 
   @IsString()
   @IsNotEmpty()
@@ -31,12 +31,11 @@ export class RegisterUserDto {
   password: string
 }
 
-
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  provider: AUTH_PROVIDERS
+  provider: AuthProvider
 
   @IsString()
   @IsNotEmpty()
@@ -57,5 +56,5 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
-  password: string | null;
+  password: string | null
 }
