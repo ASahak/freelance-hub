@@ -35,7 +35,10 @@ export class AuthService {
     })
   }
 
-  async login(email: string, pass: string): Promise<any> {
+  async login(
+    email: string,
+    pass: string
+  ): Promise<{ user: User; accessToken: string }> {
     const user: User | null = await this.usersService.findOne({ email })
 
     if (user && user.provider === AuthProvider.native) {
@@ -46,7 +49,7 @@ export class AuthService {
       }
 
       const accessToken: string = this.jwtSign({ id: user.id })
-      return { accessToken }
+      return { accessToken, user }
     } else {
       throw new NotFoundException(`No user found for email: ${email}`)
     }

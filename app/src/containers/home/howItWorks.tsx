@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 import { IconType } from 'react-icons'
 import { FaSearch, FaComments, FaStar, FaCreditCard } from 'react-icons/fa'
-import { Container } from '@/components/ui'
 
 interface Step {
   icon: IconType
@@ -85,73 +84,71 @@ const getColorStyles = (color: Step['color']) => {
 export const HowItWorks = () => {
   return (
     <Box as="section" py={20}>
-      <Container>
-        <VStack spacing={6} textAlign="center" mb={16}>
-          <Heading
-            as="h2"
-            fontWeight="bold"
-            fontSize={{ base: '3xl', md: '5xl' }}
-          >
-            How It Works
-          </Heading>
-          <Text fontSize="2rem" color="gray.400" mx="auto">
-            Getting started is simple. Follow these easy steps to begin your
-            freelancing journey.
-          </Text>
-        </VStack>
-
-        <SimpleGrid
-          columns={{ base: 1, md: 2, lg: 4 }}
-          spacing={8}
-          maxW="100rem"
-          mx="auto"
+      <VStack spacing={6} textAlign="center" mb={16}>
+        <Heading
+          as="h2"
+          fontWeight="bold"
+          fontSize={{ base: '3xl', md: '5xl' }}
         >
-          {steps.map((step, index) => {
-            const styles = getColorStyles(step.color)
-            return (
-              <Card
-                key={index}
-                className="group"
-                variant="outline"
-                borderColor="gray.100"
-                borderWidth={2}
-                transition="all 0.3s ease"
-                _hover={{
-                  boxShadow: 'xl',
-                  borderColor: styles.borderColor
-                }}
-                position="relative"
-                overflow="visible"
-              >
-                <CardBody px={8} py={10}>
-                  <VStack spacing={6} textAlign="center">
-                    <Flex
-                      borderRadius="2xl"
-                      justifyContent="center"
-                      alignItems="center"
-                      w="5rem"
-                      h="5rem"
-                      mx="auto"
-                      boxShadow="lg"
-                      transition="all 0.3s ease"
-                      bgGradient={styles.bgGradient}
-                      color={styles.color}
-                    >
-                      <Icon as={step.icon} boxSize={8} />
-                    </Flex>
-                    <Heading as="h3" size="lg">
-                      {step.title}
-                    </Heading>
-                    <Text color="gray.400" fontSize="1.6rem" textAlign="center">
-                      {step.description}
-                    </Text>
-                  </VStack>
-                </CardBody>
-              </Card>
-            )
-          })}
-        </SimpleGrid>
-      </Container>
+          How It Works
+        </Heading>
+        <Text fontSize="2rem" color="gray.400" mx="auto">
+          Getting started is simple. Follow these easy steps to begin your
+          freelancing journey.
+        </Text>
+      </VStack>
+
+      <SimpleGrid
+        columns={{ base: 1, md: 2, lg: 4 }}
+        spacing={8}
+        maxW="100rem"
+        mx="auto"
+      >
+        {steps.map((step, index) => {
+          const styles = getColorStyles(step.color)
+          return (
+            <Card
+              key={index}
+              className="group"
+              variant="outline"
+              borderColor="gray.100"
+              borderWidth={2}
+              transition="all 0.3s ease"
+              _hover={{
+                boxShadow: 'xl',
+                borderColor: styles.borderColor
+              }}
+              position="relative"
+              overflow="visible"
+            >
+              <CardBody px={8} py={10}>
+                <VStack spacing={6} textAlign="center">
+                  <Flex
+                    borderRadius="2xl"
+                    justifyContent="center"
+                    alignItems="center"
+                    w="5rem"
+                    h="5rem"
+                    mx="auto"
+                    boxShadow="lg"
+                    transition="all 0.3s ease"
+                    bgGradient={styles.bgGradient}
+                    color={styles.color}
+                  >
+                    <Icon as={step.icon} boxSize={8} />
+                  </Flex>
+                  <Heading as="h3" size="lg">
+                    {step.title}
+                  </Heading>
+                  <Text color="gray.400" fontSize="1.6rem" textAlign="center">
+                    {step.description}
+                  </Text>
+                </VStack>
+              </CardBody>
+            </Card>
+          )
+        })}
+      </SimpleGrid>
     </Box>
   )
 }

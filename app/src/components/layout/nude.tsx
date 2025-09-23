@@ -1,8 +1,6 @@
 'use client'
 
-import { Flex, VStack } from '@chakra-ui/react'
-import Header from './header'
-import Footer from './footer'
+import { Flex } from '@chakra-ui/react'
 import { IChildren } from '@/common/types/global'
 import { AnimatedPage } from '@/components/features'
 

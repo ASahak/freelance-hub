@@ -5,6 +5,7 @@ import {
   SKELETON_ANIMATION_VARIANTS
 } from 'react-skeleton-builder'
 import {
+  AuthProvider,
   GlobalVariablesProvider,
   PopupProvider,
   TanStackQueryProvider
@@ -31,7 +32,7 @@ export const RootProvider = ({ children }: IChildren) => {
       <TanStackQueryProvider>
         <GlobalVariablesProvider>
           <PopupProvider>
-            {children}
+            <AuthProvider>{children}</AuthProvider>
             <Popup />
           </PopupProvider>
         </GlobalVariablesProvider>

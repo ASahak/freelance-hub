@@ -30,7 +30,7 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 import { ErrorMessage } from '@hookform/error-message'
 import { FcGoogle } from 'react-icons/fc'
 import { SignUpSchema } from '@/utils/validators'
-import { USER_TYPE } from '@/common/enums/auth'
+import { UserRole } from '@/common/enums/user'
 import { Logo } from '@/components/ui'
 import { ROUTES } from '@/common/constants/routes'
 
@@ -48,7 +48,7 @@ const SignUp = () => {
     mode: 'onSubmit',
     resolver: yupResolver(SignUpSchema),
     defaultValues: {
-      userType: USER_TYPE.GEEK,
+      userType: UserRole.GEEK,
       firstName: '',
       lastName: '',
       email: '',
@@ -63,12 +63,12 @@ const SignUp = () => {
   }
 
   const onHandleGoogleAuth = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`;
-  };
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`
+  }
 
   return (
     <VStack spacing={8} w="full" maxW="2xl" position="relative" zIndex={1}>
-      {/*<Logo />*/}
+      <Logo />
 
       <Card
         p={8}
@@ -101,12 +101,12 @@ const SignUp = () => {
                     render={({ field }) => (
                       <RadioGroup {...field}>
                         <SimpleGrid columns={2} spacing={4}>
-                          <Radio value={USER_TYPE.GEEK}>
+                          <Radio value={UserRole.GEEK}>
                             <Text as="span" fontSize="1.4rem">
                               Find Work
                             </Text>
                           </Radio>
-                          <Radio value={USER_TYPE.CLIENT}>
+                          <Radio value={UserRole.CLIENT}>
                             <Text as="span" fontSize="1.4rem">
                               Hire Talent
                             </Text>

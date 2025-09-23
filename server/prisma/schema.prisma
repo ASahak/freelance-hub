@@ -7,13 +7,18 @@ enum AuthProvider {
   google
 }
 
+enum UserRole {
+  geek
+  client
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String
   password  String?
   provider  AuthProvider @default(native)
-  role      String   @default("geek")
+  role      UserRole @default(geek)
   jobs      Job[]
 }
 

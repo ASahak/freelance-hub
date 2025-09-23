@@ -17,6 +17,8 @@ import { ROUTES } from '@/common/constants/routes'
 import { RemoveScroll } from 'react-remove-scroll'
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'motion/react'
 import { Logo, Container } from '@/components/ui'
+import { useAuth } from '@/providers/authProvider'
+import { User } from '@/components/layout/header/user'
 
 type IProps = {
   isMobile: boolean
@@ -54,7 +56,8 @@ const drawerTransition = {
 export const NavBar = memo(({ isMobile }: IProps) => {
   const { isOpen, onToggle } = useDisclosure()
   const router = useRouter()
-
+  const { user } = useAuth()
+  console.log(user)
   return (
     <Flex
       flex={1}
@@ -81,23 +84,27 @@ export const NavBar = memo(({ isMobile }: IProps) => {
           </Link>
         ))}
       </Flex>
-      <Flex gap={6}>
-        <Link
-          as={NextLink}
-          href={ROUTES.SIGN_IN}
-          fontSize="1.5rem"
-          fontWeight={600}
-          px="1rem"
-          h="4rem"
-          display="flex"
-          alignItems="center"
-        >
-          Log in
-        </Link>
-        <Button variant="primary" onClick={() => router.push(ROUTES.SIGN_UP)}>
-          Sign Up
-        </Button>
-      </Flex>
+      {user ? (
+        <User />
+      ) : (
+        <Flex gap={6}>
+          <Link
+            as={NextLink}
+            href={ROUTES.SIGN_IN}
+            fontSize="1.5rem"
+            fontWeight={600}
+            px="1rem"
+            h="4rem"
+            display="flex"
+            alignItems="center"
+          >
+            Log in
+          </Link>
+          <Button variant="primary" onClick={() => router.push(ROUTES.SIGN_UP)}>
+            Sign Up
+          </Button>
+        </Flex>
+      )}
       <Flex display={isMobile ? 'flex' : 'none'}>
         <Button
           variant="popover-btn"

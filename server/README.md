@@ -63,6 +63,18 @@ This command will sync your Prisma schema with the database, creating all necess
   npx prisma migrate dev
 ```
 
+### Prisma generate schema
+
+```bash
+  npx prisma generate
+```
+
+### Prisma studio
+
+```bash
+  npx prisma studio
+```
+
 
 ### Running the Application
 To start the development server, run the following command:
@@ -74,6 +86,7 @@ To start the development server, run the following command:
   npm run start:prod
 ```
 The backend server should now be running and accessible at http://localhost:5000.
+
 
 ## API Documentation
 This project includes a Swagger UI for easy API exploration and testing. Once the backend server is running, navigate to the following URL in your browser:

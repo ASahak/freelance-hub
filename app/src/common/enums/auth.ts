@@ -1,4 +1,4 @@
-export enum USER_TYPE {
-  GEEK = 'geek',
-  CLIENT = 'client'
+export enum AuthProvider {
+  NATIVE = 'native',
+  GOOGLE = 'google'
 }

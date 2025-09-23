@@ -1,5 +1,4 @@
-import { AuthProvider } from '@prisma/client'
-import { UserRole } from '@/common/enums/user'
+import { UserRole, AuthProvider } from '@prisma/client'
 
 export class CreateUserDto {
   email: string

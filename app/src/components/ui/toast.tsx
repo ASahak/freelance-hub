@@ -6,10 +6,15 @@ import {
   AlertIcon,
   AlertTitle,
   Box,
-  Text,
+  Icon,
   useColorMode,
   UseToastOptions
 } from '@chakra-ui/react'
+import {
+  RxCheckCircled,
+  RxCrossCircled,
+  RxExclamationTriangle
+} from 'react-icons/rx'
 
 const colorScheme = (
   status: string,
@@ -18,40 +23,21 @@ const colorScheme = (
   switch (status) {
     case 'success':
       return {
-        icon: (
-          <Text
-            as="span"
-            fontSize="2.4rem"
-            className="icon-check-round"
-            color="green.700"
-          />
-        ),
+        icon: <Icon as={RxCheckCircled} fontSize="2.4rem" color="green.700" />,
         bgColor: isDark ? '#1B3830' : '#CFECE2',
         color: isDark ? 'white' : 'black'
       }
     case 'info':
       return {
         icon: (
-          <Text
-            as="span"
-            fontSize="2.4rem"
-            className="icon-notification"
-            color="blue.300"
-          />
+          <Icon as={RxExclamationTriangle} fontSize="2.4rem" color="blue.300" />
         ),
         bgColor: isDark ? '#253046' : '#D3DFFA',
         color: isDark ? 'white' : 'black'
       }
     case 'error':
       return {
-        icon: (
-          <Text
-            as="span"
-            fontSize="2.4rem"
-            className="icon-notification"
-            color="red.700"
-          />
-        ),
+        icon: <Icon as={RxCrossCircled} fontSize="2.4rem" color="red.700" />,
         bgColor: isDark ? '#41292A' : '#F1DBDB',
         color: isDark ? 'white' : 'black'
       }

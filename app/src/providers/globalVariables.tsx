@@ -5,12 +5,13 @@ import {
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
   useMemo,
   useState
 } from 'react'
-import { isMobile as isMobileNative } from 'react-device-detect'
-import { useBreakpointValue } from '@chakra-ui/react'
+import { useBreakpointValue, useToast } from '@chakra-ui/react'
 import { IChildren } from '@/common/types/global'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 
 export interface GlobalVariablesType {
   isMobile: boolean
@@ -36,18 +37,37 @@ export const useGlobalVariables = (): GlobalVariablesType => {
 
 export const GlobalVariablesProvider = ({ children }: IChildren) => {
   const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  const serverError = searchParams.get('serverError')
+  const toast = useToast()
   const isMobile: boolean | undefined = useBreakpointValue(
     { base: true, md: false },
-    { ssr: true }
+    { ssr: false }
   )
   const _value = useMemo(
     () => ({
-      isMobile: !!(isMobile && isMobileNative),
+      isMobile: !!isMobile,
       navDrawerIsOpen,
       setNavDrawerIsOpen
     }),
     [navDrawerIsOpen, isMobile]
   )
+
+  useEffect(() => {
+    if (serverError) {
+      toast({
+        title: serverError,
+        status: 'error'
+      })
+      const params = new URLSearchParams(searchParams.toString())
+
+      params.delete('serverError')
+
+      router.push(`${pathname}?${params.toString()}`)
+    }
+  }, [serverError])
 
   return (
     <GlobalVariablesContext.Provider value={_value}>

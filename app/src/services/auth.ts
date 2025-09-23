@@ -1,0 +1,28 @@
+import { User } from '@/common/interfaces/user'
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+
+export const getMe = async (): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    credentials: 'include'
+  })
+
+  if (!response.ok) {
+    throw new Error('Not authenticated')
+  }
+
+  return response.json()
+}
+
+export const logoutUser = async () => {
+  const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include'
+  })
+
+  if (!response.ok) {
+    throw new Error('Logout failed')
+  }
+
+  return true
+}

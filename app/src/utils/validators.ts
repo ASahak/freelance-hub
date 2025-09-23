@@ -1,10 +1,10 @@
 import * as yup from 'yup'
-import { USER_TYPE } from '@/common/enums/auth'
+import { UserRole } from '@/common/enums/user'
 
 export const SignUpSchema = yup.object().shape({
   userType: yup
     .string()
-    .oneOf(Object.values(USER_TYPE))
+    .oneOf(Object.values(UserRole))
     .required('Please select if you want to find work or hire talent.'),
   firstName: yup.string().required('First name is required.'),
   lastName: yup.string().required('Last name is required.'),

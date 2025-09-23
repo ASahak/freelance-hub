@@ -5,7 +5,7 @@ import { Box, Flex } from '@chakra-ui/react'
 import { useGlobalVariables } from '@/providers/globalVariables'
 import { NavBar, Logo, Container } from '@/components/ui'
 
-const Header = () => {
+const Index = () => {
   const { isMobile } = useGlobalVariables()
 
   return (
@@ -35,4 +35,4 @@ const Header = () => {
   )
 }
 
-export default memo(Header)
+export default memo(Index)
