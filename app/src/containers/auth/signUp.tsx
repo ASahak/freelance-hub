@@ -40,8 +40,6 @@ const SignUp = () => {
 
   const {
     handleSubmit,
-    register,
-    watch,
     control,
     formState: { errors, isSubmitting }
   } = useForm({

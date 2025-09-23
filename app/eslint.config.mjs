@@ -33,11 +33,12 @@ const eslintConfig = [
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
       '@typescript-eslint/no-explicit-any': 'off',
+      'import/no-anonymous-default-export': 'off',
       "react-hooks/exhaustive-deps": "off",
       "react/display-name": "off",
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
-        "warn",
+        "error",
         {
           "vars": "all",
           "varsIgnorePattern": "^_",
