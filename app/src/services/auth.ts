@@ -1,8 +1,8 @@
-import { User } from '@/common/interfaces/user'
+import { IUser } from '@/common/interfaces/user'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
-export const getMe = async (): Promise<User> => {
+export const getMe = async (): Promise<IUser> => {
   const response = await fetch(`${API_BASE_URL}/auth/me`, {
     credentials: 'include'
   })

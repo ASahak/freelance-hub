@@ -15,11 +15,11 @@ import {
   ApiTags,
   ApiBearerAuth
 } from '@nestjs/swagger'
-import { UsersService } from '@/users/users.service'
-import { UserEntity } from '@/users/entity/user.entity'
-import { CreateUserDto } from '@/users/dto/create-user.dto'
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
-import { UpdateUserDto } from '@/users/dto/update-user.dto'
+import { UsersService } from '@/modules/users/users.service'
+import { UserEntity } from '@/modules/users/entity/user.entity'
+import { CreateUserDto } from '@/modules/users/dto/create-user.dto'
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard'
+import { UpdateUserDto } from '@/modules/users/dto/update-user.dto'
 
 @Controller('users')
 @ApiTags('users')

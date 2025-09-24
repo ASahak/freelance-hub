@@ -38,6 +38,10 @@ const SignIn = () => {
     console.log('Sign in attempt:', formData)
   }
 
+  const onHandleGoogleAuth = async () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`
+  }
+
   return (
     <VStack spacing={8} w="full" maxW="2xl" position="relative" zIndex={1}>
       <Logo />
@@ -171,7 +175,7 @@ const SignIn = () => {
               w="full"
               justifyContent="center"
               gap={3}
-              onClick={() => console.log('google')}
+              onClick={onHandleGoogleAuth}
             >
               <Icon as={FcGoogle} fontSize="1.6rem" />
               Sign In with Google

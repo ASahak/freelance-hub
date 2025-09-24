@@ -9,5 +9,10 @@ export default () => ({
   appOrigin: process.env.APP_ORIGIN,
   database: {
     host: process.env.DATABASE_HOST
+  },
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET
   }
 })

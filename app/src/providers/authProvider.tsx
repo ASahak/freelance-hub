@@ -4,10 +4,10 @@ import { createContext, useContext, ReactNode } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getMe, logoutUser } from '@/services/auth'
 import { QUERY_FACTORY } from '@/common/constants/queryFactory'
-import { User } from '@/common/interfaces/user'
+import { IUser } from '@/common/interfaces/user'
 
 interface AuthContextType {
-  user: User | undefined
+  user: IUser | undefined
   isLoading: boolean
   isAuthenticated: boolean
   logout: () => void
@@ -25,7 +25,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   } = useQuery({
     queryKey: QUERY_FACTORY.me,
     queryFn: getMe,
-    retry: false
+    retry: 0,
+    gcTime: 0,
+    staleTime: 0
   })
 
   const { mutate: logout } = useMutation({

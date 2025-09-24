@@ -15,10 +15,15 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { RxExit, RxPerson } from 'react-icons/rx'
 import { useRouter } from 'next/navigation'
 import { ROUTES } from '@/common/constants/routes'
+import type { IUser } from '@/common/interfaces/user'
 
-export const User = memo(() => {
+type IProps = {
+  data: IUser
+}
+export const User = memo(({ data }: IProps) => {
   const router = useRouter()
 
+  console.log(data)
   return (
     <Menu variant="base">
       <MenuButton
@@ -31,10 +36,11 @@ export const User = memo(() => {
         px={4}
         minW={0}
         textDecoration="none !important"
+        maxW="20rem"
       >
         <HStack>
-          <Avatar size={'md'} />
-          <Text>John Doe</Text>
+          <Avatar size={'md'} src={data.avatarUrl || ''} />
+          <Text isTruncated>{data.name}</Text>
           <ChevronDownIcon fontSize="1.6rem" />
         </HStack>
       </MenuButton>

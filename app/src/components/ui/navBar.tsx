@@ -20,10 +20,6 @@ import { Logo, Container } from '@/components/ui'
 import { useAuth } from '@/providers/authProvider'
 import { User } from '@/components/layout/header/user'
 
-type IProps = {
-  isMobile: boolean
-}
-
 interface NavItem {
   label: string
   subLabel?: string
@@ -53,19 +49,19 @@ const drawerTransition = {
   ease: 'linear',
   duration: 0.2
 }
-export const NavBar = memo(({ isMobile }: IProps) => {
+export const NavBar = memo(() => {
   const { isOpen, onToggle } = useDisclosure()
   const router = useRouter()
   const { user } = useAuth()
-  console.log(user)
+
   return (
     <Flex
       flex={1}
       justifyContent="flex-end"
-      gap={isMobile ? 6 : 16}
+      gap={{ base: 6, md: 16 }}
       align="center"
     >
-      <Flex display={isMobile ? 'none' : 'flex'}>
+      <Flex display={{ base: 'none', md: 'flex' }}>
         {NAV_ITEMS.map((navItem) => (
           <Link
             p={6}
@@ -85,7 +81,7 @@ export const NavBar = memo(({ isMobile }: IProps) => {
         ))}
       </Flex>
       {user ? (
-        <User />
+        <User data={user} />
       ) : (
         <Flex gap={6}>
           <Link
@@ -105,7 +101,7 @@ export const NavBar = memo(({ isMobile }: IProps) => {
           </Button>
         </Flex>
       )}
-      <Flex display={isMobile ? 'flex' : 'none'}>
+      <Flex display={{ base: 'flex', md: 'none' }}>
         <Button
           variant="popover-btn"
           p={0}

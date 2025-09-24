@@ -35,16 +35,17 @@ export const Logo = memo(({ isSmall, color = 'blue.300' }: IProps) => {
   )
   return (
     <Link href={ROUTES.HOME}>
-      {isSmall ? (
-        logo
-      ) : (
-        <Flex alignItems="center" gap={3}>
-          {logo}
-          <Text fontSize="2rem" fontWeight="700" color={color}>
-            FreelanceHub
-          </Text>
-        </Flex>
-      )}
+      <Flex alignItems="center" gap={3}>
+        {logo}
+        <Text
+          fontSize="2rem"
+          fontWeight="700"
+          color={color}
+          display={isSmall ? 'none' : { base: 'none', md: 'block' }}
+        >
+          FreelanceHub
+        </Text>
+      </Flex>
     </Link>
   )
 })

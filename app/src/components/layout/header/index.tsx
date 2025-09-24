@@ -2,12 +2,9 @@
 
 import { memo } from 'react'
 import { Box, Flex } from '@chakra-ui/react'
-import { useGlobalVariables } from '@/providers/globalVariables'
 import { NavBar, Logo, Container } from '@/components/ui'
 
-const Index = () => {
-  const { isMobile } = useGlobalVariables()
-
+const Header = () => {
   return (
     <Box
       as="header"
@@ -27,12 +24,12 @@ const Index = () => {
           h="inherit"
           gap="4rem"
         >
-          <Logo isSmall={isMobile} />
-          <NavBar isMobile={isMobile} />
+          <Logo />
+          <NavBar />
         </Flex>
       </Container>
     </Box>
   )
 }
 
-export default memo(Index)
+export default memo(Header)

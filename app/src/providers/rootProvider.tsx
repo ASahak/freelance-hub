@@ -1,5 +1,6 @@
 'use client'
 
+import { ReactNode } from 'react'
 import {
   ReactSkeletonProvider,
   SKELETON_ANIMATION_VARIANTS
@@ -10,11 +11,16 @@ import {
   PopupProvider,
   TanStackQueryProvider
 } from '@/providers'
-import { IChildren } from '@/common/types/global'
 
 import Popup from '@/components/popup'
+import { IUser } from '@/common/interfaces/user'
 
-export const RootProvider = ({ children }: IChildren) => {
+type IProps = {
+  children: ReactNode
+  initialUser: IUser | null
+}
+
+export const RootProvider = ({ children, initialUser }: IProps) => {
   return (
     <ReactSkeletonProvider
       value={{
@@ -29,7 +35,7 @@ export const RootProvider = ({ children }: IChildren) => {
         }
       }}
     >
-      <TanStackQueryProvider>
+      <TanStackQueryProvider initialUser={initialUser}>
         <GlobalVariablesProvider>
           <PopupProvider>
             <AuthProvider>{children}</AuthProvider>

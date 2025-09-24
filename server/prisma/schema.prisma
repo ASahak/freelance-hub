@@ -20,6 +20,7 @@ model User {
   provider  AuthProvider @default(native)
   role      UserRole @default(geek)
   jobs      Job[]
+  avatarUrl String?
 }
 
 model Job {

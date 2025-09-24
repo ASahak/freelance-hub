@@ -11,16 +11,16 @@ import {
 import type { Response } from 'express'
 import { AuthService } from './auth.service'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
-import { AuthEntity } from './entity/auth.entity'
 import { LoginDto } from './dto/login.dto'
-import { GoogleOauthGuard } from '@/auth/guards/google-oauth.guard'
+import { GoogleOauthGuard } from '@/modules/auth/guards/google-oauth.guard'
 import { ConfigService } from '@nestjs/config'
-import { UsersService } from '@/users/users.service'
-import { RegisterUserDto } from '@/auth/dto/register-user.dto'
+import { UsersService } from '@/modules/users/users.service'
+import { RegisterUserDto } from '@/modules/auth/dto/register-user.dto'
 import { UserRole, AuthProvider } from '@prisma/client'
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard'
-import { UserEntity } from '@/users/entity/user.entity'
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard'
+import { UserEntity } from '@/modules/users/entity/user.entity'
 import type { AuthenticatedRequest } from '@/common/interfaces/authenticated-request.interface'
+import { FilesService } from '@/modules/files/files.service'
 
 const setTokenCookie = (
   res: Response,
@@ -39,6 +39,7 @@ const setTokenCookie = (
 @ApiTags('auth')
 export class AuthController {
   constructor(
+    private readonly filesService: FilesService,
     private readonly authService: AuthService,
     private configService: ConfigService,
     private readonly usersService: UsersService
@@ -52,7 +53,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @ApiOkResponse({ type: AuthEntity })
+  @ApiOkResponse({ type: UserEntity })
   async login(
     @Body() { email, password }: LoginDto,
     @Res({ passthrough: true }) res: Response
@@ -65,7 +66,7 @@ export class AuthController {
   }
 
   @Post('register')
-  @ApiOkResponse({ type: AuthEntity })
+  @ApiOkResponse({ type: UserEntity })
   async register(
     @Body() registerUserDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
@@ -93,13 +94,24 @@ export class AuthController {
     try {
       const user = await this.usersService.findOne({ email: req.user.email })
       if (!user) {
-        await this.authService.create({
+        const newUser = await this.authService.create({
           provider: AuthProvider.google,
           email: req.user.email,
           name: req.user.name,
           role: UserRole.geek,
           password: null
         })
+
+        if (req.user.avatarUrl) {
+          try {
+            const avatarUrl = await this.filesService.uploadAvatarFromUrl(
+              req.user.avatarUrl
+            )
+            await this.usersService.update(newUser.id, { avatarUrl })
+          } catch (error: any) {
+            console.log(`Couldn't upload avatar due to: ${error.message}`)
+          }
+        }
       }
 
       const token = this.authService.jwtSign({ email: req.user.email })

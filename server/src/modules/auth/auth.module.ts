@@ -2,17 +2,18 @@ import { Module } from '@nestjs/common'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { PassportModule } from '@nestjs/passport'
-import { UsersService } from '@/users/users.service'
 import { JwtModule } from '@nestjs/jwt'
-import { PrismaModule } from '@/prisma/prisma.module'
+import { PrismaModule } from '@/modules/prisma/prisma.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { EXPIRES_IN } from '@/common/constants/auth'
 import { JwtStrategy } from './guards/jwt.strategy'
-import { UsersModule } from '@/users/users.module'
-import { GoogleStrategy } from '@/auth/guards/google-oauth.strategy'
+import { UsersModule } from '@/modules/users/users.module'
+import { GoogleStrategy } from '@/modules/auth/guards/google-oauth.strategy'
+import { FilesModule } from '@/modules/files/files.module'
 
 @Module({
   imports: [
+    FilesModule,
     PrismaModule,
     PassportModule,
     JwtModule.registerAsync({
@@ -28,12 +29,6 @@ import { GoogleStrategy } from '@/auth/guards/google-oauth.strategy'
     UsersModule
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    UsersService,
-    JwtStrategy,
-    ConfigService,
-    GoogleStrategy
-  ]
+  providers: [AuthService, JwtStrategy, ConfigService, GoogleStrategy]
 })
 export class AuthModule {}

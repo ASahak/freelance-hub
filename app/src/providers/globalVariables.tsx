@@ -44,7 +44,7 @@ export const GlobalVariablesProvider = ({ children }: IChildren) => {
   const toast = useToast()
   const isMobile: boolean | undefined = useBreakpointValue(
     { base: true, md: false },
-    { ssr: false }
+    { ssr: true }
   )
   const _value = useMemo(
     () => ({
