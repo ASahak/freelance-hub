@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, ReactNode } from 'react'
+import { createContext, useContext, ReactNode, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getMe, logoutUser } from '@/services/auth'
 import { QUERY_FACTORY } from '@/common/constants/queryFactory'
@@ -10,6 +10,7 @@ interface AuthContextType {
   user: IUser | undefined
   isLoading: boolean
   isAuthenticated: boolean
+  isLoggingOut: boolean
   logout: () => void
 }
 
@@ -30,23 +31,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     staleTime: 0
   })
 
-  const { mutate: logout } = useMutation({
+  const { mutate: logout, isPending } = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
+      // Manually and synchronously remove the user from the cache.
+      queryClient.setQueryData(QUERY_FACTORY.me, null)
       // When logout is successful, invalidate the 'user' query.
       // This tells react-query to refetch it, which will fail (as expected),
       // effectively logging the user out on the client.
-      queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+      queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me })
     }
   })
 
   const isAuthenticated = !!user && !isError
 
-  return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const _value = useMemo(
+    () => ({
+      user,
+      isLoading,
+      isAuthenticated,
+      logout,
+      isLoggingOut: isPending
+    }),
+    [user, isLoading, isAuthenticated, isPending]
   )
+
+  return <AuthContext.Provider value={_value}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

@@ -9,23 +9,26 @@ import {
   MenuItem,
   MenuList,
   Text,
-  Icon
+  Icon,
+  Flex
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { RxExit, RxPerson } from 'react-icons/rx'
 import { useRouter } from 'next/navigation'
 import { ROUTES } from '@/common/constants/routes'
 import type { IUser } from '@/common/interfaces/user'
+import { useAuth } from '@/providers/authProvider'
+import { Spinner } from '@/components/ui'
 
 type IProps = {
   data: IUser
 }
 export const User = memo(({ data }: IProps) => {
   const router = useRouter()
+  const { logout, isLoggingOut } = useAuth()
 
-  console.log(data)
   return (
-    <Menu variant="base">
+    <Menu variant="base" closeOnSelect={false}>
       <MenuButton
         as={Button}
         rounded={'full'}
@@ -55,9 +58,26 @@ export const User = memo(({ data }: IProps) => {
           Profile
         </MenuItem>
         <Divider />
-        <MenuItem fontSize="1.4rem" fontWeight={500} gap={3}>
-          <Icon as={RxExit} fontSize="1.8rem" />
-          Logout
+        <MenuItem
+          fontSize="1.4rem"
+          fontWeight={500}
+          onClick={logout}
+          isDisabled={isLoggingOut}
+        >
+          <HStack spacing={2} justifyContent="space-between" w="full">
+            <Flex gap={3} align="center">
+              <Icon as={RxExit} fontSize="1.8rem" />
+              Logout
+            </Flex>
+            {isLoggingOut ? (
+              <Spinner
+                w="20px"
+                h="20px"
+                size="2px"
+                color="var(--chakra-colors-blue-300)"
+              />
+            ) : null}
+          </HStack>
         </MenuItem>
       </MenuList>
     </Menu>

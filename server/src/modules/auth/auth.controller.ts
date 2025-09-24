@@ -65,6 +65,20 @@ export class AuthController {
     return new UserEntity(user)
   }
 
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ description: 'User logged out successfully.' })
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      path: '/',
+      sameSite: 'lax',
+      secure: this.configService.get('NODE_ENV') === 'production'
+    })
+
+    res.status(HttpStatus.OK).json({ message: 'Logged out successfully' })
+  }
+
   @Post('register')
   @ApiOkResponse({ type: UserEntity })
   async register(
