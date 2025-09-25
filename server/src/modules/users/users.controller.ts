@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger'
 import { UsersService } from '@/modules/users/users.service'
 import { UserEntity } from '@/modules/users/entity/user.entity'
-import { CreateUserDto } from '@/modules/users/dto/create-user.dto'
+import { CreateUserDto } from '@/modules/auth/dto/register-user.dto'
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard'
 import { UpdateUserDto } from '@/modules/users/dto/update-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'

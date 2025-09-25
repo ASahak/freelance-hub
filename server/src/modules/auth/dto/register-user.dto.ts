@@ -26,8 +26,13 @@ export class RegisterUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
-  @ApiProperty()
+  @ApiProperty({ type: String })
   password: string
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  avatarUrl: string | null
 }
 
 export class CreateUserDto {
@@ -51,9 +56,14 @@ export class CreateUserDto {
   @ApiProperty()
   email: string
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: String, nullable: true })
   @IsOptional()
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
-  password: string | null
+  password?: string | null
+
+  @ApiProperty({ required: false, type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string | null
 }

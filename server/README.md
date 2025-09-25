@@ -33,6 +33,13 @@ You must have the following software installed:
 - A package manager like npm
 
 
+## Set Up Environment Variables
+Create a .env file from the example template.
+
+```bash
+  cp .env.example .env
+```
+
 ### Installation
 
 ```bash
@@ -40,21 +47,18 @@ You must have the following software installed:
 ```
 
 
-## Set Up Environment Variables
-Create a .env file from the example template.
-
-```bash
-  cp .env.example .env
-```
 Now, open the newly created .env file and fill in the required variables as described in the Environment Variables section below.
 
 
-### Start the Database
-Make sure Docker Desktop is running, then start the PostgreSQL container.
+### Build docker container
+Make sure Docker Desktop is running.
 
 ```bash
-  docker-compose up -d
+  docker-compose up --build
 ```
+
+The backend server should now be running and accessible at http://localhost:5000.
+
 
 ### Run Database Migrations
 This command will sync your Prisma schema with the database, creating all necessary tables.
@@ -74,18 +78,6 @@ This command will sync your Prisma schema with the database, creating all necess
 ```bash
   npx prisma studio
 ```
-
-
-### Running the Application
-To start the development server, run the following command:
-
-```bash
-  npm run dev
-  
-  # production mode
-  npm run start:prod
-```
-The backend server should now be running and accessible at http://localhost:5000.
 
 
 ## API Documentation

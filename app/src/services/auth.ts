@@ -26,3 +26,16 @@ export const logoutUser = async () => {
 
   return true
 }
+
+export const createUser = async () => {
+  const response = await fetch(`${API_BASE_URL}/users`, {
+    method: 'POST',
+    credentials: 'include'
+  })
+
+  if (!response.ok) {
+    throw new Error('Logout failed')
+  }
+
+  return true
+}

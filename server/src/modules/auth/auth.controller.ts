@@ -112,8 +112,7 @@ export class AuthController {
           provider: AuthProvider.google,
           email: req.user.email,
           name: req.user.name,
-          role: UserRole.geek,
-          password: null
+          role: UserRole.geek
         })
 
         if (req.user.avatarUrl) {

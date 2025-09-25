@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt'
 import { Injectable } from '@nestjs/common'
-import { CreateUserDto } from './dto/create-user.dto'
+import { CreateUserDto } from '@/modules/auth/dto/register-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { ROUNDS_OF_HASHING } from '@/common/constants/auth'
 import { UserRepository } from '@/repositories/user.repository'
