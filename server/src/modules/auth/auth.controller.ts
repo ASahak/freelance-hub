@@ -21,19 +21,7 @@ import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard'
 import { UserEntity } from '@/modules/users/entity/user.entity'
 import type { AuthenticatedRequest } from '@/common/interfaces/authenticated-request.interface'
 import { FilesService } from '@/modules/files/files.service'
-
-const setTokenCookie = (
-  res: Response,
-  token: string,
-  configService: ConfigService
-) => {
-  res.cookie('access_token', token, {
-    httpOnly: true,
-    secure: configService.get('NODE_ENV') === 'production',
-    sameSite: 'lax',
-    path: '/'
-  })
-}
+import { CookieService } from '@/modules/cookie/cookie.service'
 
 @Controller('auth')
 @ApiTags('auth')
@@ -41,6 +29,7 @@ export class AuthController {
   constructor(
     private readonly filesService: FilesService,
     private readonly authService: AuthService,
+    private readonly cookieService: CookieService,
     private configService: ConfigService,
     private readonly usersService: UsersService
   ) {}
@@ -60,7 +49,7 @@ export class AuthController {
   ) {
     const { user, accessToken } = await this.authService.login(email, password)
 
-    setTokenCookie(res, accessToken, this.configService)
+    this.cookieService.setTokenCookie(res, accessToken)
 
     return new UserEntity(user)
   }
@@ -69,12 +58,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ description: 'User logged out successfully.' })
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('access_token', {
-      httpOnly: true,
-      path: '/',
-      sameSite: 'lax',
-      secure: this.configService.get('NODE_ENV') === 'production'
-    })
+    this.cookieService.clearTokenCookie(res)
 
     res.status(HttpStatus.OK).json({ message: 'Logged out successfully' })
   }
@@ -91,7 +75,7 @@ export class AuthController {
       id: user.id
     })
 
-    setTokenCookie(res, accessToken, this.configService)
+    this.cookieService.setTokenCookie(res, accessToken)
 
     // Set the correct HTTP status for a created resource
     res.status(HttpStatus.CREATED)
@@ -106,9 +90,9 @@ export class AuthController {
     @Res() res: Response
   ) {
     try {
-      const user = await this.usersService.findOne({ email: req.user.email })
+      let user = await this.usersService.findOne({ email: req.user.email })
       if (!user) {
-        const newUser = await this.authService.create({
+        user = await this.authService.create({
           provider: AuthProvider.google,
           email: req.user.email,
           name: req.user.name,
@@ -120,15 +104,18 @@ export class AuthController {
             const avatarUrl = await this.filesService.uploadAvatarFromUrl(
               req.user.avatarUrl
             )
-            await this.usersService.update(newUser.id, { avatarUrl })
+            await this.usersService.update(user.id, { avatarUrl })
           } catch (error: any) {
             console.log(`Couldn't upload avatar due to: ${error.message}`)
           }
         }
       }
 
-      const token = this.authService.jwtSign({ email: req.user.email })
-      setTokenCookie(res, token, this.configService)
+      const accessToken = this.authService.jwtSign({
+        email: req.user.email,
+        id: user.id
+      })
+      this.cookieService.setTokenCookie(res, accessToken)
 
       res.redirect(this.configService.get('appOrigin')!)
     } catch (err) {

@@ -22,7 +22,6 @@ import {
 } from '@nestjs/swagger'
 import { UsersService } from '@/modules/users/users.service'
 import { UserEntity } from '@/modules/users/entity/user.entity'
-import { CreateUserDto } from '@/modules/auth/dto/register-user.dto'
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard'
 import { UpdateUserDto } from '@/modules/users/dto/update-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -63,12 +62,6 @@ export class UsersController {
     })
 
     return new UserEntity(updatedUser)
-  }
-
-  @Post()
-  @ApiCreatedResponse({ type: UserEntity })
-  async create(@Body() createUserDto: CreateUserDto) {
-    return new UserEntity(await this.usersService.create(createUserDto))
   }
 
   @Get()

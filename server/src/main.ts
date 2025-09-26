@@ -1,8 +1,9 @@
-import { NestFactory } from '@nestjs/core'
+import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
+import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -12,6 +13,9 @@ async function bootstrap() {
     credentials: true
   })
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+
+  const httpAdapterHost = app.get(HttpAdapterHost)
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost))
 
   const config = new DocumentBuilder()
     .setTitle('FreelanceHub API')

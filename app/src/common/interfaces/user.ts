@@ -9,3 +9,13 @@ export interface IUser {
   role: UserRole
   provider: AuthProvider
 }
+
+export interface ICreateUser {
+  email: string
+  name: string
+  password: string
+  role: UserRole
+  provider: AuthProvider
+}
+
+export type ISignInCredentials = Pick<ICreateUser, 'email' | 'password'>

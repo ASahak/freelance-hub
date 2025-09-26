@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getMe, logoutUser } from '@/services/auth'
 import { QUERY_FACTORY } from '@/common/constants/queryFactory'
 import { IUser } from '@/common/interfaces/user'
+import { useToast } from '@chakra-ui/react'
 
 interface AuthContextType {
   user: IUser | undefined
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient()
+  const toast = useToast()
 
   const {
     data: user,
@@ -40,6 +42,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // This tells react-query to refetch it, which will fail (as expected),
       // effectively logging the user out on the client.
       queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me })
+    },
+    onError: (error) => {
+      toast({
+        title: error.message,
+        status: 'error'
+      })
     }
   })
 

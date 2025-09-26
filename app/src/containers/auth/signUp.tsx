@@ -24,8 +24,10 @@ import {
   SimpleGrid,
   Text,
   VStack,
-  Divider
+  Divider,
+  useToast
 } from '@chakra-ui/react'
+import { useRouter } from 'next/navigation'
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 import { ErrorMessage } from '@hookform/error-message'
 import { FcGoogle } from 'react-icons/fc'
@@ -33,20 +35,33 @@ import { SignUpSchema } from '@/utils/validators'
 import { UserRole } from '@/common/enums/user'
 import { Logo } from '@/components/ui'
 import { ROUTES } from '@/common/constants/routes'
+import { useMutation } from '@tanstack/react-query'
+import { createUser } from '@/services/auth'
+import { ICreateUser, IUser } from '@/common/interfaces/user'
+import { AuthProvider } from '@/common/enums/auth'
 
+type Inputs = {
+  role: UserRole
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  confirmPassword: string
+}
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
+  const toast = useToast()
+  const router = useRouter()
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting }
-  } = useForm({
+  } = useForm<Inputs>({
     mode: 'onSubmit',
     resolver: yupResolver(SignUpSchema),
     defaultValues: {
-      userType: UserRole.GEEK,
+      role: UserRole.GEEK,
       firstName: '',
       lastName: '',
       email: '',
@@ -55,10 +70,35 @@ const SignUp = () => {
     }
   })
 
-  const onSubmit = (data: any) => {
-    // This function will only be called if the form is valid.
-    console.log('Sign up attempt with validated data:', data)
-  }
+  const { mutate: onCreateUser, isPending } = useMutation<
+    IUser,
+    Error,
+    ICreateUser
+  >({
+    mutationFn: createUser,
+    onSuccess: () => {
+      toast({
+        title: 'You have successfully registered. Now you can sign in!',
+        status: 'success'
+      })
+      router.push(ROUTES.SIGN_IN)
+    },
+    onError: (error) => {
+      toast({
+        title: error.message,
+        status: 'error'
+      })
+    }
+  })
+
+  const onSubmit = ({ email, password, firstName, lastName, role }: Inputs) =>
+    onCreateUser({
+      name: `${firstName} ${lastName}`,
+      email,
+      password,
+      role,
+      provider: AuthProvider.NATIVE
+    })
 
   const onHandleGoogleAuth = async () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`
@@ -94,7 +134,7 @@ const SignUp = () => {
                     I want to:
                   </FormLabel>
                   <Controller
-                    name="userType"
+                    name="role"
                     control={control}
                     render={({ field }) => (
                       <RadioGroup {...field}>
@@ -115,7 +155,7 @@ const SignUp = () => {
                   />
                   <ErrorMessage
                     errors={errors}
-                    name="userType"
+                    name="role"
                     render={({ message }) => (
                       <Text w="full" color="red.300" fontSize="1.3rem">
                         {message}
@@ -358,7 +398,7 @@ const SignUp = () => {
                   type="submit"
                   w="full"
                   variant="primary"
-                  isLoading={isSubmitting}
+                  isLoading={isSubmitting || isPending}
                 >
                   Create Account
                 </Button>

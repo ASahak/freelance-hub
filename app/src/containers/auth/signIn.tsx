@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
 import NextLink from 'next/link'
 import {
   Button,
@@ -19,24 +19,69 @@ import {
   Link,
   Text,
   VStack,
-  Divider
+  Divider,
+  useToast
 } from '@chakra-ui/react'
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
+import { Controller, useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+import { ErrorMessage } from '@hookform/error-message'
 import { Logo } from '@/components/ui'
 import { ROUTES } from '@/common/constants/routes'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ISignInCredentials, IUser } from '@/common/interfaces/user'
+import { signIn } from '@/services/auth'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { SignInSchema } from '@/utils/validators'
+import { QUERY_FACTORY } from '@/common/constants/queryFactory'
+
+type Inputs = {
+  email: string
+  password: string
+}
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+  const queryClient = useQueryClient()
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting }
+  } = useForm<Inputs>({
+    mode: 'onSubmit',
+    resolver: yupResolver(SignInSchema),
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  })
+  const toast = useToast()
+  const router = useRouter()
+  const { mutate: onSignInUser, isPending } = useMutation<
+    IUser,
+    Error,
+    ISignInCredentials
+  >({
+    mutationFn: signIn,
+    onSuccess: async () => {
+      queryClient.setQueryData(QUERY_FACTORY.me, null)
+      await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me })
+      router.push(ROUTES.HOME)
+    },
+    onError: (error) => {
+      toast({
+        title: error.message,
+        status: 'error'
+      })
+    }
   })
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    console.log('Sign in attempt:', formData)
-  }
+  const onSubmit = ({ email, password }: Inputs) =>
+    onSignInUser({
+      email,
+      password
+    })
 
   const onHandleGoogleAuth = async () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`
@@ -65,78 +110,106 @@ const SignIn = () => {
         </CardHeader>
         <CardBody>
           <VStack spacing={6}>
-            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
               <VStack spacing={6}>
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel htmlFor="email" fontSize="1.4rem">
                     Email
                   </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      left={2}
-                      bottom={0}
-                      m="auto"
-                    >
-                      <Icon
-                        as={FaEnvelope}
-                        color="gray.400"
-                        fontSize="1.6rem"
-                      />
-                    </InputLeftElement>
-                    <Input
-                      id="email"
-                      type="email"
-                      variant="base"
-                      pl={14}
-                      placeholder="your@email.com"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                    />
-                  </InputGroup>
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup>
+                        <InputLeftElement
+                          pointerEvents="none"
+                          left={2}
+                          bottom={0}
+                          m="auto"
+                        >
+                          <Icon
+                            as={FaEnvelope}
+                            color="gray.400"
+                            fontSize="1.6rem"
+                          />
+                        </InputLeftElement>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="your@email.com"
+                          variant="base"
+                          pl={14}
+                          {...field}
+                        />
+                      </InputGroup>
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="email"
+                    render={({ message }) => (
+                      <Text w="full" color="red.300" fontSize="1.3rem">
+                        {message}
+                      </Text>
+                    )}
+                  />
                 </FormControl>
 
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel htmlFor="password" fontSize="1.4rem">
                     Password
                   </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      left={2}
-                      bottom={0}
-                      m="auto"
-                    >
-                      <Icon as={FaLock} color="gray.400" fontSize="1.6rem" />
-                    </InputLeftElement>
-                    <Input
-                      id="password"
-                      variant="base"
-                      pl={14}
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                    />
-                    <InputRightElement right={2} bottom={0} m="auto">
-                      <Button
-                        variant="unstyled"
-                        size="lg"
-                        display="flex"
-                        h="fit-content"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        <Icon
-                          as={showPassword ? FaEyeSlash : FaEye}
-                          color="gray.500"
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup>
+                        <InputLeftElement
+                          pointerEvents="none"
+                          left={2}
+                          bottom={0}
+                          m="auto"
+                        >
+                          <Icon
+                            as={FaLock}
+                            color="gray.400"
+                            fontSize="1.6rem"
+                          />
+                        </InputLeftElement>
+                        <Input
+                          id="password"
+                          variant="base"
+                          pl={14}
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="Create a password"
+                          {...field}
                         />
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
+                        <InputRightElement right={2} bottom={0} m="auto">
+                          <Button
+                            variant="unstyled"
+                            size="lg"
+                            display="flex"
+                            h="fit-content"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon
+                              as={showPassword ? FaEyeSlash : FaEye}
+                              color="gray.500"
+                            />
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="password"
+                    render={({ message }) => (
+                      <Text w="full" color="red.300" fontSize="1.3rem">
+                        {message}
+                      </Text>
+                    )}
+                  />
                 </FormControl>
 
                 <Flex w="full" justify="flex-end">
@@ -151,7 +224,12 @@ const SignIn = () => {
                   </Link>
                 </Flex>
 
-                <Button type="submit" w="full" variant="primary">
+                <Button
+                  type="submit"
+                  w="full"
+                  variant="primary"
+                  isLoading={isSubmitting || isPending}
+                >
                   Sign In
                 </Button>
               </VStack>

@@ -10,6 +10,7 @@ import { JwtStrategy } from './guards/jwt.strategy'
 import { UsersModule } from '@/modules/users/users.module'
 import { GoogleStrategy } from '@/modules/auth/guards/google-oauth.strategy'
 import { FilesModule } from '@/modules/files/files.module'
+import { CookieService } from '@/modules/cookie/cookie.service'
 
 @Module({
   imports: [
@@ -29,6 +30,12 @@ import { FilesModule } from '@/modules/files/files.module'
     UsersModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, ConfigService, GoogleStrategy]
+  providers: [
+    AuthService,
+    JwtStrategy,
+    ConfigService,
+    GoogleStrategy,
+    CookieService
+  ]
 })
 export class AuthModule {}

@@ -29,7 +29,7 @@ export class RegisterUserDto {
   @ApiProperty({ type: String })
   password: string
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: String })
   @IsOptional()
   @IsString()
   avatarUrl: string | null

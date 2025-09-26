@@ -31,6 +31,6 @@ export class UserEntity implements User {
   @Exclude()
   password: string | null
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ nullable: true, type: String })
   avatarUrl: string | null
 }

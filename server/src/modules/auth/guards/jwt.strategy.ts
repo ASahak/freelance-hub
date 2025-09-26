@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-jwt'
-import { UsersService } from '@/modules/users/users.service'
 import { ConfigService } from '@nestjs/config'
+import { UserRepository } from '@/repositories/user.repository'
 
 const cookieExtractor = (
   req: Request & { cookies: Record<string, any> }
@@ -22,7 +22,7 @@ const cookieExtractor = (
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     configService: ConfigService,
-    private usersService: UsersService
+    private userRepository: UserRepository
   ) {
     super({
       jwtFromRequest: cookieExtractor,
@@ -31,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: { email: string }) {
-    const user = await this.usersService.findOne({ email: payload.email })
+    const user = await this.userRepository.findOne({ email: payload.email })
 
     if (!user) {
       throw new UnauthorizedException()

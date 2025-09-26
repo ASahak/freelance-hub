@@ -147,7 +147,10 @@ export default defineStyleConfig({
       alignItems: 'center',
       border: 'none',
       _hover: {
-        bg: 'blue.350'
+        bg: 'blue.350 !important',
+        _disabled: {
+          bg: 'blue.250 !important'
+        }
       },
       _active: {
         bg: 'blue.450'
@@ -157,9 +160,7 @@ export default defineStyleConfig({
         outline: '1px solid var(--chakra-colors-blue-250)'
       },
       _disabled: {
-        opacity: 1,
-        bg: '#373A43 !important',
-        color: '#191B1F !important'
+        opacity: 0.6
       }
     }),
     purple: () => ({

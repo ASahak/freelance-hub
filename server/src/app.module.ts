@@ -5,6 +5,7 @@ import { AuthModule } from '@/modules/auth/auth.module'
 import { UsersModule } from '@/modules/users/users.module'
 import { PrismaModule } from '@/modules/prisma/prisma.module'
 import { ConfigModule } from '@nestjs/config'
+import { CookieModule } from '@/modules/cookie/cookie.module'
 import configuration from '@/config/configuration'
 
 @Module({
@@ -14,7 +15,8 @@ import configuration from '@/config/configuration'
     PrismaModule,
     ConfigModule.forRoot({
       load: [configuration]
-    })
+    }),
+    CookieModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -11,19 +11,29 @@ import {
   CreateUserDto,
   RegisterUserDto
 } from '@/modules/auth/dto/register-user.dto'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class AuthService {
   constructor(
+    private configService: ConfigService,
     private jwtService: JwtService,
     private usersService: UsersService
   ) {}
 
-  jwtSign(user: Partial<User>) {
+  jwtSign(user: Pick<User, 'id' | 'email'>) {
     return this.jwtService.sign({ ...user })
   }
 
   async register(registerUserDto: RegisterUserDto) {
+    const user: User | null = await this.usersService.findOne({
+      email: registerUserDto.email
+    })
+
+    if (user) {
+      throw new NotFoundException('User exists with this email.')
+    }
+
     return this.usersService.create({
       ...registerUserDto,
       provider: AuthProvider.native
@@ -31,6 +41,14 @@ export class AuthService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const user: User | null = await this.usersService.findOne({
+      email: createUserDto.email
+    })
+
+    if (user) {
+      throw new NotFoundException('User exists with this email.')
+    }
+
     // creation is for google auth for example
     return this.usersService.create({
       ...createUserDto,
@@ -51,7 +69,7 @@ export class AuthService {
         throw new UnauthorizedException('Invalid password')
       }
 
-      const accessToken: string = this.jwtSign({ id: user.id })
+      const accessToken: string = this.jwtSign({ id: user.id, email })
       return { accessToken, user }
     } else {
       throw new NotFoundException(`No user found for email: ${email}`)
