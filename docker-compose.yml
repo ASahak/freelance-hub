@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  # The PostgreSQL Database Service
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRAM_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: freelancehub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # The NestJS Backend API Service
+  api:
+    build:
+      context: ./server # Path to the server's Dockerfile and source
+      target: development
+    command: npm run dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/usr/src/app # Mount local code for hot-reloading
+      - /usr/src/app/node_modules
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
+
+  # The Next.js Frontend Client Service
+  client:
+    build:
+      context: ./app # Path to the client's Dockerfile and source
+      target: development
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/usr/src/app # Mount local code for hot-reloading
+      - /usr/src/app/node_modules
+    env_file:
+      - ./app/.env.development
+    depends_on:
+      - api # Ensures the API starts before the client
+
+volumes:
+  postgres_data:

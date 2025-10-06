@@ -1,8 +1,31 @@
-## Freelance Hub - NestJS Backend
+## Freelance Hub 
+
+### You can just run this with docker
+
+```bash
+  docker-compose up --build
+```
+
+## Next.js Frontend
+
+### Installation
+
+```bash
+  npm install
+```
+
+### Run Development
+
+```bash
+  npm run dev
+``` 
+
+
+## NestJS Backend
 
 This repository contains the backend server for the Freelance Hub platform. It is a robust, scalable, and type-safe RESTful API built with NestJS, designed to handle all business logic, data persistence, and user authentication for the freelance marketplace.
 
-## About The Project
+### About The Project
 
 This API provides the core functionality for a freelance marketplace application. It manages users (both clients and freelancers), job postings, and the bidding process. The architecture is modular and designed for scalability, with a strong emphasis on type safety from the database to the API endpoints.
 
