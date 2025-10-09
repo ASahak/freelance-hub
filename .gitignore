@@ -14,13 +14,13 @@ node_modules
 /coverage
 
 # next.js
-/app/.next/
-/app/out/
+/client/.next/
+/client/out/
 
 # production
-/app/build
-/app/dest
-/app/dist
+/client/build
+/client/dest
+/client/dist
 dist
 build
 
@@ -43,4 +43,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-/app/next-env.d.ts
+/client/next-env.d.ts
