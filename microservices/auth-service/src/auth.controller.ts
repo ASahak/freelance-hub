@@ -2,37 +2,36 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus, Inject,
+  HttpStatus,
   Post,
   Req,
   Res,
-  UseGuards,
-} from '@nestjs/common';
+  UseGuards
+} from '@nestjs/common'
 import type { Response } from 'express'
+import { AuthService } from './auth.service'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { LoginDto } from './dto/login.dto'
-import { GoogleOauthGuard } from '@/guards/google-oauth.guard'
+import { GoogleOauthGuard } from '@/modules/auth/guards/google-oauth.guard'
 import { ConfigService } from '@nestjs/config'
+import { UsersService } from '@/modules/users/users.service'
 import { RegisterUserDto } from '@/modules/auth/dto/register-user.dto'
-import { UserRole, AuthProvider } from '@shared/types/user.type'
-import { JwtAuthGuard } from '@/guards/jwt-auth.guard'
+import { UserRole, AuthProvider } from '@prisma/client'
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard'
 import { UserEntity } from '@/modules/users/entity/user.entity'
 import type { AuthenticatedRequest } from '@/common/interfaces/authenticated-request.interface'
 import { FilesService } from '@/modules/files/files.service'
 import { CookieService } from '@/modules/cookie/cookie.service'
-import { MICROSERVICES } from '@shared/constants/microservices';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
   constructor(
-    @Inject(MICROSERVICES.Auth.name) private readonly authServiceClient: ClientProxy,
-    @Inject(MICROSERVICES.Users.name) private readonly usersServiceClient: ClientProxy,
     private readonly filesService: FilesService,
+    private readonly authService: AuthService,
     private readonly cookieService: CookieService,
     private configService: ConfigService,
+    private readonly usersService: UsersService
   ) {}
 
   @Get('me')
@@ -48,7 +47,7 @@ export class AuthController {
     @Body() { email, password }: LoginDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    const { user, accessToken } = await firstValueFrom(this.authServiceClient.send({ cmd: 'login' }, { email, password }))
+    const { user, accessToken } = await this.authService.login(email, password)
 
     this.cookieService.setTokenCookie(res, accessToken)
 

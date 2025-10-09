@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { UserRole, AuthProvider, User } from '@prisma/client'
+import { UserRole, AuthProvider, User } from '@shared/types/user.type'
 import { Exclude } from 'class-transformer'
 
 export class UserEntity implements User {
