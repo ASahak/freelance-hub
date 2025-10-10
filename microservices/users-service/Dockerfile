@@ -5,11 +5,12 @@ WORKDIR /usr/src/app
 
 # --- Dependencies Stage ---
 FROM base AS dependencies
-COPY ./api-gateway/package.json ./api-gateway/package-lock.json ./
+COPY ./users-service/package.json ./users-service/package-lock.json ./
 RUN npm install
 
 
 # --- Development Stage ---
 FROM dependencies AS development
-COPY ./api-gateway .
+COPY ./users-service .
+COPY ./libs ./libs
 

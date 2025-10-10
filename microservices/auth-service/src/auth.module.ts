@@ -3,21 +3,13 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
-import { PrismaModule } from '@/modules/prisma/prisma.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { EXPIRES_IN } from '@/common/constants/auth'
-import { JwtStrategy } from './guards/jwt.strategy'
-import { UsersModule } from '@/modules/users/users.module'
-import { GoogleStrategy } from '@/modules/auth/guards/google-oauth.strategy'
-import { FilesModule } from '@/modules/files/files.module'
-import { CookieService } from '@/modules/cookie/cookie.service'
+import { EXPIRES_IN } from '@/common/constants/global'
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MICROSERVICES } from '@shared/constants/microservices';
 
 @Module({
   imports: [
-    FilesModule,
-    PrismaModule,
     PassportModule,
     ClientsModule.register([{
       name: MICROSERVICES.Users.name,
@@ -34,15 +26,11 @@ import { MICROSERVICES } from '@shared/constants/microservices';
       }),
       inject: [ConfigService]
     }),
-    UsersModule
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    JwtStrategy,
     ConfigService,
-    GoogleStrategy,
-    CookieService
   ]
 })
 export class AuthModule {}

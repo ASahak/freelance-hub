@@ -1,13 +1,29 @@
-import { Controller } from '@nestjs/common'
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Inject } from '@nestjs/common';
+import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from '@/users.service'
-import { User } from '@prisma/client';
+import { type User } from '@prisma/client';
+import { MICROSERVICES } from '@shared/constants/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
+    @Inject(MICROSERVICES.Auth.name) private readonly authClient: ClientProxy,
   ) {}
+
+  @MessagePattern({ cmd: 'registerUser' })
+  async register(
+    @Payload() registerUser: User,
+  ) {
+    const user = await this.usersService.register(registerUser)
+    const accessToken = await firstValueFrom(this.authClient.send({ cmd: 'jwtSign' }, {
+      email: user.email,
+      id: user.id
+    }))
+
+    return { user, accessToken }
+  }
 
   @MessagePattern({ cmd: 'uploadAvatar' })
   async uploadAvatar(@Payload() { id, avatarUrl }: { id: string, avatarUrl: string }): Promise<User> {
@@ -23,8 +39,15 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'findUser' })
-  async findUser(@Payload() id: string) {
-    return await this.usersService.findOne({ id })
+  async findUser(@Payload() { id, email }: { id?: string, email?: string}) {
+    return await this.usersService.findOne({ id, email })
+  }
+
+  @MessagePattern({ cmd: 'createUser' })
+  async createUser(
+    @Payload() data: User
+  ) {
+    return await this.usersService.create(data)
   }
 
   @MessagePattern({ cmd: 'updateUser' })

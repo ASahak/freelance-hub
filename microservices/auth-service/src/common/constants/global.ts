@@ -1,3 +1,3 @@
 export const DEFAULT_PORT = 5002
 
-export const ROUNDS_OF_HASHING = 10
+export const EXPIRES_IN = '3600s'

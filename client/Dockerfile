@@ -1,20 +1,44 @@
 # --- Base Stage ---
-# Use an official Node.js runtime. Let's use the current LTS version.
 FROM node:20-alpine AS base
 
-# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json first to leverage caching
-COPY package*.json ./
 
 # --- Dependencies Stage ---
 FROM base AS dependencies
+# Copy the package files from this service's specific folder
+COPY ./api-gateway/package.json ./api-gateway/package-lock.json ./
 RUN npm install
 
+
 # --- Development Stage ---
-# This image will be used for local development with hot-reloading.
 FROM dependencies AS development
-COPY . .
-# The command to start the app will be provided by docker-compose.
+# Copy this service's source code and the shared libs folder
+COPY ./api-gateway/ .
+COPY ./libs ./libs
+
+
+# --- Production Build Stage ---
+FROM dependencies AS production-builder
+# Copy this service's source code and the shared libs folder
+COPY ./api-gateway/ .
+COPY ./libs ./libs
+RUN npm run build
+
+
+# --- Production Runtime Stage ---
+FROM base AS production
+WORKDIR /usr/src/app
+
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
+
+# Copy only the necessary files from the previous stages
+COPY --from=production-builder /usr/src/app/dist ./dist
+COPY --from=dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=production-builder /usr/src/app/package.json ./package.json
+
+USER nestjs
+
+CMD ["node", "dist/main"]
 

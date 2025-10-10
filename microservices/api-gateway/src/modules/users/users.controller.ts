@@ -81,7 +81,7 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async getUser(@Param('id', ParseIntPipe) id: string) {
-    return new UserEntity(await firstValueFrom(this.userServiceClient.send({ cmd: 'findUser' }, id)))
+    return new UserEntity(await firstValueFrom(this.userServiceClient.send({ cmd: 'findUser' }, { id })))
   }
 
   @Patch(':id')

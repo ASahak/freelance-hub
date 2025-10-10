@@ -70,11 +70,7 @@ export class AuthController {
     @Body() registerUserDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    const user = await this.authService.register(registerUserDto)
-    const accessToken = this.authService.jwtSign({
-      email: user.email,
-      id: user.id
-    })
+    const { user, accessToken } = await firstValueFrom(this.usersServiceClient.send({ cmd: 'registerUser' }, registerUserDto))
 
     this.cookieService.setTokenCookie(res, accessToken)
 
@@ -91,31 +87,31 @@ export class AuthController {
     @Res() res: Response
   ) {
     try {
-      let user = await this.usersService.findOne({ email: req.user.email })
+      let user = await firstValueFrom(this.usersServiceClient.send({ cmd: 'getUser'}, { email: req.user.email }))
       if (!user) {
-        user = await this.authService.create({
+        user = await firstValueFrom(this.usersServiceClient.send({ cmd: 'createUser' }, {
           provider: AuthProvider.google,
           email: req.user.email,
           name: req.user.name,
           role: UserRole.geek
-        })
+        }))
 
         if (req.user.avatarUrl) {
           try {
             const avatarUrl = await this.filesService.uploadAvatarFromUrl(
               req.user.avatarUrl
             )
-            await this.usersService.update(user.id, { avatarUrl })
+            await firstValueFrom(this.usersServiceClient.send({ cmd: 'updateUser' } , { id: user.id, data: { avatarUrl } }))
           } catch (error: any) {
             console.log(`Couldn't upload avatar due to: ${error.message}`)
           }
         }
       }
 
-      const accessToken = this.authService.jwtSign({
+      const accessToken = await firstValueFrom(this.authServiceClient.send({ cmd: 'jwtSign' }, {
         email: req.user.email,
         id: user.id
-      })
+      }))
       this.cookieService.setTokenCookie(res, accessToken)
 
       res.redirect(this.configService.get('appOrigin')!)

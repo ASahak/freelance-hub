@@ -5,7 +5,7 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRAM_USER: postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: freelancehub
     ports:
@@ -13,37 +13,61 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # The NestJS Backend API Service
-  api:
+  users-service:
     build:
-      context: ./server # Path to the server's Dockerfile and source
-      target: development
-    command: npm run dev
-    ports:
-      - "5000:5000"
+      context: ./microservices
+      dockerfile: ./users-service/Dockerfile
+    command: npm run start:dev
     volumes:
-      - ./server:/usr/src/app # Mount local code for hot-reloading
+      - ./microservices/users-service:/usr/src/app
+      - ./libs:/usr/src/app/libs
       - /usr/src/app/node_modules
     env_file:
-      - ./server/.env
+      - ./microservices/users-service/.env
     depends_on:
       - db
 
-  # The Next.js Frontend Client Service
-  client:
+  auth-service:
     build:
-      context: ./app # Path to the client's Dockerfile and source
-      target: development
-    command: npm run dev
-    ports:
-      - "3000:3000"
+      context: ./microservices
+      dockerfile: ./auth-service/Dockerfile
+    command: npm run start:dev
     volumes:
-      - ./app:/usr/src/app # Mount local code for hot-reloading
+      - ./microservices/auth-service:/usr/src/app
+      - ./libs:/usr/src/app/libs
       - /usr/src/app/node_modules
     env_file:
-      - ./app/.env.development
+      - ./microservices/auth-service/.env
     depends_on:
-      - api # Ensures the API starts before the client
+      - db
+      - users-service
+
+  api-gateway:
+    build:
+      context: ./microservices
+      dockerfile: ./api-gateway/Dockerfile
+    command: npm run start:dev
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./microservices/api-gateway/.env
+    depends_on:
+      - users-service
+      - auth-service
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./client/.env.development
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+    depends_on:
+      - api-gateway
 
 volumes:
   postgres_data:
