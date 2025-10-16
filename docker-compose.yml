@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   # The PostgreSQL Database Service
   db:
@@ -15,59 +14,63 @@ services:
 
   users-service:
     build:
-      context: ./microservices
-      dockerfile: ./users-service/Dockerfile
-    command: npm run start:dev
+      context: .
+      dockerfile: ./apps/users-service/Dockerfile
+    container_name: users-service
     volumes:
-      - ./microservices/users-service:/usr/src/app
-      - ./libs:/usr/src/app/libs
-      - /usr/src/app/node_modules
+      - ./apps/users-service:/app/apps/users-service
+      - /app/node_modules
+    command: npm run start:dev @app/users-service
     env_file:
-      - ./microservices/users-service/.env
+      - apps/users-service/.env
     depends_on:
       - db
-
-  auth-service:
-    build:
-      context: ./microservices
-      dockerfile: ./auth-service/Dockerfile
-    command: npm run start:dev
-    volumes:
-      - ./microservices/auth-service:/usr/src/app
-      - ./libs:/usr/src/app/libs
-      - /usr/src/app/node_modules
-    env_file:
-      - ./microservices/auth-service/.env
-    depends_on:
-      - db
-      - users-service
-
-  api-gateway:
-    build:
-      context: ./microservices
-      dockerfile: ./api-gateway/Dockerfile
-    command: npm run start:dev
     ports:
-      - "5000:5000"
-    env_file:
-      - ./microservices/api-gateway/.env
-    depends_on:
-      - users-service
-      - auth-service
+        - '5001:5001'
 
-  client:
-    build:
-      context: ./client
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./client/.env.development
-    volumes:
-      - ./client:/usr/src/app
-      - /usr/src/app/node_modules
-      - /usr/src/app/.next
-    depends_on:
-      - api-gateway
-
+#  auth-service:
+#    build:
+#      context: ./microservices
+#      dockerfile: ./auth-service/Dockerfile
+#    command: npm run dev
+#    volumes:
+#      - ./microservices/auth-service:/usr/src/app
+#      - ./libs:/usr/src/app/libs
+#      - /usr/src/app/node_modules
+#    env_file:
+#      - ./microservices/auth-service/.env
+#    depends_on:
+#      - db
+#      - users-service
+#
+#  api-gateway:
+#    build:
+#      context: ./microservices
+#      dockerfile: ./api-gateway/Dockerfile
+#    command: npm run dev
+#    ports:
+#      - "5000:5000"
+#    env_file:
+#      - ./microservices/api-gateway/.env
+#    depends_on:
+#      - users-service
+#      - auth-service
+#
+#  client:
+#    build:
+#      context: ./client
+#      dockerfile: ./Dockerfile
+#    command: npm run dev
+#    volumes:
+#      - ./client:/usr/src/app
+#      - /usr/src/app/node_modules
+#      - /usr/src/app/.next
+#    env_file:
+#      - ./client/.env.development
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - api-gateway
+#
 volumes:
   postgres_data:

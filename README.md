@@ -3,8 +3,12 @@
 ### You can just run this with docker
 
 ```bash
-  docker-compose up --build
+  npm run dev
 ```
+The backend server should now be running and accessible at http://localhost:5000.
+The client should now be running and accessible at http://localhost:3000.
+
+It will follow the installation process of client and microservices
 
 ## Next.js Frontend
 
@@ -72,15 +76,6 @@ Create a .env file from the example template.
 
 Now, open the newly created .env file and fill in the required variables as described in the Environment Variables section below.
 
-
-### Build docker container
-Make sure Docker Desktop is running.
-
-```bash
-  docker-compose up --build
-```
-
-The backend server should now be running and accessible at http://localhost:5000.
 
 
 ### Run Database Migrations
