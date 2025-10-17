@@ -1,7 +1,7 @@
-import { DEFAULT_PORT } from '../common/constants/global'
+import { MICROSERVICES } from '@libs/constants/microservices'
 
 export default () => ({
-  port: process.env.PORT ?? DEFAULT_PORT,
-  host: process.env.HOST,
+  port: MICROSERVICES.Users.port,
+  host: MICROSERVICES.Users.host,
   appOrigin: process.env.APP_ORIGIN,
 })

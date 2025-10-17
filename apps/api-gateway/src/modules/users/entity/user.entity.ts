@@ -1,0 +1,36 @@
+import { ApiProperty } from '@nestjs/swagger'
+import { UserRole, AuthProvider, User } from '@libs/types/user.type'
+import { Exclude } from 'class-transformer'
+
+export class UserEntity implements User {
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial)
+  }
+
+  @ApiProperty()
+  id: string
+
+  @ApiProperty()
+  createdAt: Date
+
+  @ApiProperty()
+  updatedAt: Date
+
+  @ApiProperty()
+  name: string
+
+  @ApiProperty()
+  email: string
+
+  @ApiProperty()
+  role: UserRole
+
+  @ApiProperty()
+  provider: AuthProvider
+
+  @Exclude()
+  password: string
+
+  @ApiProperty({ nullable: true, type: String })
+  avatarUrl: string | null
+}

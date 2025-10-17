@@ -12,6 +12,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: api-gateway
+    command: npm run start:dev @app/api-gateway
+    volumes:
+      - ./apps/api-gateway:/app/apps/api-gateway
+      - /app/node_modules
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./apps/api-gateway/.env
+    depends_on:
+      - users-service
+#      - auth-service
+
   users-service:
     build:
       context: .
@@ -28,34 +45,21 @@ services:
     ports:
         - '5001:5001'
 
-#  auth-service:
-#    build:
-#      context: ./microservices
-#      dockerfile: ./auth-service/Dockerfile
-#    command: npm run dev
-#    volumes:
-#      - ./microservices/auth-service:/usr/src/app
-#      - ./libs:/usr/src/app/libs
-#      - /usr/src/app/node_modules
-#    env_file:
-#      - ./microservices/auth-service/.env
-#    depends_on:
-#      - db
-#      - users-service
-#
-#  api-gateway:
-#    build:
-#      context: ./microservices
-#      dockerfile: ./api-gateway/Dockerfile
-#    command: npm run dev
-#    ports:
-#      - "5000:5000"
-#    env_file:
-#      - ./microservices/api-gateway/.env
-#    depends_on:
-#      - users-service
-#      - auth-service
-#
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./apps/auth-service/Dockerfile
+    command: npm run start:dev @app/auth-service
+    volumes:
+      - ./apps/auth-service:/app/apps/auth-service
+      - /app/node_modules
+    env_file:
+      - ./apps/auth-service/.env
+    depends_on:
+      - db
+      - users-service
+
+
 #  client:
 #    build:
 #      context: ./client
