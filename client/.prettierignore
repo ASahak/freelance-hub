@@ -1,0 +1,13 @@
+node_modules
+
+dist
+dest
+build
+
+.husky
+
+.next
+
+.vscode
+.idea
+

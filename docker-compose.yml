@@ -20,6 +20,7 @@ services:
     command: npm run start:dev @app/api-gateway
     volumes:
       - ./apps/api-gateway:/app/apps/api-gateway
+      - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
     ports:
       - "5000:5000"
@@ -36,6 +37,7 @@ services:
     container_name: users-service
     volumes:
       - ./apps/users-service:/app/apps/users-service
+      - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
     command: npm run start:dev @app/users-service
     env_file:
@@ -49,9 +51,11 @@ services:
     build:
       context: .
       dockerfile: ./apps/auth-service/Dockerfile
+    container_name: auth-service
     command: npm run start:dev @app/auth-service
     volumes:
       - ./apps/auth-service:/app/apps/auth-service
+      - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
     env_file:
       - ./apps/auth-service/.env
@@ -60,21 +64,22 @@ services:
       - users-service
 
 
-#  client:
-#    build:
-#      context: ./client
-#      dockerfile: ./Dockerfile
-#    command: npm run dev
-#    volumes:
-#      - ./client:/usr/src/app
-#      - /usr/src/app/node_modules
-#      - /usr/src/app/.next
-#    env_file:
-#      - ./client/.env.development
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - api-gateway
-#
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    command: npm run dev --workspace=client
+    container_name: frontend
+    volumes:
+      - ./client:/app/client
+      - /app/node_modules
+      - /app/client/.next
+    env_file:
+      - ./client/.env.development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+
 volumes:
   postgres_data:

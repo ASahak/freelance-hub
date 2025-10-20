@@ -16,7 +16,11 @@
       "entryFile": "main",
       "sourceRoot": "apps/api-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
+        "webpack": true,
+        "watchOptions": {
+          "poll": 1000
+        }
       }
     },
     "@app/users-service": {
@@ -25,7 +29,11 @@
       "entryFile": "main",
       "sourceRoot": "apps/users-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/users-service/tsconfig.app.json"
+        "tsConfigPath": "apps/users-service/tsconfig.app.json",
+        "webpack": true,
+        "watchOptions": {
+          "poll": 1000
+        }
       }
     },
     "@app/auth-service": {
@@ -34,7 +42,11 @@
       "entryFile": "main",
       "sourceRoot": "apps/auth-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/auth-service/tsconfig.app.json"
+        "tsConfigPath": "apps/auth-service/tsconfig.app.json",
+        "webpack": true,
+        "watchOptions": {
+          "poll": 1000
+        }
       }
     }
   }
