@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Flex,
@@ -7,52 +7,52 @@ import {
   Link,
   useDisclosure,
   HStack,
-  VStack
-} from '@chakra-ui/react'
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
-import { memo } from 'react'
-import NextLink from 'next/link'
-import { useRouter } from 'next/navigation'
-import { ROUTES } from '@/common/constants/routes'
-import { RemoveScroll } from 'react-remove-scroll'
-import { AnimatePresence, domAnimation, LazyMotion, m } from 'motion/react'
-import { Logo, Container } from '@/components/ui'
-import { useAuth } from '@/providers/authProvider'
-import { User } from '@/components/layout/header/user'
+  VStack,
+} from '@chakra-ui/react';
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import { memo } from 'react';
+import NextLink from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/common/constants/routes';
+import { RemoveScroll } from 'react-remove-scroll';
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'motion/react';
+import { Logo, Container } from '@/components/ui';
+import { useAuth } from '@/providers/authProvider';
+import { User } from '@/components/layout/header/user';
 
 interface NavItem {
-  label: string
-  subLabel?: string
-  children?: Array<NavItem>
-  href?: string
+  label: string;
+  subLabel?: string;
+  children?: Array<NavItem>;
+  href?: string;
 }
 
 const NAV_ITEMS: Array<NavItem> = [
   {
     label: 'Find Geeks',
-    href: ROUTES.GEEKS
+    href: ROUTES.GEEKS,
   },
   {
     label: 'Find Work',
-    href: ROUTES.JOBS
+    href: ROUTES.JOBS,
   },
   {
     label: 'Post a Job',
-    href: ROUTES.CREATE_JOB
-  }
-]
+    href: ROUTES.CREATE_JOB,
+  },
+];
 const variants = {
   initial: { opacity: 0, x: 0, y: -40 },
-  in: { opacity: 1, x: 0, y: 0 }
-}
+  in: { opacity: 1, x: 0, y: 0 },
+};
 const drawerTransition = {
   ease: 'linear',
-  duration: 0.2
-}
+  duration: 0.2,
+};
 export const NavBar = memo(() => {
-  const { isOpen, onToggle } = useDisclosure()
-  const router = useRouter()
-  const { user } = useAuth()
+  const { isOpen, onToggle } = useDisclosure();
+  const router = useRouter();
+  const { user } = useAuth();
 
   return (
     <Flex
@@ -70,7 +70,7 @@ export const NavBar = memo(() => {
             color="gray.400"
             _hover={{
               textDecoration: 'none',
-              color: 'gray.500'
+              color: 'gray.500',
             }}
             as={NextLink}
             key={navItem.label}
@@ -177,7 +177,7 @@ export const NavBar = memo(() => {
                             color="gray.400"
                             _hover={{
                               textDecoration: 'none',
-                              color: 'gray.500'
+                              color: 'gray.500',
                             }}
                             as={NextLink}
                             key={navItem.label}
@@ -196,5 +196,5 @@ export const NavBar = memo(() => {
         </RemoveScroll>
       </Flex>
     </Flex>
-  )
-})
+  );
+});

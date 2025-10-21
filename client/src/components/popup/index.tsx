@@ -1,6 +1,6 @@
-import { useRef } from 'react'
+import { useRef } from 'react';
 
-import { CloseIcon } from '@chakra-ui/icons'
+import { CloseIcon } from '@chakra-ui/icons';
 import {
   Heading,
   Modal,
@@ -12,32 +12,32 @@ import {
   VStack,
   Box,
   Button,
-  Flex
-} from '@chakra-ui/react'
-import { MobileBottomDrawer } from '@/components/features'
-import { usePopup } from '@/providers/popupProvider'
-import { useGlobalVariables } from '@/providers/globalVariables'
+  Flex,
+} from '@chakra-ui/react';
+import { MobileBottomDrawer } from '@/components/features';
+import { usePopup } from '@/providers/popupProvider';
+import { useGlobalVariables } from '@/providers/globalVariables';
 
-const overlayColor = '#1717177a' // gray.800/50
+const overlayColor = '#1717177a'; // gray.800/50
 type IProps = {
-  isNested?: boolean
-}
+  isNested?: boolean;
+};
 function Popup({ isNested }: IProps) {
-  const { isMobile } = useGlobalVariables()
-  const { motionPreset, nested, onCloseComplete, ...rest } = usePopup()
+  const { isMobile } = useGlobalVariables();
+  const { motionPreset, nested, onCloseComplete, ...rest } = usePopup();
   const { popupSettings, popupTitle, popupType, isOpen, onClose } = isNested
     ? nested
-    : rest
+    : rest;
 
-  const isCentered = popupSettings.isCenter ?? true
-  const modalRef = useRef(null)
+  const isCentered = popupSettings.isCenter ?? true;
+  const modalRef = useRef(null);
 
   const renderContent = () => {
     switch (popupType) {
       default:
-        return <div>Unknown popup type</div>
+        return <div>Unknown popup type</div>;
     }
-  }
+  };
 
   return popupSettings.mobileDrawer && isMobile ? (
     <MobileBottomDrawer
@@ -104,7 +104,7 @@ function Popup({ isNested }: IProps) {
         w={{
           xs: 'calc(100% - 1.6rem)',
           base: 'calc(100% - 3.9rem)',
-          md: 'fit-content'
+          md: 'fit-content',
         }}
         maxW="fit-content"
         {...(popupSettings.modalContainerProps || {})}
@@ -145,7 +145,7 @@ function Popup({ isNested }: IProps) {
         </VStack>
       </ModalContent>
     </Modal>
-  )
+  );
 }
 
-export default Popup
+export default Popup;

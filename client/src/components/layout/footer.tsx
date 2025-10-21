@@ -7,23 +7,23 @@ import {
   Text,
   VStack,
   Divider,
-  Grid
-} from '@chakra-ui/react'
-import { Container, Logo } from '@/components/ui'
-import { useGlobalVariables } from '@/providers/globalVariables'
+  Grid,
+} from '@chakra-ui/react';
+import { Container, Logo } from '@/components/ui';
+import { useGlobalVariables } from '@/providers/globalVariables';
 
 const footerLinks = {
   'For Clients': [
     'Post a Project',
     'Browse Freelancers',
     'Enterprise Solutions',
-    'Pricing'
+    'Pricing',
   ],
   'For Freelancers': ['Find Work', 'Success Stories', 'Resources', 'Community'],
-  Company: ['About Us', 'Careers', 'Press', 'Contact']
-}
+  Company: ['About Us', 'Careers', 'Press', 'Contact'],
+};
 const Footer = () => {
-  const { isMobile } = useGlobalVariables()
+  const { isMobile } = useGlobalVariables();
 
   return (
     <Box as="footer" bg="gray.900" color="white" w="full">
@@ -32,12 +32,12 @@ const Footer = () => {
           <Grid
             templateAreas={{
               base: `"logo clients" "freelancers company"`,
-              lg: `"logo clients freelancers company"`
+              lg: `"logo clients freelancers company"`,
             }}
             gap={8}
             templateColumns={{
               base: 'repeat(2, 1fr)',
-              lg: 'repeat(4, 1fr)'
+              lg: 'repeat(4, 1fr)',
             }}
           >
             {/* Brand Column */}
@@ -122,6 +122,6 @@ const Footer = () => {
         </Flex>
       </Container>
     </Box>
-  )
-}
-export default Footer
+  );
+};
+export default Footer;

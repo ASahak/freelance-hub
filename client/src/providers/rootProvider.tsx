@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
 import {
   ReactSkeletonProvider,
-  SKELETON_ANIMATION_VARIANTS
-} from 'react-skeleton-builder'
+  SKELETON_ANIMATION_VARIANTS,
+} from 'react-skeleton-builder';
 import {
   AuthProvider,
   GlobalVariablesProvider,
   PopupProvider,
-  TanStackQueryProvider
-} from '@/providers'
+  TanStackQueryProvider,
+} from '@/providers';
 
-import Popup from '@/components/popup'
-import { IUser } from '@/common/interfaces/user'
+import Popup from '@/components/popup';
+import { IUser } from '@/common/interfaces/user';
 
 type IProps = {
-  children: ReactNode
-  initialUser: IUser | null
-}
+  children: ReactNode;
+  initialUser: IUser | null;
+};
 
 export const RootProvider = ({ children, initialUser }: IProps) => {
   return (
@@ -29,10 +29,10 @@ export const RootProvider = ({ children, initialUser }: IProps) => {
         colorTheme: {
           dark: {
             main: 'var(--chakra-colors-gray-700)',
-            gradient: 'var(--chakra-colors-gray-600)'
+            gradient: 'var(--chakra-colors-gray-600)',
           },
-          light: { main: '#f1f1f1', gradient: '#ececec' }
-        }
+          light: { main: '#f1f1f1', gradient: '#ececec' },
+        },
       }}
     >
       <TanStackQueryProvider initialUser={initialUser}>
@@ -44,5 +44,5 @@ export const RootProvider = ({ children, initialUser }: IProps) => {
         </GlobalVariablesProvider>
       </TanStackQueryProvider>
     </ReactSkeletonProvider>
-  )
-}
+  );
+};

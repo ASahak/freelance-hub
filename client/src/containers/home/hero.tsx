@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { Box, Button, Flex, Heading, Stack, Text } from '@chakra-ui/react'
-import { SmartImage } from '@/components/ui'
-import { ROUTES } from '@/common/constants/routes'
-import { useRouter } from 'next/navigation'
+import { Box, Button, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { SmartImage } from '@/components/ui';
+import { ROUTES } from '@/common/constants/routes';
+import { useRouter } from 'next/navigation';
 
 export const Hero = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <Stack
@@ -73,11 +73,11 @@ export const Hero = () => {
             sizes="(max-width: 768px) 100vw, 50vw"
             style={{
               objectFit: 'cover',
-              borderRadius: '0.4rem'
+              borderRadius: '0.4rem',
             }}
           />
         </Box>
       </Flex>
     </Stack>
-  )
-}
+  );
+};

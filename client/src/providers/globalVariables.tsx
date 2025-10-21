@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   createContext,
@@ -7,71 +7,71 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState
-} from 'react'
-import { useBreakpointValue, useToast } from '@chakra-ui/react'
-import { IChildren } from '@/common/types/global'
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+  useState,
+} from 'react';
+import { useBreakpointValue, useToast } from '@chakra-ui/react';
+import { IChildren } from '@/common/types/global';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 export interface GlobalVariablesType {
-  isMobile: boolean
-  navDrawerIsOpen: boolean
-  setNavDrawerIsOpen: Dispatch<SetStateAction<boolean>>
+  isMobile: boolean;
+  navDrawerIsOpen: boolean;
+  setNavDrawerIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const GlobalVariablesContext = createContext<
   GlobalVariablesType | undefined
->(undefined)
+>(undefined);
 
 export const useGlobalVariables = (): GlobalVariablesType => {
-  const context = useContext(GlobalVariablesContext)
+  const context = useContext(GlobalVariablesContext);
 
   if (context === undefined) {
     throw new Error(
-      'useGlobalVariables must be used within a GlobalVariablesProvider'
-    )
+      'useGlobalVariables must be used within a GlobalVariablesProvider',
+    );
   }
 
-  return context
-}
+  return context;
+};
 
 export const GlobalVariablesProvider = ({ children }: IChildren) => {
-  const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false)
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
-  const serverError = searchParams.get('serverError')
-  const toast = useToast()
+  const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const serverError = searchParams.get('serverError');
+  const toast = useToast();
   const isMobile: boolean | undefined = useBreakpointValue(
     { base: true, md: false },
-    { ssr: true }
-  )
+    { ssr: true },
+  );
   const _value = useMemo(
     () => ({
       isMobile: !!isMobile,
       navDrawerIsOpen,
-      setNavDrawerIsOpen
+      setNavDrawerIsOpen,
     }),
-    [navDrawerIsOpen, isMobile]
-  )
+    [navDrawerIsOpen, isMobile],
+  );
 
   useEffect(() => {
     if (serverError) {
       toast({
         title: serverError,
-        status: 'error'
-      })
-      const params = new URLSearchParams(searchParams.toString())
+        status: 'error',
+      });
+      const params = new URLSearchParams(searchParams.toString());
 
-      params.delete('serverError')
+      params.delete('serverError');
 
-      router.push(`${pathname}?${params.toString()}`)
+      router.push(`${pathname}?${params.toString()}`);
     }
-  }, [serverError])
+  }, [serverError]);
 
   return (
     <GlobalVariablesContext.Provider value={_value}>
       {children}
     </GlobalVariablesContext.Provider>
-  )
-}
+  );
+};

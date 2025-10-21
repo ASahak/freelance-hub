@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { VStack, Heading, Text, Button, Flex } from '@chakra-ui/react'
-import { useRouter, usePathname } from 'next/navigation'
-import { useEffect } from 'react'
-import { ROUTES } from '@/common/constants/routes'
+import { VStack, Heading, Text, Button, Flex } from '@chakra-ui/react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+import { ROUTES } from '@/common/constants/routes';
 
 const NotFound = () => {
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     console.error(
       '404 Error: User attempted to access non-existent route:',
-      pathname
-    )
-  }, [pathname])
+      pathname,
+    );
+  }, [pathname]);
 
   return (
     <Flex w="full" alignItems="center" justifyContent="center" h="100dvh">
@@ -34,7 +34,7 @@ const NotFound = () => {
         </Button>
       </VStack>
     </Flex>
-  )
-}
+  );
+};
 
-export default NotFound
+export default NotFound;

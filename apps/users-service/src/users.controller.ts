@@ -1,6 +1,6 @@
 import { Controller, Inject } from '@nestjs/common';
 import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
-import { UsersService } from './users.service'
+import { UsersService } from './users.service';
 import { type User } from '@prisma/client';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -13,52 +13,55 @@ export class UsersController {
   ) {}
 
   @MessagePattern({ cmd: 'registerUser' })
-  async register(
-    @Payload() registerUser: User,
-  ) {
-    const user = await this.usersService.register(registerUser)
-    const accessToken = await firstValueFrom(this.authClient.send({ cmd: 'jwtSign' }, {
-      email: user.email,
-      id: user.id
-    }))
+  async register(@Payload() registerUser: User) {
+    const user = await this.usersService.register(registerUser);
+    const accessToken = await firstValueFrom(
+      this.authClient.send(
+        { cmd: 'jwtSign' },
+        {
+          email: user.email,
+          id: user.id,
+        },
+      ),
+    );
 
-    return { user, accessToken }
+    return { user, accessToken };
   }
 
   @MessagePattern({ cmd: 'uploadAvatar' })
-  async uploadAvatar(@Payload() { id, avatarUrl }: { id: string, avatarUrl: string }): Promise<User> {
+  async uploadAvatar(
+    @Payload() { id, avatarUrl }: { id: string; avatarUrl: string },
+  ): Promise<User> {
     return await this.usersService.update(id, {
-      avatarUrl
-    })
+      avatarUrl,
+    });
   }
 
   @MessagePattern({ cmd: 'getAll' })
   async getAll() {
-    const users = await this.usersService.findAll()
-    return users.map((user) => user)
+    const users = await this.usersService.findAll();
+    return users.map((user) => user);
   }
 
   @MessagePattern({ cmd: 'findUser' })
-  async findUser(@Payload() { id, email }: { id?: string, email?: string}) {
-    return await this.usersService.findOne({ id, email })
+  async findUser(@Payload() { id, email }: { id?: string; email?: string }) {
+    return await this.usersService.findOne({ id, email });
   }
 
   @MessagePattern({ cmd: 'createUser' })
-  async createUser(
-    @Payload() data: User
-  ) {
-    return await this.usersService.create(data)
+  async createUser(@Payload() data: User) {
+    return await this.usersService.create(data);
   }
 
   @MessagePattern({ cmd: 'updateUser' })
   async updateUser(
-    @Payload() { id, data }: { id: string, data: Partial<User>}
+    @Payload() { id, data }: { id: string; data: Partial<User> },
   ) {
-    return await this.usersService.update(id, data)
+    return await this.usersService.update(id, data);
   }
 
   @MessagePattern({ cmd: 'removeUser' })
   async removeUser(@Payload() id: string) {
-    return await this.usersService.remove(id)
+    return await this.usersService.remove(id);
   }
 }

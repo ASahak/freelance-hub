@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import NextLink from 'next/link'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react';
+import NextLink from 'next/link';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
   Card,
@@ -25,38 +25,38 @@ import {
   Text,
   VStack,
   Divider,
-  useToast
-} from '@chakra-ui/react'
-import { useRouter } from 'next/navigation'
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
-import { ErrorMessage } from '@hookform/error-message'
-import { FcGoogle } from 'react-icons/fc'
-import { SignUpSchema } from '@/utils/validators'
-import { UserRole } from '@/common/enums/user'
-import { Logo } from '@/components/ui'
-import { ROUTES } from '@/common/constants/routes'
-import { useMutation } from '@tanstack/react-query'
-import { createUser } from '@/services/auth'
-import { ICreateUser, IUser } from '@/common/interfaces/user'
-import { AuthProvider } from '@/common/enums/auth'
+  useToast,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
+import { ErrorMessage } from '@hookform/error-message';
+import { FcGoogle } from 'react-icons/fc';
+import { SignUpSchema } from '@/utils/validators';
+import { UserRole } from '@/common/enums/user';
+import { Logo } from '@/components/ui';
+import { ROUTES } from '@/common/constants/routes';
+import { useMutation } from '@tanstack/react-query';
+import { createUser } from '@/services/auth';
+import { ICreateUser, IUser } from '@/common/interfaces/user';
+import { AuthProvider } from '@/common/enums/auth';
 
 type Inputs = {
-  role: UserRole
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  confirmPassword: string
-}
+  role: UserRole;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 const SignUp = () => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const toast = useToast()
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const toast = useToast();
+  const router = useRouter();
   const {
     handleSubmit,
     control,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     mode: 'onSubmit',
     resolver: yupResolver(SignUpSchema),
@@ -66,9 +66,9 @@ const SignUp = () => {
       lastName: '',
       email: '',
       password: '',
-      confirmPassword: ''
-    }
-  })
+      confirmPassword: '',
+    },
+  });
 
   const { mutate: onCreateUser, isPending } = useMutation<
     IUser,
@@ -79,17 +79,17 @@ const SignUp = () => {
     onSuccess: () => {
       toast({
         title: 'You have successfully registered. Now you can sign in!',
-        status: 'success'
-      })
-      router.push(ROUTES.SIGN_IN)
+        status: 'success',
+      });
+      router.push(ROUTES.SIGN_IN);
     },
     onError: (error) => {
       toast({
         title: error.message,
-        status: 'error'
-      })
-    }
-  })
+        status: 'error',
+      });
+    },
+  });
 
   const onSubmit = ({ email, password, firstName, lastName, role }: Inputs) =>
     onCreateUser({
@@ -97,12 +97,12 @@ const SignUp = () => {
       email,
       password,
       role,
-      provider: AuthProvider.NATIVE
-    })
+      provider: AuthProvider.NATIVE,
+    });
 
-  const onHandleGoogleAuth = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`
-  }
+  const onHandleGoogleAuth = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`;
+  };
 
   return (
     <VStack spacing={8} w="full" maxW="2xl" position="relative" zIndex={1}>
@@ -445,7 +445,7 @@ const SignUp = () => {
         </CardBody>
       </Card>
     </VStack>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

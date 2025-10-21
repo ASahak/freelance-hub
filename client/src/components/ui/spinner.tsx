@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { Box } from '@chakra-ui/react'
-import { keyframes } from '@emotion/react'
+import { Box } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
 
 const spin = keyframes({
   from: {
-    transform: 'rotate(0deg)'
+    transform: 'rotate(0deg)',
   },
   to: {
-    transform: 'rotate(360deg)'
-  }
-})
+    transform: 'rotate(360deg)',
+  },
+});
 
 export const Spinner = ({
   w,
@@ -19,10 +19,10 @@ export const Spinner = ({
   color,
   ...rest
 }: {
-  size: string | number
-  w: string | number
-  h: string | number
-  color: string
+  size: string | number;
+  w: string | number;
+  h: string | number;
+  color: string;
 } & Record<string, any>) => {
   return (
     <Box
@@ -40,8 +40,8 @@ export const Spinner = ({
         height: '100%',
         borderRadius: '100%',
         backgroundImage: `conic-gradient(transparent 72deg, ${color} 360deg)`,
-        mask: `radial-gradient(farthest-side, transparent calc(100% - ${size}), ${color} 0)`
+        mask: `radial-gradient(farthest-side, transparent calc(100% - ${size}), ${color} 0)`,
       }}
     />
-  )
-}
+  );
+};

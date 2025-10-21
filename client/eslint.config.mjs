@@ -35,6 +35,10 @@ const eslintConfig = [
       '@typescript-eslint/no-explicit-any': 'off',
       'import/no-anonymous-default-export': 'off',
       "react-hooks/exhaustive-deps": "off",
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
       "react/display-name": "off",
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [

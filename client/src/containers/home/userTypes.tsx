@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Box,
@@ -11,28 +11,28 @@ import {
   SimpleGrid,
   Text,
   VStack,
-  HStack
-} from '@chakra-ui/react'
+  HStack,
+} from '@chakra-ui/react';
 import {
   FaSearch,
   FaUpload,
   FaCheckCircle,
   FaBriefcase,
   FaStar,
-  FaUsers
-} from 'react-icons/fa'
-import { IconType } from 'react-icons'
+  FaUsers,
+} from 'react-icons/fa';
+import { IconType } from 'react-icons';
 
 type IFeature = {
-  icon: IconType
-  title: string
-  description: string
-}
+  icon: IconType;
+  title: string;
+  description: string;
+};
 const FeatureItem = ({
   icon,
   colorScheme,
   title,
-  description
+  description,
 }: IFeature & { colorScheme: string }) => (
   <HStack alignItems="start" spacing={4}>
     <Box
@@ -57,43 +57,43 @@ const FeatureItem = ({
       </Text>
     </Box>
   </HStack>
-)
+);
 
 const clientFeatures: IFeature[] = [
   {
     icon: FaUpload,
     title: 'Post Your Project',
-    description: 'Describe your project and requirements in detail.'
+    description: 'Describe your project and requirements in detail.',
   },
   {
     icon: FaUsers,
     title: 'Receive Proposals',
-    description: 'Get competitive bids from qualified freelancers.'
+    description: 'Get competitive bids from qualified freelancers.',
   },
   {
     icon: FaCheckCircle,
     title: 'Hire & Collaborate',
-    description: 'Choose the best freelancer and start working together.'
-  }
-]
+    description: 'Choose the best freelancer and start working together.',
+  },
+];
 
 const freelancerFeatures = [
   {
     icon: FaSearch,
     title: 'Browse Opportunities',
-    description: 'Find projects that match your skills and interests.'
+    description: 'Find projects that match your skills and interests.',
   },
   {
     icon: FaUpload,
     title: 'Submit Proposals',
-    description: 'Send personalized proposals to win projects.'
+    description: 'Send personalized proposals to win projects.',
   },
   {
     icon: FaCheckCircle,
     title: 'Get Paid Securely',
-    description: 'Receive payments safely through our platform.'
-  }
-]
+    description: 'Receive payments safely through our platform.',
+  },
+];
 
 export const UserTypes = () => {
   return (
@@ -136,7 +136,7 @@ export const UserTypes = () => {
           transition="all 0.3s ease"
           _hover={{
             boxShadow: 'xl',
-            borderColor: 'blue.200'
+            borderColor: 'blue.200',
           }}
         >
           <CardHeader textAlign="center" pb={8}>
@@ -187,7 +187,7 @@ export const UserTypes = () => {
           transition="all 0.3s ease"
           _hover={{
             boxShadow: 'xl',
-            borderColor: 'purple.100'
+            borderColor: 'purple.100',
           }}
         >
           <CardHeader textAlign="center" pb={8}>
@@ -228,5 +228,5 @@ export const UserTypes = () => {
         </Card>
       </SimpleGrid>
     </Box>
-  )
-}
+  );
+};

@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import NextLink from 'next/link'
+import { useState } from 'react';
+import NextLink from 'next/link';
 import {
   Button,
   Card,
@@ -20,44 +20,44 @@ import {
   Text,
   VStack,
   Divider,
-  useToast
-} from '@chakra-ui/react'
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa'
-import { FcGoogle } from 'react-icons/fc'
-import { Controller, useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
-import { ErrorMessage } from '@hookform/error-message'
-import { Logo } from '@/components/ui'
-import { ROUTES } from '@/common/constants/routes'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ISignInCredentials, IUser } from '@/common/interfaces/user'
-import { signIn } from '@/services/auth'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { SignInSchema } from '@/utils/validators'
-import { QUERY_FACTORY } from '@/common/constants/queryFactory'
+  useToast,
+} from '@chakra-ui/react';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { Controller, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { ErrorMessage } from '@hookform/error-message';
+import { Logo } from '@/components/ui';
+import { ROUTES } from '@/common/constants/routes';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ISignInCredentials, IUser } from '@/common/interfaces/user';
+import { signIn } from '@/services/auth';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SignInSchema } from '@/utils/validators';
+import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 
 type Inputs = {
-  email: string
-  password: string
-}
+  email: string;
+  password: string;
+};
 
 const SignIn = () => {
-  const [showPassword, setShowPassword] = useState(false)
-  const queryClient = useQueryClient()
+  const [showPassword, setShowPassword] = useState(false);
+  const queryClient = useQueryClient();
   const {
     handleSubmit,
     control,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     mode: 'onSubmit',
     resolver: yupResolver(SignInSchema),
     defaultValues: {
       email: '',
-      password: ''
-    }
-  })
-  const toast = useToast()
-  const router = useRouter()
+      password: '',
+    },
+  });
+  const toast = useToast();
+  const router = useRouter();
   const { mutate: onSignInUser, isPending } = useMutation<
     IUser,
     Error,
@@ -65,27 +65,27 @@ const SignIn = () => {
   >({
     mutationFn: signIn,
     onSuccess: async () => {
-      queryClient.setQueryData(QUERY_FACTORY.me, null)
-      await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me })
-      router.push(ROUTES.HOME)
+      queryClient.setQueryData(QUERY_FACTORY.me, null);
+      await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me });
+      router.push(ROUTES.HOME);
     },
     onError: (error) => {
       toast({
         title: error.message,
-        status: 'error'
-      })
-    }
-  })
+        status: 'error',
+      });
+    },
+  });
 
   const onSubmit = ({ email, password }: Inputs) =>
     onSignInUser({
       email,
-      password
-    })
+      password,
+    });
 
-  const onHandleGoogleAuth = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`
-  }
+  const onHandleGoogleAuth = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/callback/google`;
+  };
 
   return (
     <VStack spacing={8} w="full" maxW="2xl" position="relative" zIndex={1}>
@@ -275,7 +275,7 @@ const SignIn = () => {
         </CardBody>
       </Card>
     </VStack>
-  )
-}
+  );
+};
 
-export default SignIn
+export default SignIn;

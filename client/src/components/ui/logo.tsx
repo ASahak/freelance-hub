@@ -1,12 +1,12 @@
-import { memo } from 'react'
-import { Text, Flex } from '@chakra-ui/react'
-import Link from 'next/link'
-import { ROUTES } from '@/common/constants/routes'
+import { memo } from 'react';
+import { Text, Flex } from '@chakra-ui/react';
+import Link from 'next/link';
+import { ROUTES } from '@/common/constants/routes';
 
 type IProps = {
-  isSmall?: boolean
-  color?: string
-}
+  isSmall?: boolean;
+  color?: string;
+};
 export const Logo = memo(({ isSmall, color = 'blue.300' }: IProps) => {
   const logo = (
     <Flex
@@ -32,7 +32,7 @@ export const Logo = memo(({ isSmall, color = 'blue.300' }: IProps) => {
         <rect width="20" height="14" x="2" y="6" rx="2"></rect>
       </svg>
     </Flex>
-  )
+  );
   return (
     <Link href={ROUTES.HOME}>
       <Flex alignItems="center" gap={3}>
@@ -47,5 +47,5 @@ export const Logo = memo(({ isSmall, color = 'blue.300' }: IProps) => {
         </Text>
       </Flex>
     </Link>
-  )
-})
+  );
+});

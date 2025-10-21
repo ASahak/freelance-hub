@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo } from 'react';
 import {
   Avatar,
   Button,
@@ -10,22 +10,22 @@ import {
   MenuList,
   Text,
   Icon,
-  Flex
-} from '@chakra-ui/react'
-import { ChevronDownIcon } from '@chakra-ui/icons'
-import { RxExit, RxPerson } from 'react-icons/rx'
-import { useRouter } from 'next/navigation'
-import { ROUTES } from '@/common/constants/routes'
-import type { IUser } from '@/common/interfaces/user'
-import { useAuth } from '@/providers/authProvider'
-import { Spinner } from '@/components/ui'
+  Flex,
+} from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import { RxExit, RxPerson } from 'react-icons/rx';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/common/constants/routes';
+import type { IUser } from '@/common/interfaces/user';
+import { useAuth } from '@/providers/authProvider';
+import { Spinner } from '@/components/ui';
 
 type IProps = {
-  data: IUser
-}
+  data: IUser;
+};
 export const User = memo(({ data }: IProps) => {
-  const router = useRouter()
-  const { logout, isLoggingOut } = useAuth()
+  const router = useRouter();
+  const { logout, isLoggingOut } = useAuth();
 
   return (
     <Menu variant="base" closeOnSelect={false}>
@@ -81,5 +81,5 @@ export const User = memo(({ data }: IProps) => {
         </MenuItem>
       </MenuList>
     </Menu>
-  )
-})
+  );
+});

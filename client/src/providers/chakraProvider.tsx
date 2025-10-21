@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
-import React, { type ReactNode } from 'react'
+import React, { type ReactNode } from 'react';
 
 import {
   ChakraProvider as _ChakraProvider,
   cookieStorageManagerSSR,
-  UseToastOptions
-} from '@chakra-ui/react'
+  UseToastOptions,
+} from '@chakra-ui/react';
 
-import theme from '@/styles/theme'
-import { Toast } from '@/components/ui'
+import theme from '@/styles/theme';
+import { Toast } from '@/components/ui';
 
 export const ChakraProvider = ({
   children,
-  cookieStore
+  cookieStore,
 }: {
-  children: ReactNode
-  cookieStore: string
+  children: ReactNode;
+  cookieStore: string;
 }) => {
-  const colorModeManager = cookieStorageManagerSSR(cookieStore)
+  const colorModeManager = cookieStorageManagerSSR(cookieStore);
 
   return (
     <_ChakraProvider
@@ -28,11 +28,11 @@ export const ChakraProvider = ({
         defaultOptions: {
           duration: 4000,
           position: 'top-right', // it has styles with this keyword in the globalStyles.ts file
-          render: (props: UseToastOptions) => <Toast {...props} />
-        }
+          render: (props: UseToastOptions) => <Toast {...props} />,
+        },
       }}
     >
       {children}
     </_ChakraProvider>
-  )
-}
+  );
+};

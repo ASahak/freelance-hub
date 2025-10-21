@@ -1,11 +1,11 @@
-import { cookies } from 'next/headers'
-import { ChakraProvider, RootProvider } from '@/providers'
-import { IChildren } from '@/common/types/global'
-import { IUser } from '@/common/interfaces/user'
+import { cookies } from 'next/headers';
+import { ChakraProvider, RootProvider } from '@/providers';
+import { IChildren } from '@/common/types/global';
+import { IUser } from '@/common/interfaces/user';
 
 async function getInitialUser(): Promise<IUser | null> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get('access_token')?.value
+  const cookieStore = await cookies();
+  const token = cookieStore.get('access_token')?.value;
 
   if (!token) {
     return null;
@@ -14,25 +14,25 @@ async function getInitialUser(): Promise<IUser | null> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
       headers: {
-        Cookie: `access_token=${token}`
+        Cookie: `access_token=${token}`,
       },
-      cache: 'no-store'
-    })
+      cache: 'no-store',
+    });
 
     if (!response.ok) {
-      return null
+      return null;
     }
 
-    return response.json()
+    return response.json();
   } catch (error) {
-    console.error('Failed to fetch initial user on server:', error)
-    return null
+    console.error('Failed to fetch initial user on server:', error);
+    return null;
   }
 }
 
 export default async function RootLayout({ children }: Readonly<IChildren>) {
-  const cookieStore = await cookies()
-  const initialUser = await getInitialUser()
+  const cookieStore = await cookies();
+  const initialUser = await getInitialUser();
 
   return (
     <html lang="en">
@@ -42,5 +42,5 @@ export default async function RootLayout({ children }: Readonly<IChildren>) {
         </ChakraProvider>
       </body>
     </html>
-  )
+  );
 }

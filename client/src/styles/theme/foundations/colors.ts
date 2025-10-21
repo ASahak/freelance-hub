@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 export default {
   gray: {
     900: '#09101C',
@@ -19,7 +18,7 @@ export default {
     100: '#F4F4F6',
     60: '#eceff1',
     50: '#F4F7FA',
-    10: '#ffffff'
+    10: '#ffffff',
   },
   purple: {
     600: '#7111de',
@@ -27,7 +26,7 @@ export default {
     400: 'rgba(136,60,223,0.94)',
     300: '#8f4adef0',
     200: '#9b62de',
-    100: '#d3baef'
+    100: '#d3baef',
   },
   blue: {
     900: '#031c59',
@@ -44,7 +43,7 @@ export default {
     200: '#97B8FC',
     150: '#BFD3FD',
     100: '#DCE7FE',
-    50: '#EDF3FF'
+    50: '#EDF3FF',
   },
   magenta: {
     900: '#291C28',
@@ -60,7 +59,7 @@ export default {
     200: '#DBA3C2',
     150: '#E8C4D8',
     100: '#F1DBE7',
-    50: '#F8EDF3'
+    50: '#F8EDF3',
   },
   green: {
     600: '#192B27',
@@ -74,7 +73,7 @@ export default {
     130: '#9df1c2',
     120: '#a1e8c5',
     100: '#D9F4E8',
-    50: '#ECFAF3'
+    50: '#ECFAF3',
   },
   orange: {
     600: '#2A2523',
@@ -82,7 +81,7 @@ export default {
     300: '#EC7713',
     200: '#F19D55',
     100: '#FEF4EC',
-    50: '#FCE9D9'
+    50: '#FCE9D9',
   },
   red: {
     600: '#2B2023',
@@ -93,6 +92,6 @@ export default {
     120: '#f6b4af',
     110: '#fad0cd',
     100: '#FCF0EF',
-    50: '#FAE2DF'
-  }
-}
+    50: '#FAE2DF',
+  },
+};

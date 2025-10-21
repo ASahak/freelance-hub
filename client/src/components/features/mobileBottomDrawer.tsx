@@ -4,35 +4,35 @@ import {
   useCallback,
   useEffect,
   useRef,
-  useState
-} from 'react'
-import { domAnimation, LazyMotion, m } from 'motion/react'
-import Swipe, { type SwipePosition } from 'react-easy-swipe'
-import { RemoveScroll } from 'react-remove-scroll'
-import { useMeasure } from 'react-use'
+  useState,
+} from 'react';
+import { domAnimation, LazyMotion, m } from 'motion/react';
+import Swipe, { type SwipePosition } from 'react-easy-swipe';
+import { RemoveScroll } from 'react-remove-scroll';
+import { useMeasure } from 'react-use';
 
-import { Box, Flex, Portal, Text } from '@chakra-ui/react'
+import { Box, Flex, Portal, Text } from '@chakra-ui/react';
 
 const variants = {
   initial: { opacity: 0, x: 0, y: 10, zIndex: 2 },
-  in: { opacity: 1, x: 0, y: 0, zIndex: 2 }
-}
+  in: { opacity: 1, x: 0, y: 0, zIndex: 2 },
+};
 const viewTransition = {
   ease: 'linear',
-  duration: 0.25
-}
-const MIN_Y_SWIPE_TO_CLOSE = 15
-const HEIGHT_OF_SWIPING_HANDLER = 24
+  duration: 0.25,
+};
+const MIN_Y_SWIPE_TO_CLOSE = 15;
+const HEIGHT_OF_SWIPING_HANDLER = 24;
 
 interface IProps extends PropsWithChildren {
-  isOpen: boolean
-  onClose: () => void
-  onCloseComplete?: () => void
-  borderRadius?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onCloseComplete?: () => void;
+  borderRadius?: string;
   portalProps?: {
-    appendToParentPortal?: boolean
-    containerRef?: React.RefObject<HTMLElement | null> | undefined
-  }
+    appendToParentPortal?: boolean;
+    containerRef?: React.RefObject<HTMLElement | null> | undefined;
+  };
 }
 
 export const MobileBottomDrawer = memo(
@@ -42,64 +42,64 @@ export const MobileBottomDrawer = memo(
     children,
     onCloseComplete,
     borderRadius = '1rem',
-    portalProps = {}
+    portalProps = {},
   }: IProps) => {
-    const [drawerContentRef, { height }] = useMeasure()
-    const [isOpenDeffer, setIsOpenDeffer] = useState(false)
-    const [swipeY, setSwipeY] = useState(0)
-    const [isSwiping, setIsSwiping] = useState(false)
-    const swipeContentRef = useRef<HTMLElement | null>(null)
-    const swipingDir = useRef<'up' | 'down' | null>(null)
+    const [drawerContentRef, { height }] = useMeasure();
+    const [isOpenDeffer, setIsOpenDeffer] = useState(false);
+    const [swipeY, setSwipeY] = useState(0);
+    const [isSwiping, setIsSwiping] = useState(false);
+    const swipeContentRef = useRef<HTMLElement | null>(null);
+    const swipingDir = useRef<'up' | 'down' | null>(null);
 
     const drawerContentRefCb = useCallback((node: HTMLElement) => {
       if (node !== null) {
-        swipeContentRef.current = node
-        drawerContentRef(node)
+        swipeContentRef.current = node;
+        drawerContentRef(node);
       }
-    }, [])
+    }, []);
 
     const onSwipeStart = () => {
-      setSwipeY(0)
-      setIsSwiping(true)
-    }
+      setSwipeY(0);
+      setIsSwiping(true);
+    };
 
     const onSwipeMove = (position: SwipePosition) => {
       if (swipeContentRef.current) {
         const maxY =
-          (swipeContentRef.current as HTMLElement).getBoundingClientRect()
-            .height - HEIGHT_OF_SWIPING_HANDLER
+          swipeContentRef.current.getBoundingClientRect().height -
+          HEIGHT_OF_SWIPING_HANDLER;
         setSwipeY((prevState) => {
-          swipingDir.current = prevState < position.y ? 'down' : 'up'
-          return position.y < 0 ? 0 : position.y > maxY ? maxY : position.y
-        })
+          swipingDir.current = prevState < position.y ? 'down' : 'up';
+          return position.y < 0 ? 0 : position.y > maxY ? maxY : position.y;
+        });
       }
-    }
+    };
 
     const onSwipeEnd = () => {
-      setIsSwiping(false)
+      setIsSwiping(false);
       if (swipeY >= MIN_Y_SWIPE_TO_CLOSE && swipingDir.current === 'down') {
-        onClose()
+        onClose();
       } else {
-        setSwipeY(0)
+        setSwipeY(0);
       }
-    }
+    };
 
     const handleTransitionEnd = (event: any) => {
       if (event.propertyName === 'bottom') {
         if (!isOpenDeffer) {
-          onCloseComplete?.()
+          onCloseComplete?.();
         }
       }
-    }
+    };
 
     useEffect(() => {
-      setIsOpenDeffer(isOpen)
+      setIsOpenDeffer(isOpen);
 
       return () => {
-        setSwipeY(0)
-        setIsSwiping(false)
-      }
-    }, [isOpen])
+        setSwipeY(0);
+        setIsSwiping(false);
+      };
+    }, [isOpen]);
 
     return (
       <RemoveScroll enabled={isOpen}>
@@ -116,14 +116,14 @@ export const MobileBottomDrawer = memo(
             backdropFilter="blur(3px)"
             visibility={isOpen ? 'visible' : 'hidden'}
             sx={{
-              overscrollBehaviorY: 'contain'
+              overscrollBehaviorY: 'contain',
             }}
             onClick={onClose}
           >
             <Box
               onClick={(e) => e.stopPropagation()}
               sx={{
-                overscrollBehaviorY: 'contain'
+                overscrollBehaviorY: 'contain',
               }}
               ref={drawerContentRefCb as never}
               position="relative"
@@ -143,13 +143,13 @@ export const MobileBottomDrawer = memo(
                     bottom: `${-swipeY}px`,
                     opacity: '1',
                     visibility: 'visible',
-                    zIndex: 22
+                    zIndex: 22,
                   }
                 : {
                     visibility: 'hidden',
                     bottom: `${height ? -height + 'px' : '-100%'}`,
                     opacity: '0',
-                    zIndex: -1
+                    zIndex: -1,
                   })}
             >
               <Box
@@ -188,6 +188,6 @@ export const MobileBottomDrawer = memo(
           </Flex>
         </Portal>
       </RemoveScroll>
-    )
-  }
-)
+    );
+  },
+);

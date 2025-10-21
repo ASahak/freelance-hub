@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { Flex, VStack } from '@chakra-ui/react'
-import Header from './header'
-import Footer from './footer'
-import { IChildren } from '@/common/types/global'
-import { AnimatedPage } from '@/components/features'
+import { Flex, VStack } from '@chakra-ui/react';
+import Header from './header';
+import Footer from './footer';
+import { IChildren } from '@/common/types/global';
+import { AnimatedPage } from '@/components/features';
 
 const BaseLayout = ({ children }: IChildren) => {
   return (
@@ -15,6 +15,6 @@ const BaseLayout = ({ children }: IChildren) => {
       </Flex>
       <Footer />
     </VStack>
-  )
-}
-export default BaseLayout
+  );
+};
+export default BaseLayout;

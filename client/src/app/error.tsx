@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 import {
   Flex,
   Heading,
@@ -8,20 +8,20 @@ import {
   Button,
   VStack,
   Icon,
-  ButtonGroup
-} from '@chakra-ui/react'
+  ButtonGroup,
+} from '@chakra-ui/react';
 
 export default function Error({
   error,
-  reset
+  reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
     // Log the error to an error reporting service or the console for debugging.
-    console.error(error)
-  }, [error])
+    console.error(error);
+  }, [error]);
 
   return (
     <Flex
@@ -91,5 +91,5 @@ export default function Error({
         </ButtonGroup>
       </VStack>
     </Flex>
-  )
+  );
 }

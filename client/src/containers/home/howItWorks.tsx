@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Box,
@@ -9,16 +9,16 @@ import {
   Icon,
   SimpleGrid,
   Text,
-  VStack
-} from '@chakra-ui/react'
-import { IconType } from 'react-icons'
-import { FaSearch, FaComments, FaStar, FaCreditCard } from 'react-icons/fa'
+  VStack,
+} from '@chakra-ui/react';
+import { IconType } from 'react-icons';
+import { FaSearch, FaComments, FaStar, FaCreditCard } from 'react-icons/fa';
 
 interface Step {
-  icon: IconType
-  title: string
-  description: string
-  color: 'primary' | 'secondary' | 'accent' | 'warning'
+  icon: IconType;
+  title: string;
+  description: string;
+  color: 'primary' | 'secondary' | 'accent' | 'warning';
 }
 
 const steps: Step[] = [
@@ -26,27 +26,27 @@ const steps: Step[] = [
     icon: FaSearch,
     title: '1. Post or Browse',
     description: 'Clients post projects, freelancers browse opportunities.',
-    color: 'primary'
+    color: 'primary',
   },
   {
     icon: FaComments,
     title: '2. Connect & Discuss',
     description: 'Chat about project details and requirements.',
-    color: 'secondary'
+    color: 'secondary',
   },
   {
     icon: FaStar,
     title: '3. Work Together',
     description: 'Collaborate on the project with built-in tools.',
-    color: 'accent'
+    color: 'accent',
   },
   {
     icon: FaCreditCard,
     title: '4. Get Paid',
     description: 'Secure payments upon project completion.',
-    color: 'warning'
-  }
-]
+    color: 'warning',
+  },
+];
 
 const getColorStyles = (color: Step['color']) => {
   switch (color) {
@@ -55,31 +55,31 @@ const getColorStyles = (color: Step['color']) => {
         bgGradient: 'linear(to-br, purple.400, purple.600)',
         color: 'white',
         hoverShadow: '0 0 25px rgba(147, 112, 219, 0.7)',
-        borderColor: 'purple.200'
-      }
+        borderColor: 'purple.200',
+      };
     case 'secondary':
       return {
         bgGradient: 'linear(to-br, teal.400, cyan.500)',
         color: 'white',
         hoverShadow: '0 0 25px rgba(0, 128, 128, 0.6)',
-        borderColor: 'teal.200'
-      }
+        borderColor: 'teal.200',
+      };
     case 'accent':
       return {
         bgGradient: 'linear(to-br, pink.400, pink.500)',
         color: 'white',
         hoverShadow: '0 0 25px rgba(218, 112, 214, 0.7)',
-        borderColor: 'pink.200'
-      }
+        borderColor: 'pink.200',
+      };
     case 'warning':
       return {
         bgGradient: 'linear(to-br, orange.400, yellow.500)',
         color: 'white',
         hoverShadow: '0 0 25px rgba(255, 165, 0, 0.6)',
-        borderColor: 'orange.200'
-      }
+        borderColor: 'orange.200',
+      };
   }
-}
+};
 
 export const HowItWorks = () => {
   return (
@@ -105,7 +105,7 @@ export const HowItWorks = () => {
         mx="auto"
       >
         {steps.map((step, index) => {
-          const styles = getColorStyles(step.color)
+          const styles = getColorStyles(step.color);
           return (
             <Card
               key={index}
@@ -116,7 +116,7 @@ export const HowItWorks = () => {
               transition="all 0.3s ease"
               _hover={{
                 boxShadow: 'xl',
-                borderColor: styles.borderColor
+                borderColor: styles.borderColor,
               }}
               position="relative"
               overflow="visible"
@@ -146,9 +146,9 @@ export const HowItWorks = () => {
                 </VStack>
               </CardBody>
             </Card>
-          )
+          );
         })}
       </SimpleGrid>
     </Box>
-  )
-}
+  );
+};

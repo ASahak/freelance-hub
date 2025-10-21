@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { Response } from 'express'
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
 @Injectable()
 export class CookieService {
@@ -11,8 +11,8 @@ export class CookieService {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
       sameSite: 'lax',
-      path: '/'
-    })
+      path: '/',
+    });
   }
 
   clearTokenCookie(res: Response): void {
@@ -20,7 +20,7 @@ export class CookieService {
       httpOnly: true,
       path: '/',
       sameSite: 'lax',
-      secure: this.configService.get('NODE_ENV') === 'production'
-    })
+      secure: this.configService.get('NODE_ENV') === 'production',
+    });
   }
 }

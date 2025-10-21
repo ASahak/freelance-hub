@@ -1,6 +1,6 @@
-import { type ReactNode } from 'react'
+import { type ReactNode } from 'react';
 
-import { Box } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react';
 
 export const Container = ({
   children,
@@ -10,7 +10,7 @@ export const Container = ({
   <Box
     maxW={{
       base: `calc(1352px + ${px})`,
-      '4xl': `max(calc(1352px + ${px}), 90vw)`
+      '4xl': `max(calc(1352px + ${px}), 90vw)`,
     }}
     mx="auto"
     px={px}
@@ -19,4 +19,4 @@ export const Container = ({
   >
     {children}
   </Box>
-)
+);

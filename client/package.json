@@ -7,17 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky",
-    "lint:fix": "eslint ./src --fix --quiet",
-    "formatter:fix": "prettier --write ./**/*.{js,jsx,ts,tsx,css,json} --config ./.prettierrc",
-    "pre-commit": "lint-staged",
-    "pre-push": "npm run build"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "npm run lint:fix",
-      "npm run formatter:fix"
-    ]
+    "prepare": "husky"
   },
   "dependencies": {
     "@chakra-ui/icons": "~2.2.4",

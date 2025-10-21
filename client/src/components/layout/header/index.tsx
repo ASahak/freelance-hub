@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { memo } from 'react'
-import { Box, Flex } from '@chakra-ui/react'
-import { NavBar, Logo, Container } from '@/components/ui'
+import { memo } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { NavBar, Logo, Container } from '@/components/ui';
 
 const Header = () => {
   return (
@@ -29,7 +29,7 @@ const Header = () => {
         </Flex>
       </Container>
     </Box>
-  )
-}
+  );
+};
 
-export default memo(Header)
+export default memo(Header);
