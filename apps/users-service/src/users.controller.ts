@@ -17,7 +17,7 @@ export class UsersController {
     const user = await this.usersService.register(registerUser);
     const accessToken = await firstValueFrom(
       this.authClient.send(
-        { cmd: 'jwtSign' },
+        { cmd: 'signJwt' },
         {
           email: user.email,
           id: user.id,

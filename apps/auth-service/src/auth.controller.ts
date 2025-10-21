@@ -10,9 +10,7 @@ export class AuthController {
   async login(
     @Payload() { email, password }: { email: string; password: string },
   ) {
-    const { user, accessToken } = await this.authService.login(email, password);
-
-    return { user, accessToken };
+    return await this.authService.login(email, password);
   }
 
   @MessagePattern({ cmd: 'signJwt' })

@@ -7,9 +7,15 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EXPIRES_IN } from './common/constants/global';
 import { MICROSERVICES } from '@libs/constants/microservices';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      envFilePath: './apps/auth-service/.env',
+    }),
     PassportModule,
     ClientsModule.register([
       {
@@ -33,6 +39,6 @@ import { MICROSERVICES } from '@libs/constants/microservices';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, ConfigService],
+  providers: [AuthService],
 })
 export class AuthModule {}

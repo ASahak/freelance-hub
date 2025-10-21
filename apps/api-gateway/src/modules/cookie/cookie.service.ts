@@ -7,19 +7,21 @@ export class CookieService {
   constructor(private readonly configService: ConfigService) {}
 
   setTokenCookie(res: Response, token: string): void {
+    const isProduction = this.configService.get('NODE_ENV') === 'production';
     res.cookie('access_token', token, {
       httpOnly: true,
-      secure: this.configService.get('NODE_ENV') === 'production',
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     });
   }
 
   clearTokenCookie(res: Response): void {
+    const isProduction = this.configService.get('NODE_ENV') === 'production';
     res.clearCookie('access_token', {
       httpOnly: true,
       path: '/',
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       secure: this.configService.get('NODE_ENV') === 'production',
     });
   }

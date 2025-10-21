@@ -8,6 +8,7 @@ import { UsersProxyModule } from '../proxy/user-proxy.module';
 import { AuthProxyModule } from '../proxy/auth-proxy.module';
 import { FilesModule } from '../files/files.module';
 import { CookieModule } from '../cookie/cookie.module';
+import { EXPIRES_IN } from '../../common/constants/global';
 
 @Module({
   imports: [
@@ -20,6 +21,9 @@ import { CookieModule } from '../cookie/cookie.module';
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         secret: config.get('jwtSecret'),
+        signOptions: {
+          expiresIn: EXPIRES_IN,
+        },
       }),
       inject: [ConfigService],
     }),
