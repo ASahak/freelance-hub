@@ -14,11 +14,13 @@
   "scripts": {
     "dev": "docker-compose up --build",
     "down": "docker-compose down",
-    "build": "nest build",
-    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"client/**/*.ts\" --config ./.prettierrc",
+    "build:server": "nest build",
+    "build:client": "npm run build -C ./client",
+    "build": "npm run build:server && npm run build:client",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"client/**/*.{ts,tsx}\" --config ./.prettierrc",
     "start:dev": "nest start --tsc --watch",
     "start:debug": "nest start --debug --watch",
-    "lint": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\" \"client/**/*.ts\" --fix"
+    "lint": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\" \"client/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
