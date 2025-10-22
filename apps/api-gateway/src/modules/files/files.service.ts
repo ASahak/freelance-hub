@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common'
-import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
-import * as streamifier from 'streamifier'
-import { CloudinaryService } from '../../modules/cloudinary/cloudinary.service'
+import { Injectable } from '@nestjs/common';
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import * as streamifier from 'streamifier';
+import { CloudinaryService } from '../../modules/cloudinary/cloudinary.service';
 
 @Injectable()
 export class FilesService {
@@ -13,13 +13,13 @@ export class FilesService {
    */
   async uploadAvatarFromUrl(url: string): Promise<string | null> {
     try {
-      const result = await this.cloudinaryService.uploadImage(url)
+      const result = await this.cloudinaryService.uploadImage(url);
 
-      return (result as UploadApiResponse).secure_url || null
+      return (result as UploadApiResponse).secure_url || null;
     } catch (error) {
-      console.error('Cloudinary upload failed:', error)
-      const apiError = error as UploadApiErrorResponse
-      throw new Error(apiError.message)
+      console.error('Cloudinary upload failed:', error);
+      const apiError = error as UploadApiErrorResponse;
+      throw new Error(apiError.message);
     }
   }
 
@@ -29,17 +29,17 @@ export class FilesService {
    * @returns A promise that resolves with the Cloudinary upload response.
    */
   uploadAvatarFromFile(
-    file: Express.Multer.File
+    file: Express.Multer.File,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
       const uploadStream = this.cloudinaryService.uploadStream(
         (error, result) => {
-          if (error) return reject(new Error(error.message))
-          resolve(result!)
-        }
-      )
+          if (error) return reject(new Error(error.message));
+          resolve(result!);
+        },
+      );
 
-      streamifier.createReadStream(file.buffer).pipe(uploadStream)
-    })
+      streamifier.createReadStream(file.buffer).pipe(uploadStream);
+    });
   }
 }

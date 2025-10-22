@@ -6,5 +6,5 @@ export const ROUTES = {
   PROFILE: '/profile',
   GEEKS: '/geeks',
   JOBS: '/jobs',
-  CREATE_JOB: '/create-jobs'
-}
+  CREATE_JOB: '/create-jobs',
+};

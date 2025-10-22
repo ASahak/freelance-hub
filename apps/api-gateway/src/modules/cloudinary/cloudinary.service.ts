@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common';
 import {
   UploadApiErrorResponse,
   UploadApiOptions,
   UploadApiResponse,
   UploadResponseCallback,
-  v2
-} from 'cloudinary'
+  v2,
+} from 'cloudinary';
 
 const baseConfigs = {
   resource_type: 'image' as UploadApiOptions['resource_type'] | undefined,
@@ -16,30 +16,30 @@ const baseConfigs = {
       width: 250,
       height: 250,
       gravity: 'face',
-      crop: 'fill'
-    }
+      crop: 'fill',
+    },
   ],
   quality: 'auto:good',
-  max_bytes: 524288 // 0.5MB
-}
+  max_bytes: 524288, // 0.5MB
+};
 @Injectable()
 export class CloudinaryService {
   uploadImage(
-    filePath: string
+    filePath: string,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return v2.uploader.upload(filePath, {
       public_id: Date.now().toString(),
-      ...baseConfigs
-    })
+      ...baseConfigs,
+    });
   }
 
   uploadStream(cb: UploadResponseCallback) {
     return v2.uploader.upload_stream(
       {
         public_id: Date.now().toString(),
-        ...baseConfigs
+        ...baseConfigs,
       },
-      cb
-    )
+      cb,
+    );
   }
 }

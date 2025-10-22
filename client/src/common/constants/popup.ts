@@ -1,1 +1,1 @@
-export const POPUP_TYPES = {}
+export const POPUP_TYPES = {};

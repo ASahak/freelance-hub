@@ -1,11 +1,11 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
-import { getExactUnit } from '@/utils/helpers/global'
+import { getExactUnit } from '@/utils/helpers/global';
 
 export default defineStyleConfig({
   baseStyle: {
     fontFamily: 'inherit',
-    textAlign: 'left'
+    textAlign: 'left',
   },
   sizes: {},
   variants: {
@@ -16,7 +16,7 @@ export default defineStyleConfig({
         bgColor:
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-800)'
-            : 'var(--chakra-colors-gray-50)'
+            : 'var(--chakra-colors-gray-50)',
       },
       tab: {
         borderRadius: '0.8rem',
@@ -37,13 +37,13 @@ export default defineStyleConfig({
               : 'var(--chakra-colors-gray-150)',
           color: 'blue.300',
           bgColor:
-            colorMode === 'dark' ? 'var(--chakra-colors-gray-700)' : 'white'
-        }
-      }
+            colorMode === 'dark' ? 'var(--chakra-colors-gray-700)' : 'white',
+        },
+      },
     }),
     variable_stable: ({ colorMode, size }) => ({
       root: {
-        w: 'full'
+        w: 'full',
       },
       tablist: {
         w: 'full',
@@ -51,7 +51,7 @@ export default defineStyleConfig({
         gap: '1rem',
         borderRadius: '1rem',
         bgColor:
-          colorMode === 'dark' ? 'var(--chakra-colors-gray-700)' : 'white'
+          colorMode === 'dark' ? 'var(--chakra-colors-gray-700)' : 'white',
       },
       tab: {
         borderRadius: '0.8rem',
@@ -62,7 +62,7 @@ export default defineStyleConfig({
         py: getExactUnit(size, {
           lg: '1.1rem',
           md: '1rem',
-          sm: '1rem'
+          sm: '1rem',
         }),
         px: '2.4rem',
         fontWeight: '400',
@@ -79,10 +79,10 @@ export default defineStyleConfig({
           bgColor:
             colorMode === 'dark'
               ? 'var(--chakra-colors-gray-800)'
-              : 'var(--chakra-colors-gray-50)'
-        }
-      }
-    })
+              : 'var(--chakra-colors-gray-50)',
+        },
+      },
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

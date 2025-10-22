@@ -1,4 +1,4 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: ({ colorMode }) => ({
@@ -12,24 +12,24 @@ export default defineStyleConfig({
     rounded: '0.5rem',
     h: 'auto',
     gap: '0.1rem',
-    _hover: {}
+    _hover: {},
   }),
   sizes: {
     sm: {
       fontSize: '1rem',
       p: '.7rem 1rem',
-      rounded: '0.4rem'
+      rounded: '0.4rem',
     },
     md: {
       fontSize: '1.4rem',
       p: '.9rem 1.2rem',
-      rounded: '0.6rem'
+      rounded: '0.6rem',
     },
     lg: {
       fontSize: '1.6rem',
       p: '1.2rem 1.6rem',
-      rounded: '0.8rem'
-    }
+      rounded: '0.8rem',
+    },
   },
   variants: {
     unstyled: {
@@ -38,7 +38,7 @@ export default defineStyleConfig({
       h: 'auto',
       minW: 'auto',
       w: 'auto',
-      p: 0
+      p: 0,
     },
     'popover-btn': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -64,7 +64,7 @@ export default defineStyleConfig({
         borderColor:
           colorMode === 'dark'
             ? 'var(--chakra-colors-blue-350)'
-            : 'var(--chakra-colors-blue-250)'
+            : 'var(--chakra-colors-blue-250)',
       },
       _active: {
         bgColor: 'transparent',
@@ -76,8 +76,8 @@ export default defineStyleConfig({
           borderColor:
             colorMode === 'dark'
               ? 'var(--chakra-colors-blue-350)'
-              : 'var(--chakra-colors-blue-250)'
-        }
+              : 'var(--chakra-colors-blue-250)',
+        },
       },
       _focus: {
         boxShadow: 'none',
@@ -90,8 +90,8 @@ export default defineStyleConfig({
           borderColor:
             colorMode === 'dark'
               ? 'var(--chakra-colors-blue-350)'
-              : 'var(--chakra-colors-blue-250)'
-        }
+              : 'var(--chakra-colors-blue-250)',
+        },
       },
       _disabled: {
         opacity: 0.7,
@@ -100,14 +100,14 @@ export default defineStyleConfig({
             ? 'var(--chakra-colors-gray-600) !important'
             : 'var(--chakra-colors-gray-150) !important',
         color:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
       },
       _invalid: {
         borderColor:
           colorMode === 'dark'
             ? 'var(--chakra-colors-magenta-350)'
-            : 'var(--chakra-colors-red-300)'
-      }
+            : 'var(--chakra-colors-red-300)',
+      },
     }),
     'pagination-btn': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -127,13 +127,13 @@ export default defineStyleConfig({
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-blue-250)'
-            : '1px solid var(--chakra-colors-blue-300)'
+            : '1px solid var(--chakra-colors-blue-300)',
       },
       _disabled: {
         opacity: 1,
         color:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
+      },
     }),
     primary: () => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -149,19 +149,19 @@ export default defineStyleConfig({
       _hover: {
         bg: 'blue.350 !important',
         _disabled: {
-          bg: 'blue.250 !important'
-        }
+          bg: 'blue.250 !important',
+        },
       },
       _active: {
-        bg: 'blue.450'
+        bg: 'blue.450',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
-        outline: '1px solid var(--chakra-colors-blue-250)'
+        outline: '1px solid var(--chakra-colors-blue-250)',
       },
       _disabled: {
-        opacity: 0.6
-      }
+        opacity: 0.6,
+      },
     }),
     purple: () => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -175,20 +175,20 @@ export default defineStyleConfig({
       alignItems: 'center',
       border: 'none',
       _hover: {
-        bg: 'purple.400'
+        bg: 'purple.400',
       },
       _active: {
-        bg: 'purple.400'
+        bg: 'purple.400',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
-        outline: '1px solid var(--chakra-colors-purple-200)'
+        outline: '1px solid var(--chakra-colors-purple-200)',
       },
       _disabled: {
         opacity: 1,
         bg: 'var(--chakra-colors-gray-250) !important',
-        color: 'var(--chakra-colors-gray-150) !important'
-      }
+        color: 'var(--chakra-colors-gray-150) !important',
+      },
     }),
     switcher: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -202,7 +202,7 @@ export default defineStyleConfig({
       alignItems: 'center',
       border: 'none',
       p: { base: '0 1rem', md: '0.2rem 1rem' },
-      fontSize: '1.2rem'
+      fontSize: '1.2rem',
     }),
     light: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -223,17 +223,17 @@ export default defineStyleConfig({
       lineHeight: '20px',
       border: 'none',
       _hover: {
-        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD'
+        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#354569' : '#97B8FC'
+        bg: colorMode === 'dark' ? '#354569' : '#97B8FC',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-blue-300)'
-            : '1px solid var(--chakra-colors-blue-250)'
+            : '1px solid var(--chakra-colors-blue-250)',
       },
       _disabled: {
         opacity: 1,
@@ -244,8 +244,8 @@ export default defineStyleConfig({
         color:
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-800) !important'
-            : 'var(--chakra-colors-gray-150) !important'
-      }
+            : 'var(--chakra-colors-gray-150) !important',
+      },
     }),
     outline: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -266,17 +266,17 @@ export default defineStyleConfig({
       alignItems: 'center',
       lineHeight: '20px',
       _hover: {
-        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD'
+        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#354569' : '#97B8FC'
+        bg: colorMode === 'dark' ? '#354569' : '#97B8FC',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-blue-250)'
-            : '1px solid var(--chakra-colors-blue-300)'
+            : '1px solid var(--chakra-colors-blue-300)',
       },
       _disabled: {
         opacity: 1,
@@ -284,8 +284,8 @@ export default defineStyleConfig({
         color:
           colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
         borderColor:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
+      },
     }),
     text: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -302,24 +302,24 @@ export default defineStyleConfig({
       justifyContent: 'center',
       alignItems: 'center',
       _hover: {
-        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD'
+        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#354569' : '#97B8FC'
+        bg: colorMode === 'dark' ? '#354569' : '#97B8FC',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-blue-250)'
-            : '1px solid var(--chakra-colors-blue-300)'
+            : '1px solid var(--chakra-colors-blue-300)',
       },
       _disabled: {
         opacity: 1,
         bg: 'transparent !important',
         color:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
+      },
     }),
     'primary-magenta': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -333,24 +333,24 @@ export default defineStyleConfig({
       alignItems: 'center',
       border: 'none',
       _hover: {
-        bg: colorMode === 'dark' ? '#ED5AA8' : '#84104E'
+        bg: colorMode === 'dark' ? '#ED5AA8' : '#84104E',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#F386C0' : '#650639'
+        bg: colorMode === 'dark' ? '#F386C0' : '#650639',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-magenta-350)'
-            : '1px solid #A61F67'
+            : '1px solid #A61F67',
       },
       _disabled: {
         opacity: 1,
         bg: colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
         color:
-          colorMode === 'dark' ? '#191B1F !important' : '#E3E5E8 !important'
-      }
+          colorMode === 'dark' ? '#191B1F !important' : '#E3E5E8 !important',
+      },
     }),
     'light-green': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -372,20 +372,20 @@ export default defineStyleConfig({
         bg:
           colorMode === 'dark'
             ? 'var(--chakra-colors-green-700)'
-            : 'var(--chakra-colors-green-150)'
+            : 'var(--chakra-colors-green-150)',
       },
       _active: {
         bg:
           colorMode === 'dark'
             ? 'var(--chakra-colors-green-700)'
-            : 'var(--chakra-colors-green-150)'
+            : 'var(--chakra-colors-green-150)',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-green-400)'
-            : '1px solid var(--chakra-colors-green-400)'
+            : '1px solid var(--chakra-colors-green-400)',
       },
       _disabled: {
         bgColor:
@@ -396,8 +396,8 @@ export default defineStyleConfig({
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-800) !important'
             : 'var(--chakra-colors-gray-150) !important',
-        opacity: 1
-      }
+        opacity: 1,
+      },
     }),
     'light-magenta': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -419,20 +419,20 @@ export default defineStyleConfig({
         bg:
           colorMode === 'dark'
             ? 'var(--chakra-colors-magenta-700)'
-            : 'var(--chakra-colors-magenta-150)'
+            : 'var(--chakra-colors-magenta-150)',
       },
       _active: {
         bg:
           colorMode === 'dark'
             ? 'var(--chakra-colors-magenta-600)'
-            : 'var(--chakra-colors-magenta-200)'
+            : 'var(--chakra-colors-magenta-200)',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-magenta-350)'
-            : '1px solid var(--chakra-colors-magenta-400)'
+            : '1px solid var(--chakra-colors-magenta-400)',
       },
       _disabled: {
         bgColor:
@@ -443,8 +443,8 @@ export default defineStyleConfig({
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-800) !important'
             : 'var(--chakra-colors-gray-150) !important',
-        opacity: 1
-      }
+        opacity: 1,
+      },
     }),
     'outline-magenta': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -460,17 +460,17 @@ export default defineStyleConfig({
       justifyContent: 'center',
       alignItems: 'center',
       _hover: {
-        bg: colorMode === 'dark' ? '#49273F' : '#E8C4D8'
+        bg: colorMode === 'dark' ? '#49273F' : '#E8C4D8',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#643556' : '#DBA3C2'
+        bg: colorMode === 'dark' ? '#643556' : '#DBA3C2',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-magenta-350)'
-            : '1px solid #A61F67'
+            : '1px solid #A61F67',
       },
       _disabled: {
         opacity: 1,
@@ -478,8 +478,8 @@ export default defineStyleConfig({
         color:
           colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
         borderColor:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
+      },
     }),
     'text-magenta': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -494,24 +494,24 @@ export default defineStyleConfig({
       justifyContent: 'center',
       alignItems: 'center',
       _hover: {
-        bg: colorMode === 'dark' ? '#49273F' : '#E8C4D8'
+        bg: colorMode === 'dark' ? '#49273F' : '#E8C4D8',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#643556' : '#DBA3C2'
+        bg: colorMode === 'dark' ? '#643556' : '#DBA3C2',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-magenta-350)'
-            : '1px solid #A61F67'
+            : '1px solid #A61F67',
       },
       _disabled: {
         opacity: 1,
         bg: 'transparent !important',
         color:
-          colorMode === 'dark' ? '#373A43  !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43  !important' : '#AFB4BC !important',
+      },
     }),
     inverse: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -525,24 +525,24 @@ export default defineStyleConfig({
       justifyContent: 'center',
       alignItems: 'center',
       _hover: {
-        bg: colorMode === 'dark' ? '#25272D' : '#E3E5E8'
+        bg: colorMode === 'dark' ? '#25272D' : '#E3E5E8',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#373A43' : '#AFB4BC'
+        bg: colorMode === 'dark' ? '#373A43' : '#AFB4BC',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-blue-250)'
-            : '1px solid var(--chakra-colors-blue-300)'
+            : '1px solid var(--chakra-colors-blue-300)',
       },
       _disabled: {
         opacity: 1,
         bg: 'transparent !important',
         color:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
+      },
     }),
     connect: ({ colorMode }) => ({
       fontSize: '1.3rem',
@@ -557,8 +557,8 @@ export default defineStyleConfig({
       p: '1.2rem',
       gap: '1.2rem',
       _hover: {
-        bgColor: colorMode === 'dark' ? 'gray.560' : 'gray.60'
-      }
+        bgColor: colorMode === 'dark' ? 'gray.560' : 'gray.60',
+      },
     }),
     secondary: ({ colorMode }) => ({
       fontSize: '1.3rem',
@@ -573,9 +573,9 @@ export default defineStyleConfig({
       alignItems: 'center',
       h: 'auto',
       _hover: {
-        bgColor: colorMode === 'dark' ? 'gray.560' : 'gray.60'
-      }
-    })
+        bgColor: colorMode === 'dark' ? 'gray.560' : 'gray.60',
+      },
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

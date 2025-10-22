@@ -1,4 +1,4 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: {},
@@ -8,12 +8,12 @@ export default defineStyleConfig({
       fontSize: '1.25rem',
       fontFamily: 'Montserrat, sans-serif',
       fontWeight: '700',
-      color: colorMode === 'dark' ? 'gray.10' : 'gray.900'
+      color: colorMode === 'dark' ? 'gray.10' : 'gray.900',
     }),
     'title-details-page': ({ colorMode }) => ({
       fontSize: '1.8rem',
       fontWeight: '500',
-      color: colorMode === 'dark' ? 'white' : 'gray.800'
+      color: colorMode === 'dark' ? 'white' : 'gray.800',
     }),
     'block-title-dashboard': ({ colorMode }) => ({
       marginBottom: '2rem',
@@ -21,7 +21,7 @@ export default defineStyleConfig({
       fontWeight: '500',
       lineHeight: '2rem',
       textTransform: 'uppercase',
-      color: colorMode === 'dark' ? 'white' : 'gray.800'
+      color: colorMode === 'dark' ? 'white' : 'gray.800',
     }),
     'privacy-title': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -30,7 +30,7 @@ export default defineStyleConfig({
       fontWeight: '700',
       lineHeight: '3.2rem',
       textTransform: 'uppercase',
-      color: colorMode === 'dark' ? 'white' : 'gray.800'
+      color: colorMode === 'dark' ? 'white' : 'gray.800',
     }),
     'privacy-sub-title': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -38,8 +38,8 @@ export default defineStyleConfig({
       fontSize: '2.4rem',
       fontWeight: '700',
       lineHeight: '3.2rem',
-      color: colorMode === 'dark' ? 'white' : 'gray.800'
-    })
+      color: colorMode === 'dark' ? 'white' : 'gray.800',
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

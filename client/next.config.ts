@@ -1,26 +1,26 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   webpack: (config) => {
     // This is the magic that enables polling
     config.watchOptions = {
       poll: 1000,
-      aggregateTimeout: 300 // Add a delay before rebuilding
-    }
-    return config
+      aggregateTimeout: 300, // Add a delay before rebuilding
+    };
+    return config;
   },
   images: {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '*'
+        hostname: '*',
       },
       {
         protocol: 'https',
-        hostname: '*'
-      }
-    ]
-  }
-}
+        hostname: '*',
+      },
+    ],
+  },
+};
 
-export default nextConfig
+export default nextConfig;

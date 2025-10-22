@@ -1,4 +1,4 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: {},
@@ -13,7 +13,7 @@ export default defineStyleConfig({
         flexDirection: 'column',
         touchAction: 'none',
         width: '100%',
-        backgroundColor: colorMode === 'dark' ? 'gray.560' : 'white'
+        backgroundColor: colorMode === 'dark' ? 'gray.560' : 'white',
       },
       item: {
         bgColor: 'transparent',
@@ -21,16 +21,16 @@ export default defineStyleConfig({
         px: '1.6rem',
         py: '1.2rem',
         _hover: {
-          bgColor: colorMode === 'dark' ? '#FFFFFF0A' : '#E3E5E8'
+          bgColor: colorMode === 'dark' ? '#FFFFFF0A' : '#E3E5E8',
         },
         _active: {
-          bgColor: colorMode === 'dark' ? '#FFFFFF0A' : '#AFB4BC'
+          bgColor: colorMode === 'dark' ? '#FFFFFF0A' : '#AFB4BC',
         },
         _focus: {
-          bgColor: colorMode === 'dark' ? '#FFFFFF0A' : '#E3E5E8'
-        }
-      }
-    })
+          bgColor: colorMode === 'dark' ? '#FFFFFF0A' : '#E3E5E8',
+        },
+      },
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

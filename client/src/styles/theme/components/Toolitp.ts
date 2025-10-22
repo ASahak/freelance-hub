@@ -1,8 +1,8 @@
-import { defineStyleConfig } from '@chakra-ui/react'
-import { cssVar } from '@chakra-ui/theme-tools'
+import { defineStyleConfig } from '@chakra-ui/react';
+import { cssVar } from '@chakra-ui/theme-tools';
 
-const $arrowBg = cssVar('popper-arrow-bg')
-const $arrowShadowColor = cssVar('popper-arrow-shadow-color')
+const $arrowBg = cssVar('popper-arrow-bg');
+const $arrowShadowColor = cssVar('popper-arrow-shadow-color');
 export default defineStyleConfig({
   baseStyle: {},
   sizes: {},
@@ -25,7 +25,7 @@ export default defineStyleConfig({
       [$arrowShadowColor.variable]:
         colorMode === 'dark'
           ? 'var(--chakra-colors-gray-10)'
-          : 'var(--chakra-colors-gray-800)'
+          : 'var(--chakra-colors-gray-800)',
     }),
     'health-tooltip': ({ colorMode }) => ({
       background: 'gray.900',
@@ -41,8 +41,8 @@ export default defineStyleConfig({
       [$arrowShadowColor.variable]:
         colorMode === 'dark'
           ? 'var(--chakra-colors-gray-400)'
-          : 'var(--chakra-colors-gray-100)'
-    })
+          : 'var(--chakra-colors-gray-100)',
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

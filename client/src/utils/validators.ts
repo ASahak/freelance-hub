@@ -1,5 +1,5 @@
-import * as yup from 'yup'
-import { UserRole } from '@/common/enums/user'
+import * as yup from 'yup';
+import { UserRole } from '@/common/enums/user';
 
 export const SignInSchema = yup.object().shape({
   email: yup
@@ -9,8 +9,8 @@ export const SignInSchema = yup.object().shape({
   password: yup
     .string()
     .required('Password is required.')
-    .min(8, 'Password must be at least 8 characters long.')
-})
+    .min(8, 'Password must be at least 8 characters long.'),
+});
 
 export const SignUpSchema = SignInSchema.concat(
   yup.object({
@@ -23,6 +23,6 @@ export const SignUpSchema = SignInSchema.concat(
     confirmPassword: yup
       .string()
       .oneOf([yup.ref('password')], 'Passwords must match.')
-      .required('Please confirm your password.')
-  })
-)
+      .required('Please confirm your password.'),
+  }),
+);

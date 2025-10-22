@@ -1,4 +1,4 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: ({ colorMode }) => ({
@@ -20,15 +20,15 @@ export default defineStyleConfig({
           bg: colorMode === 'dark' ? 'blue.250' : 'blue.300',
           margin: 'auto',
           width: '1.2rem !important',
-          height: '1.2rem !important'
+          height: '1.2rem !important',
         },
 
         _hover: {
           borderColor: colorMode === 'dark' ? 'blue.250' : 'blue.300',
-          background: 'none'
-        }
-      }
-    }
+          background: 'none',
+        },
+      },
+    },
   }),
-  defaultProps: {}
-})
+  defaultProps: {},
+});

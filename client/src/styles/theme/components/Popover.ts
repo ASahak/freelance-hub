@@ -1,8 +1,8 @@
-import { defineStyleConfig } from '@chakra-ui/react'
-import { cssVar } from '@chakra-ui/theme-tools'
+import { defineStyleConfig } from '@chakra-ui/react';
+import { cssVar } from '@chakra-ui/theme-tools';
 
-const $arrowBg = cssVar('popper-arrow-bg')
-const $arrowShadowColor = cssVar('popper-arrow-shadow-color')
+const $arrowBg = cssVar('popper-arrow-bg');
+const $arrowShadowColor = cssVar('popper-arrow-shadow-color');
 export default defineStyleConfig({
   baseStyle: {},
   sizes: {},
@@ -17,8 +17,8 @@ export default defineStyleConfig({
         border: 'none',
         touchAction: 'none',
         width: '100%',
-        backgroundColor: colorMode === 'dark' ? 'gray.560' : 'white'
-      }
+        backgroundColor: colorMode === 'dark' ? 'gray.560' : 'white',
+      },
     }),
     'health-tooltip-green': ({ colorMode }) => ({
       content: {
@@ -30,7 +30,7 @@ export default defineStyleConfig({
         rounded: '.4rem',
         fontSize: '1.4rem',
         fontWeight: '600',
-        borderColor: 'green.200'
+        borderColor: 'green.200',
       },
       arrow: {
         borderColor: 'green.200',
@@ -38,8 +38,8 @@ export default defineStyleConfig({
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-900)'
             : 'var(--chakra-colors-green-120)',
-        [$arrowShadowColor.variable]: 'var(--chakra-colors-green-300)'
-      }
+        [$arrowShadowColor.variable]: 'var(--chakra-colors-green-300)',
+      },
     }),
     'health-tooltip-danger': ({ colorMode }) => ({
       content: {
@@ -51,7 +51,7 @@ export default defineStyleConfig({
         rounded: '.4rem',
         fontSize: '1.4rem',
         fontWeight: '600',
-        borderColor: 'red.700'
+        borderColor: 'red.700',
       },
       arrow: {
         borderColor: 'red.700',
@@ -59,8 +59,8 @@ export default defineStyleConfig({
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-900)'
             : 'var(--chakra-colors-red-110)',
-        [$arrowShadowColor.variable]: 'var(--chakra-colors-red-700)'
-      }
+        [$arrowShadowColor.variable]: 'var(--chakra-colors-red-700)',
+      },
     }),
     'health-tooltip': ({ colorMode }) => ({
       content: {
@@ -72,16 +72,16 @@ export default defineStyleConfig({
         rounded: '.4rem',
         fontSize: '1.4rem',
         fontWeight: '600',
-        borderColor: colorMode === 'dark' ? 'gray.400' : 'gray.100'
+        borderColor: colorMode === 'dark' ? 'gray.400' : 'gray.100',
       },
       arrow: {
         [$arrowBg.variable]: 'var(--chakra-colors-gray-900)',
         [$arrowShadowColor.variable]:
           colorMode === 'dark'
             ? 'var(--chakra-colors-gray-400)'
-            : 'var(--chakra-colors-gray-100)'
-      }
-    })
+            : 'var(--chakra-colors-gray-100)',
+      },
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

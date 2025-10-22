@@ -1,8 +1,8 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: {
-    fontFamily: 'inherit'
+    fontFamily: 'inherit',
   },
   sizes: {},
   variants: {
@@ -17,16 +17,16 @@ export default defineStyleConfig({
         fontSize: '1.2rem',
         pl: 0,
         _placeholder: {
-          color: 'gray.400'
+          color: 'gray.400',
         },
         _invalid: {
-          borderColor: 'red.400'
+          borderColor: 'red.400',
         },
         _focus: {
           boxShadow: 'none',
-          borderColor: 'transparent'
-        }
-      }
+          borderColor: 'transparent',
+        },
+      },
     }),
     base: ({ colorMode }) => ({
       field: {
@@ -41,16 +41,16 @@ export default defineStyleConfig({
         px: '1.4rem',
         h: '4rem',
         _placeholder: {
-          color: 'gray.400'
+          color: 'gray.400',
         },
         _invalid: {
-          borderColor: 'red.400'
+          borderColor: 'red.400',
         },
         _focus: {
-          borderColor: 'blue.300'
-        }
-      }
-    })
+          borderColor: 'blue.300',
+        },
+      },
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});

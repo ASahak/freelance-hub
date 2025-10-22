@@ -1,2 +1,2 @@
-export { MobileBottomDrawer } from './mobileBottomDrawer'
-export { AnimatedPage } from './animatedPage'
+export { MobileBottomDrawer } from './mobileBottomDrawer';
+export { AnimatedPage } from './animatedPage';

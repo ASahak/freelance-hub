@@ -1,11 +1,11 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: {
     textDecoration: 'none',
     _hover: {
-      textDecoration: 'none'
-    }
+      textDecoration: 'none',
+    },
   },
   sizes: {},
   variants: {
@@ -19,8 +19,8 @@ export default defineStyleConfig({
       color: colorMode === 'dark' ? 'gray.300' : 'gray.400',
       _activeLink: {
         color: colorMode === 'dark' ? 'gray.100' : 'gray.900',
-        fontWeight: '600'
-      }
+        fontWeight: '600',
+      },
     }),
     footerMenuItem: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -34,11 +34,11 @@ export default defineStyleConfig({
       color: colorMode === 'dark' ? 'gray.400' : 'gray.450',
       _active: {
         boxShadow: 'none',
-        bgColor: 'transparent !important'
+        bgColor: 'transparent !important',
       },
       _activeLink: {
-        color: colorMode === 'dark' ? 'white' : 'gray.900'
-      }
+        color: colorMode === 'dark' ? 'white' : 'gray.900',
+      },
     }),
     button: ({ colorMode }) => ({
       fontFamily: 'Raleway, sans-serif',
@@ -51,7 +51,7 @@ export default defineStyleConfig({
       color: colorMode === 'dark' ? 'white' : 'gray.900',
       bg: colorMode === 'dark' ? 'gray.600' : 'gray.50',
       rounded: '0.8rem',
-      p: '0.8rem 1.6rem'
+      p: '0.8rem 1.6rem',
     }),
     link: ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
@@ -67,31 +67,31 @@ export default defineStyleConfig({
       rounded: '0.5rem',
       gap: '0.1rem',
       _hover: {
-        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD'
+        bg: colorMode === 'dark' ? '#293552' : '#BFD3FD',
       },
       _active: {
-        bg: colorMode === 'dark' ? '#354569' : '#97B8FC'
+        bg: colorMode === 'dark' ? '#354569' : '#97B8FC',
       },
       _focus: {
         boxShadow: '0px 0px 0px 1px transparent',
         outline:
           colorMode === 'dark'
             ? '1px solid var(--chakra-colors-blue-250)'
-            : '1px solid var(--chakra-colors-blue-300)'
+            : '1px solid var(--chakra-colors-blue-300)',
       },
       _disabled: {
         opacity: 1,
         bg: 'transparent !important',
         color:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important'
-      }
+          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
+      },
     }),
     inlineLink: () => ({
       color: 'blue.350',
       _hover: {
-        color: 'blue.500'
-      }
-    })
+        color: 'blue.500',
+      },
+    }),
   },
-  defaultProps: {}
-})
+  defaultProps: {},
+});
