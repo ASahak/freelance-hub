@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -14,14 +14,15 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String?
-  provider  AuthProvider @default(native)
-  role      UserRole @default(geek)
-  jobs      Job[]
-  avatarUrl String?
+  id               String       @id @default(cuid())
+  email            String       @unique
+  name             String
+  password         String?
+  provider         AuthProvider @default(native)
+  role             UserRole     @default(geek)
+  jobs             Job[]
+  avatarUrl        String?
+  refreshTokenHash String?      @unique
 }
 
 model Job {

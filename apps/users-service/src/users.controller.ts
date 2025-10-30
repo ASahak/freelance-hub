@@ -64,4 +64,19 @@ export class UsersController {
   async removeUser(@Payload() id: string) {
     return await this.usersService.remove(id);
   }
+
+  @MessagePattern({ cmd: 'setRefreshToken' })
+  setRefreshToken(@Payload() data: { userId: string; hashedToken: string }) {
+    return this.usersService.setRefreshToken(data.userId, data.hashedToken);
+  }
+
+  @MessagePattern({ cmd: 'clearRefreshToken' })
+  clearRefreshToken(@Payload() data: { userId: string }) {
+    return this.usersService.clearRefreshToken(data.userId);
+  }
+
+  // @MessagePattern({ cmd: 'findUserByRefreshTokenHash' })
+  // findUserByRefreshTokenHash(@Payload() data: { hashedToken: string }) {
+  //   return this.usersService.findUserByRefreshTokenHash(data.hashedToken);
+  // }
 }
