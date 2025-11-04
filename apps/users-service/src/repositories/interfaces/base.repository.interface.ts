@@ -7,7 +7,7 @@ export abstract class IBaseRepository<T, WhereInput, CreateInput, UpdateInput> {
 
   abstract create(item: CreateInput): Promise<T>;
 
-  abstract update(id: string, item: UpdateInput);
+  abstract update(id: string, item: UpdateInput): Promise<T>;
 
   abstract remove(id: string): Promise<any>;
 }

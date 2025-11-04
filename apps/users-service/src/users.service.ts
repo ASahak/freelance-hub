@@ -49,15 +49,15 @@ export class UsersService {
 
   async setRefreshToken(userId: string, hashedToken: string) {
     return this.userRepository.update(userId, {
-      refreshTokenHash: hashedToken,
+      refreshToken: hashedToken,
     });
   }
 
   async clearRefreshToken(userId: string) {
-    return this.userRepository.update(userId, { refreshTokenHash: null });
+    return this.userRepository.update(userId, { refreshToken: null });
   }
 
-  // async findUserByRefreshTokenHash(hashedToken: string) {
-  //   return this.userRepository.findOne({ refreshTokenHash: hashedToken });
-  // }
+  async findUserByRefreshToken(hashedToken: string) {
+    return this.userRepository.findOne({ refreshToken: hashedToken });
+  }
 }

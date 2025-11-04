@@ -75,8 +75,8 @@ export class UsersController {
     return this.usersService.clearRefreshToken(data.userId);
   }
 
-  // @MessagePattern({ cmd: 'findUserByRefreshTokenHash' })
-  // findUserByRefreshTokenHash(@Payload() data: { hashedToken: string }) {
-  //   return this.usersService.findUserByRefreshTokenHash(data.hashedToken);
-  // }
+  @MessagePattern({ cmd: 'findUserByRefreshToken' })
+  findUserByRefreshToken(@Payload() data: { hashedToken: string }) {
+    return this.usersService.findUserByRefreshToken(data.hashedToken);
+  }
 }

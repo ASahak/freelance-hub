@@ -35,6 +35,7 @@ export class AuthService {
       ),
     );
 
+    console.log('Logging USER:', user);
     if (user && user.provider === AuthProvider.native) {
       const isPasswordValid = await bcrypt.compare(pass, user.password);
 
