@@ -21,7 +21,7 @@ const cookieExtractor = (
 };
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     configService: ConfigService,
     @Inject(MICROSERVICES.Users.name)
@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       jwtFromRequest: cookieExtractor,
-      secretOrKey: configService.get('jwtSecret')!,
+      secretOrKey: configService.get('jwtAccessTokenSecret')!,
     });
   }
 

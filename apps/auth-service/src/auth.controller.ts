@@ -13,6 +13,16 @@ export class AuthController {
     return await this.authService.login(email, password);
   }
 
+  @MessagePattern({ cmd: 'refreshToken' })
+  refreshToken(@Payload() data: { token: string }) {
+    return this.authService.refreshAccessToken(data.token);
+  }
+
+  @MessagePattern({ cmd: 'logout' })
+  logout(@Payload() data: { userId: string }) {
+    return this.authService.logout(data.userId);
+  }
+
   @MessagePattern({ cmd: 'signJwt' })
   signJwt(@Payload() data: { id: string; email: string }) {
     return this.authService.jwtSign(data);

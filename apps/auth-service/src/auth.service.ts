@@ -25,7 +25,7 @@ export class AuthService {
   async login(
     email: string,
     pass: string,
-  ): Promise<{ user: User; accessToken: string }> {
+  ): Promise<{ user: User; accessToken: string; refreshToken: string }> {
     const user: User | null = await firstValueFrom(
       this.usersClient.send(
         { cmd: 'findUser' },
@@ -44,9 +44,49 @@ export class AuthService {
       }
 
       const accessToken: string = this.jwtSign({ id: user.id, email });
-      return { accessToken, user };
+      const refreshToken: string = this.jwtSign({ id: user.id, email });
+
+      await firstValueFrom(
+        this.usersClient.send(
+          { cmd: 'setRefreshToken' },
+          { userId: user.id, refreshToken },
+        ),
+      );
+
+      return { accessToken, refreshToken, user };
     } else {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
+  }
+
+  async logout(userId: string) {
+    return firstValueFrom(
+      this.usersClient.send({ cmd: 'clearRefreshToken' }, { userId }),
+    );
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token');
+    }
+
+    const user = await firstValueFrom(
+      this.usersClient.send(
+        { cmd: 'findUserByRefreshTokenHash' },
+        { refreshToken },
+      ),
+    );
+
+    if (!user) {
+      throw new UnauthorizedException(
+        'Refresh token is invalid or has been revoked',
+      );
+    }
+
+    const accessToken: string = this.jwtSign({
+      id: user.id,
+      email: user.email,
+    });
+    return { accessToken };
   }
 }

@@ -66,8 +66,8 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'setRefreshToken' })
-  setRefreshToken(@Payload() data: { userId: string; hashedToken: string }) {
-    return this.usersService.setRefreshToken(data.userId, data.hashedToken);
+  setRefreshToken(@Payload() data: { userId: string; refreshToken: string }) {
+    return this.usersService.setRefreshToken(data.userId, data.refreshToken);
   }
 
   @MessagePattern({ cmd: 'clearRefreshToken' })
@@ -76,7 +76,7 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'findUserByRefreshToken' })
-  findUserByRefreshToken(@Payload() data: { hashedToken: string }) {
-    return this.usersService.findUserByRefreshToken(data.hashedToken);
+  findUserByRefreshToken(@Payload() data: { refreshToken: string }) {
+    return this.usersService.findUserByRefreshToken(data.refreshToken);
   }
 }

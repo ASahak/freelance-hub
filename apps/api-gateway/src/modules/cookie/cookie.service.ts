@@ -14,8 +14,23 @@ export class CookieService {
     });
   }
 
-  clearTokenCookie(res: Response): void {
+  setRefreshTokenCookie(res: Response, token: string): void {
+    res.cookie('refresh_token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+    });
+  }
+
+  clearTokensCookie(res: Response): void {
     res.clearCookie('access_token', {
+      httpOnly: true,
+      path: '/',
+      sameSite: 'none',
+      secure: true,
+    });
+    res.clearCookie('refresh_token', {
       httpOnly: true,
       path: '/',
       sameSite: 'none',

@@ -24,6 +24,7 @@ import type { AuthenticatedRequest } from '../../common/interfaces/authenticated
 import { FilesService } from '../files/files.service';
 import { CookieService } from '../cookie/cookie.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
+import { JwtRefreshAuthGuard } from '../../guards/jwt-refresh-auth.guard';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -45,17 +46,37 @@ export class AuthController {
     return new UserEntity(req.user);
   }
 
+  @Post('refresh')
+  @UseGuards(JwtRefreshAuthGuard)
+  @ApiOkResponse({ type: UserEntity })
+  async refreshToken(
+    @Req() req: AuthenticatedRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const refreshToken = req.cookies['refresh_token'];
+    const { accessToken } = await firstValueFrom(
+      this.authServiceClient.send(
+        { cmd: 'refreshToken' },
+        { token: refreshToken },
+      ),
+    );
+
+    this.cookieService.setTokenCookie(res, accessToken);
+    res.status(HttpStatus.OK).json({ message: 'Token updated' });
+  }
+
   @Post('login')
   @ApiOkResponse({ type: UserEntity })
   async login(
     @Body() { email, password }: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { user, accessToken } = await firstValueFrom(
+    const { user, accessToken, refreshToken } = await firstValueFrom(
       this.authServiceClient.send({ cmd: 'login' }, { email, password }),
     );
 
     this.cookieService.setTokenCookie(res, accessToken);
+    this.cookieService.setRefreshTokenCookie(res, refreshToken);
 
     return new UserEntity(user);
   }
@@ -63,9 +84,15 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ description: 'User logged out successfully.' })
-  logout(@Res({ passthrough: true }) res: Response) {
-    this.cookieService.clearTokenCookie(res);
+  async logout(
+    @Req() req: AuthenticatedRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await firstValueFrom(
+      this.authServiceClient.send({ cmd: 'logout' }, { userId: req.user.id }),
+    );
 
+    this.cookieService.clearTokensCookie(res);
     res.status(HttpStatus.OK).json({ message: 'Logged out successfully' });
   }
 

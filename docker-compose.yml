@@ -13,74 +13,74 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-#  api-gateway:
-#    build:
-#      context: .
-#      dockerfile: ./apps/api-gateway/Dockerfile
-#    container_name: api-gateway
-#    command: npm run start:dev @app/api-gateway
-#    volumes:
-#      - ./apps/api-gateway:/app/apps/api-gateway
-#      - ./nest-cli.json:/app/nest-cli.json
-#      - /app/node_modules
-#    ports:
-#      - "5000:5000"
-#    env_file:
-#      - ./apps/api-gateway/.env
-#    depends_on:
-#      - users-service
-##      - auth-service
-#
-#  users-service:
-#    build:
-#      context: .
-#      dockerfile: ./apps/users-service/Dockerfile
-#    container_name: users-service
-#    volumes:
-#      - ./apps/users-service:/app/apps/users-service
-#      - ./nest-cli.json:/app/nest-cli.json
-#      - /app/node_modules
-#    command: npm run start:dev @app/users-service
-#    env_file:
-#      - apps/users-service/.env
-#    depends_on:
-#      - db
-#    ports:
-#        - '5001:5001'
-#
-#  auth-service:
-#    build:
-#      context: .
-#      dockerfile: ./apps/auth-service/Dockerfile
-#    container_name: auth-service
-#    command: npm run start:dev @app/auth-service
-#    volumes:
-#      - ./apps/auth-service:/app/apps/auth-service
-#      - ./nest-cli.json:/app/nest-cli.json
-#      - /app/node_modules
-#    env_file:
-#      - ./apps/auth-service/.env
-#    depends_on:
-#      - db
-#      - users-service
-#
-#
-#  client:
-#    build:
-#      context: .
-#      dockerfile: ./client/Dockerfile
-#    command: npm run dev --workspace=client
-#    container_name: frontend
-#    volumes:
-#      - ./client:/app/client
-#      - /app/node_modules
-#      - /app/client/.next
-#    env_file:
-#      - ./client/.env.development
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - api-gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: api-gateway
+    command: npm run start:dev @app/api-gateway
+    volumes:
+      - ./apps/api-gateway:/app/apps/api-gateway
+      - ./nest-cli.json:/app/nest-cli.json
+      - /app/node_modules
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./apps/api-gateway/.env
+    depends_on:
+      - users-service
+#      - auth-service
+
+  users-service:
+    build:
+      context: .
+      dockerfile: ./apps/users-service/Dockerfile
+    container_name: users-service
+    volumes:
+      - ./apps/users-service:/app/apps/users-service
+      - ./nest-cli.json:/app/nest-cli.json
+      - /app/node_modules
+    command: npm run start:dev @app/users-service
+    env_file:
+      - apps/users-service/.env
+    depends_on:
+      - db
+    ports:
+        - '5001:5001'
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./apps/auth-service/Dockerfile
+    container_name: auth-service
+    command: npm run start:dev @app/auth-service
+    volumes:
+      - ./apps/auth-service:/app/apps/auth-service
+      - ./nest-cli.json:/app/nest-cli.json
+      - /app/node_modules
+    env_file:
+      - ./apps/auth-service/.env
+    depends_on:
+      - db
+      - users-service
+
+
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    command: npm run dev --workspace=client
+    container_name: frontend
+    volumes:
+      - ./client:/app/client
+      - /app/node_modules
+      - /app/client/.next
+    env_file:
+      - ./client/.env.development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
 
 volumes:
   postgres_data:
