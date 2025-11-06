@@ -12,6 +12,14 @@ export class AuthController {
   ) {
     return await this.authService.login(email, password);
   }
+  //
+  // @MessagePattern({ cmd: 'registerUser' })
+  // async register(@Payload() registerUser: User) {
+  //   const user = await this.authService.register(registerUser);
+  //   const { access_token: accessToken } = await this.authService.getTokens(user.id, user.email);
+  //
+  //   return { user, accessToken };
+  // }
 
   @MessagePattern({ cmd: 'refreshToken' })
   refreshToken(@Payload() data: { token: string }) {
@@ -21,10 +29,5 @@ export class AuthController {
   @MessagePattern({ cmd: 'logout' })
   logout(@Payload() data: { userId: string }) {
     return this.authService.logout(data.userId);
-  }
-
-  @MessagePattern({ cmd: 'signJwt' })
-  signJwt(@Payload() data: { id: string; email: string }) {
-    return this.authService.jwtSign(data);
   }
 }

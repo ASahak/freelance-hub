@@ -12,22 +12,6 @@ export class UsersController {
     @Inject(MICROSERVICES.Auth.name) private readonly authClient: ClientProxy,
   ) {}
 
-  @MessagePattern({ cmd: 'registerUser' })
-  async register(@Payload() registerUser: User) {
-    const user = await this.usersService.register(registerUser);
-    const accessToken = await firstValueFrom(
-      this.authClient.send(
-        { cmd: 'signJwt' },
-        {
-          email: user.email,
-          id: user.id,
-        },
-      ),
-    );
-
-    return { user, accessToken };
-  }
-
   @MessagePattern({ cmd: 'uploadAvatar' })
   async uploadAvatar(
     @Payload() { id, avatarUrl }: { id: string; avatarUrl: string },

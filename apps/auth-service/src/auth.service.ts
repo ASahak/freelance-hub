@@ -10,6 +10,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
+import { JwtPayload, Tokens } from './common/types';
+import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '@apps/auth-service/src/common/constants/global';
 
 @Injectable()
 export class AuthService {
@@ -17,10 +19,6 @@ export class AuthService {
     private jwtService: JwtService,
     @Inject(MICROSERVICES.Users.name) private readonly usersClient: ClientProxy,
   ) {}
-
-  jwtSign(user: Pick<User, 'id' | 'email'>) {
-    return this.jwtService.sign({ ...user });
-  }
 
   async login(
     email: string,
@@ -43,20 +41,40 @@ export class AuthService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      const accessToken: string = this.jwtSign({ id: user.id, email });
-      const refreshToken: string = this.jwtSign({ id: user.id, email });
+      const { access_token, refresh_token } = await this.getTokens(user.id, email);
 
       await firstValueFrom(
         this.usersClient.send(
           { cmd: 'setRefreshToken' },
-          { userId: user.id, refreshToken },
+          { userId: user.id, refreshToken: refresh_token },
         ),
       );
 
-      return { accessToken, refreshToken, user };
+      return { accessToken: access_token, refreshToken: refresh_token, user };
     } else {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
+  }
+
+  async getTokens(userId: string, email: string): Promise<Tokens> {
+    const jwtPayload: JwtPayload = {
+      id: userId,
+      email: email,
+    };
+
+    const [access_token, refresh_token] = await Promise.all([
+      this.jwtService.signAsync(jwtPayload, {
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+      }),
+      this.jwtService.signAsync(jwtPayload, {
+        expiresIn: REFRESH_TOKEN_EXPIRES_IN,
+      }),
+    ]);
+
+    return {
+      access_token,
+      refresh_token,
+    };
   }
 
   async logout(userId: string) {
@@ -72,7 +90,7 @@ export class AuthService {
 
     const user = await firstValueFrom(
       this.usersClient.send(
-        { cmd: 'findUserByRefreshTokenHash' },
+        { cmd: 'findUserByRefreshToken' },
         { refreshToken },
       ),
     );
@@ -83,10 +101,8 @@ export class AuthService {
       );
     }
 
-    const accessToken: string = this.jwtSign({
-      id: user.id,
-      email: user.email,
-    });
+    const { access_token: accessToken } = await this.getTokens(user.id, user.email);
+
     return { accessToken };
   }
 }

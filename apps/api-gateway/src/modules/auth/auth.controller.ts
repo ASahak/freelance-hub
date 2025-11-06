@@ -103,7 +103,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const { user, accessToken } = await firstValueFrom(
-      this.usersServiceClient.send({ cmd: 'registerUser' }, registerUserDto),
+      this.authServiceClient.send({ cmd: 'registerUser' }, registerUserDto),
     );
 
     this.cookieService.setTokenCookie(res, accessToken);

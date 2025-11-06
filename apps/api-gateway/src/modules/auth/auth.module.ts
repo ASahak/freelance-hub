@@ -9,7 +9,7 @@ import { UsersProxyModule } from '../proxy/user-proxy.module';
 import { AuthProxyModule } from '../proxy/auth-proxy.module';
 import { FilesModule } from '../files/files.module';
 import { CookieModule } from '../cookie/cookie.module';
-import { EXPIRES_IN } from '../../common/constants/global';
+import { ACCESS_TOKEN_EXPIRES_IN } from '../../common/constants/global';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { EXPIRES_IN } from '../../common/constants/global';
       useFactory: (config: ConfigService) => ({
         secret: config.get('jwtAccessTokenSecret'),
         signOptions: {
-          expiresIn: EXPIRES_IN,
+          expiresIn: ACCESS_TOKEN_EXPIRES_IN,
         },
       }),
       inject: [ConfigService],

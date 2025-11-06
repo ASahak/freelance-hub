@@ -5,7 +5,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { EXPIRES_IN } from './common/constants/global';
+import { ACCESS_TOKEN_EXPIRES_IN } from './common/constants/global';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import configuration from './config/configuration';
 
@@ -32,7 +32,7 @@ import configuration from './config/configuration';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('jwtSecret'),
         signOptions: {
-          expiresIn: EXPIRES_IN,
+          expiresIn: ACCESS_TOKEN_EXPIRES_IN,
         },
       }),
       inject: [ConfigService],
