@@ -3,18 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { ROUNDS_OF_HASHING } from './common/constants/global';
 import { UserRepository } from './repositories/user.repository';
 import { User } from '@prisma/client';
-import { AuthProvider } from '@libs/types/user.type';
 
 @Injectable()
 export class UsersService {
   constructor(private userRepository: UserRepository) {}
-
-  async register(registerUserDto: User): Promise<User> {
-    return await this.create({
-      ...registerUserDto,
-      provider: AuthProvider.native,
-    });
-  }
 
   async create(user: User) {
     if (user.password) {

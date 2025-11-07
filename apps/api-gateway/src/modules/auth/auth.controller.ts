@@ -24,7 +24,6 @@ import type { AuthenticatedRequest } from '../../common/interfaces/authenticated
 import { FilesService } from '../files/files.service';
 import { CookieService } from '../cookie/cookie.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
-import { JwtRefreshAuthGuard } from '../../guards/jwt-refresh-auth.guard';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -47,7 +46,6 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @UseGuards(JwtRefreshAuthGuard)
   @ApiOkResponse({ type: UserEntity })
   async refreshToken(
     @Req() req: AuthenticatedRequest,
@@ -102,11 +100,12 @@ export class AuthController {
     @Body() registerUserDto: RegisterUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { user, accessToken } = await firstValueFrom(
-      this.authServiceClient.send({ cmd: 'registerUser' }, registerUserDto),
+    const user = await firstValueFrom(
+      this.authServiceClient.send(
+        { cmd: 'registerUser' },
+        { ...registerUserDto, provider: AuthProvider.native },
+      ),
     );
-
-    this.cookieService.setTokenCookie(res, accessToken);
 
     // Set the correct HTTP status for a created resource
     res.status(HttpStatus.CREATED);
@@ -123,14 +122,14 @@ export class AuthController {
     try {
       let user = await firstValueFrom(
         this.usersServiceClient.send(
-          { cmd: 'getUser' },
+          { cmd: 'findUser' },
           { email: req.user.email },
         ),
       );
       if (!user) {
         user = await firstValueFrom(
-          this.usersServiceClient.send(
-            { cmd: 'createUser' },
+          this.authServiceClient.send(
+            { cmd: 'registerUser' },
             {
               provider: AuthProvider.google,
               email: req.user.email,
@@ -157,9 +156,9 @@ export class AuthController {
         }
       }
 
-      const accessToken = await firstValueFrom(
+      const { accessToken, refreshToken } = await firstValueFrom(
         this.authServiceClient.send(
-          { cmd: 'jwtSign' },
+          { cmd: 'getTokens' },
           {
             email: req.user.email,
             id: user.id,
@@ -167,6 +166,7 @@ export class AuthController {
         ),
       );
       this.cookieService.setTokenCookie(res, accessToken);
+      this.cookieService.setRefreshTokenCookie(res, refreshToken);
 
       res.redirect(this.configService.get('appOrigin')!);
     } catch (err) {

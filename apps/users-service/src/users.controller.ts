@@ -1,16 +1,11 @@
-import { Controller, Inject } from '@nestjs/common';
-import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import { type User } from '@prisma/client';
-import { MICROSERVICES } from '@libs/constants/microservices';
-import { firstValueFrom } from 'rxjs';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    @Inject(MICROSERVICES.Auth.name) private readonly authClient: ClientProxy,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @MessagePattern({ cmd: 'uploadAvatar' })
   async uploadAvatar(
@@ -32,8 +27,8 @@ export class UsersController {
     return await this.usersService.findOne({ id, email });
   }
 
-  @MessagePattern({ cmd: 'createUser' })
-  async createUser(@Payload() data: User) {
+  @MessagePattern({ cmd: 'create' })
+  async create(@Payload() data: User) {
     return await this.usersService.create(data);
   }
 

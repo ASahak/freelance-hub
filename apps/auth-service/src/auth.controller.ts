@@ -1,10 +1,17 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Inject } from '@nestjs/common';
+import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
+import type { User } from '@prisma/client';
+import { MICROSERVICES } from '@libs/constants/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @Inject(MICROSERVICES.Users.name)
+    private readonly usersServiceClient: ClientProxy,
+  ) {}
 
   @MessagePattern({ cmd: 'login' })
   async login(
@@ -12,18 +19,22 @@ export class AuthController {
   ) {
     return await this.authService.login(email, password);
   }
-  //
-  // @MessagePattern({ cmd: 'registerUser' })
-  // async register(@Payload() registerUser: User) {
-  //   const user = await this.authService.register(registerUser);
-  //   const { access_token: accessToken } = await this.authService.getTokens(user.id, user.email);
-  //
-  //   return { user, accessToken };
-  // }
+
+  @MessagePattern({ cmd: 'registerUser' })
+  async register(@Payload() user: User) {
+    return await firstValueFrom(
+      this.usersServiceClient.send({ cmd: 'create' }, user),
+    );
+  }
 
   @MessagePattern({ cmd: 'refreshToken' })
   refreshToken(@Payload() data: { token: string }) {
     return this.authService.refreshAccessToken(data.token);
+  }
+
+  @MessagePattern({ cmd: 'getTokens' })
+  getTokens(@Payload() data: { id: string; email: string }) {
+    return this.authService.getTokens(data.id, data.email);
   }
 
   @MessagePattern({ cmd: 'logout' })

@@ -4,51 +4,62 @@ import {
   IUser,
 } from '@/common/interfaces/user';
 import api from '@/lib/api';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getMe = async (): Promise<IUser> => {
-  const response = await api.get(`${API_BASE_URL}/auth/me`, {
-    headers: {
-      'X-No-Refresh': 'true',
-    },
-  });
+  try {
+    const response = await api.get(`${API_BASE_URL}/auth/me`);
 
-  return response.data;
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Not Authenticated: ${errorMessage}`);
+  }
 };
 
 export const logoutUser = async () => {
-  await api.post(`${API_BASE_URL}/auth/logout`, {}, { withCredentials: true });
+  try {
+    await api.post(
+      `${API_BASE_URL}/auth/logout`,
+      {},
+      { withCredentials: true },
+    );
 
-  return true;
+    return true;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Logout failed: ${errorMessage}`);
+  }
 };
 
 export const createUser = async (data: ICreateUser): Promise<IUser> => {
-  const response = await api.post(
-    `${API_BASE_URL}/auth/register`,
-    {
+  try {
+    const response = await api.post(`${API_BASE_URL}/auth/register`, data, {
       headers: {
         'Content-Type': 'application/json',
       },
-      data,
-    },
-    { withCredentials: true },
-  );
+    });
 
-  return response.data;
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Create user failed: ${errorMessage}`);
+  }
 };
 
 export const signIn = async (data: ISignInCredentials): Promise<IUser> => {
-  const response = await api.post(
-    `${API_BASE_URL}/auth/login`,
-    {
+  try {
+    const response = await api.post(`${API_BASE_URL}/auth/login`, data, {
       headers: {
         'Content-Type': 'application/json',
       },
-      data,
-    },
-    { withCredentials: true },
-  );
+    });
 
-  return response.data;
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Sign in user failed: ${errorMessage}`);
+  }
 };

@@ -11,7 +11,10 @@ import { firstValueFrom } from 'rxjs';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
 import { JwtPayload, Tokens } from './common/types';
-import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '@apps/auth-service/src/common/constants/global';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} from '@apps/auth-service/src/common/constants/global';
 
 @Injectable()
 export class AuthService {
@@ -41,16 +44,19 @@ export class AuthService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      const { access_token, refresh_token } = await this.getTokens(user.id, email);
+      const { accessToken, refreshToken } = await this.getTokens(
+        user.id,
+        email,
+      );
 
       await firstValueFrom(
         this.usersClient.send(
           { cmd: 'setRefreshToken' },
-          { userId: user.id, refreshToken: refresh_token },
+          { userId: user.id, refreshToken },
         ),
       );
 
-      return { accessToken: access_token, refreshToken: refresh_token, user };
+      return { accessToken, refreshToken, user };
     } else {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
@@ -62,7 +68,7 @@ export class AuthService {
       email: email,
     };
 
-    const [access_token, refresh_token] = await Promise.all([
+    const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
         expiresIn: ACCESS_TOKEN_EXPIRES_IN,
       }),
@@ -72,8 +78,8 @@ export class AuthService {
     ]);
 
     return {
-      access_token,
-      refresh_token,
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -101,7 +107,7 @@ export class AuthService {
       );
     }
 
-    const { access_token: accessToken } = await this.getTokens(user.id, user.email);
+    const { accessToken } = await this.getTokens(user.id, user.email);
 
     return { accessToken };
   }

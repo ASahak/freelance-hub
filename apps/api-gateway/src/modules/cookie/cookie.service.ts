@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
+import { REFRESH_TOKEN_EXPIRES_IN } from '@apps/auth-service/src/common/constants/global';
+import ms from 'ms';
 
 @Injectable()
 export class CookieService {
@@ -18,8 +20,9 @@ export class CookieService {
     res.cookie('refresh_token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       path: '/',
+      maxAge: ms(REFRESH_TOKEN_EXPIRES_IN),
     });
   }
 

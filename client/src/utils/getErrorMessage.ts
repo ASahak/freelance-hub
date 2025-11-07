@@ -14,6 +14,10 @@ export function getErrorMessage(error: any): string {
     return error;
   }
 
+  if (error.response && error.response.data) {
+    return error.response.data.message || JSON.stringify(error.response.data);
+  }
+
   if (error instanceof Error || isApiError(error)) {
     return error.message;
   }
