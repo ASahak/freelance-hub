@@ -16,7 +16,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { RxExit, RxPerson } from 'react-icons/rx';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/common/constants/routes';
-import type { IUser } from '@/common/interfaces/user';
+import { User as IUser } from '@libs/types/user.type';
 import { useAuth } from '@/providers/authProvider';
 import { Spinner } from '@/components/ui';
 

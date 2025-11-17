@@ -4,7 +4,7 @@ import { createContext, useContext, ReactNode, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMe, logoutUser } from '@/services/auth';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
-import { IUser } from '@/common/interfaces/user';
+import { User as IUser } from '@libs/types/user.type';
 import { useToast } from '@chakra-ui/react';
 
 interface AuthContextType {

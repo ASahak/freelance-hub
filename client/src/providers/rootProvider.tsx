@@ -13,7 +13,7 @@ import {
 } from '@/providers';
 
 import Popup from '@/components/popup';
-import { IUser } from '@/common/interfaces/user';
+import { User as IUser } from '@libs/types/user.type';
 
 type IProps = {
   children: ReactNode;

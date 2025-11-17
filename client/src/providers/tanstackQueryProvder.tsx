@@ -4,10 +4,10 @@ import { ReactNode, useState } from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { API_REVALIDATION_BASE_TIME } from '@/common/constants/global';
-import { IUser } from '@/common/interfaces/user';
+import { User } from '@libs/types/user.type';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 
-type IProps = { children: ReactNode; initialUser: IUser | null };
+type IProps = { children: ReactNode; initialUser: User | null };
 export const TanStackQueryProvider = ({ children, initialUser }: IProps) => {
   const [queryClient] = useState(() => {
     const client = new QueryClient({

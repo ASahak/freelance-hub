@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { ChakraProvider, RootProvider } from '@/providers';
 import { IChildren } from '@/common/types/global';
-import { IUser } from '@/common/interfaces/user';
+import { User as IUser } from '@libs/types/user.type';
 
 async function getInitialUser(): Promise<IUser | null> {
   const cookieStore = await cookies();

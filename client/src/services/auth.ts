@@ -1,8 +1,8 @@
 import {
   ICreateUser,
   ISignInCredentials,
-  IUser,
 } from '@/common/interfaces/user';
+import { User as IUser } from '@libs/types/user.type';
 import api from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 

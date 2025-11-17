@@ -37,7 +37,8 @@ import { Logo } from '@/components/ui';
 import { ROUTES } from '@/common/constants/routes';
 import { useMutation } from '@tanstack/react-query';
 import { createUser } from '@/services/auth';
-import { ICreateUser, IUser } from '@/common/interfaces/user';
+import { ICreateUser } from '@/common/interfaces/user';
+import { User as IUser } from '@libs/types/user.type';
 import { AuthProvider } from '@/common/enums/auth';
 
 type Inputs = {
