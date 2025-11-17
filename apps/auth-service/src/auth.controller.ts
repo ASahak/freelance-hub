@@ -13,6 +13,27 @@ export class AuthController {
     private readonly usersServiceClient: ClientProxy,
   ) {}
 
+  @MessagePattern({ cmd: '2fa-generate-secret' })
+  async generate2FASecret(
+    @Payload() { userId, email }: { userId: string; email: string },
+  ) {
+    return this.authService.generateTwoFactorSecret(userId, email);
+  }
+
+  @MessagePattern({ cmd: '2fa-verify-and-enable' })
+  async verify2FA(
+    @Payload() { userId, code }: { userId: string; code: string },
+  ) {
+    return this.authService.verifyAndEnable2FA(userId, code);
+  }
+
+  @MessagePattern({ cmd: '2fa-login' })
+  async loginWith2FA(
+    @Payload() { userId, code }: { userId: string; code: string },
+  ) {
+    return this.authService.loginWith2FA(userId, code);
+  }
+
   @MessagePattern({ cmd: 'login' })
   async login(
     @Payload() { email, password }: { email: string; password: string },

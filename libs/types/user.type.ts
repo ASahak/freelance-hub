@@ -17,4 +17,6 @@ export interface User {
   provider: AuthProvider;
   avatarUrl: string | null;
   refreshToken: string | null;
+  twoFactorSecret: string | null;
+  isTwoFactorEnabled: boolean;
 }

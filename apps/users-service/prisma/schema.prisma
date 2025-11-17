@@ -14,15 +14,17 @@ enum UserRole {
 }
 
 model User {
-  id           String       @id @default(cuid())
-  email        String       @unique
-  name         String
-  password     String?
-  provider     AuthProvider @default(native)
-  role         UserRole     @default(geek)
-  jobs         Job[]
-  avatarUrl    String?
-  refreshToken String?      @unique
+  id                 String       @id @default(cuid())
+  email              String       @unique
+  name               String
+  password           String?
+  provider           AuthProvider @default(native)
+  role               UserRole     @default(geek)
+  jobs               Job[]
+  avatarUrl          String?
+  refreshToken       String?      @unique
+  twoFactorSecret    String?
+  isTwoFactorEnabled Boolean      @default(false)
 }
 
 model Job {

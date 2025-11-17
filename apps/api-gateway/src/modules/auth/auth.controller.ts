@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -30,9 +30,9 @@ import { MICROSERVICES } from '@libs/constants/microservices';
 export class AuthController {
   constructor(
     @Inject(MICROSERVICES.Auth.name)
-    private readonly authServiceClient: ClientProxy,
+    private readonly authService: ClientProxy,
     @Inject(MICROSERVICES.Users.name)
-    private readonly usersServiceClient: ClientProxy,
+    private readonly usersService: ClientProxy,
     private readonly filesService: FilesService,
     private readonly cookieService: CookieService,
     private configService: ConfigService,
@@ -45,6 +45,51 @@ export class AuthController {
     return new UserEntity(req.user);
   }
 
+  @Post('2fa/generate')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async generate2FA(@Req() req: AuthenticatedRequest) {
+    const { otpAuthUrl } = await firstValueFrom(
+      this.authService.send(
+        { cmd: '2fa-generate-secret' },
+        { userId: req.user.id, email: req.user.email },
+      ),
+    );
+    // You would then use a library like 'qrcode' to send this back as a data URL
+    return { qrCodeUrl: otpAuthUrl };
+  }
+
+  @Post('2fa/verify')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async verify2FA(
+    @Req() req: AuthenticatedRequest,
+    @Body() { code }: { code: string },
+  ) {
+    return firstValueFrom(
+      this.authService.send(
+        { cmd: '2fa-verify-and-enable' },
+        { userId: req.user.id, code },
+      ),
+    );
+  }
+
+  @Post('2fa/login')
+  async loginWith2FA(
+    @Body() { userId, code }: { userId: string; code: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // This call will fail if the code is wrong
+    const { user, accessToken, refreshToken } = await firstValueFrom(
+      this.authService.send({ cmd: '2fa-login' }, { userId, code }),
+    );
+
+    // If successful, set the cookies and return the user
+    this.cookieService.setTokenCookie(res, accessToken);
+    this.cookieService.setRefreshTokenCookie(res, refreshToken);
+    return new UserEntity(user);
+  }
+
   @Post('refresh')
   @ApiOkResponse({ type: UserEntity })
   async refreshToken(
@@ -53,10 +98,7 @@ export class AuthController {
   ) {
     const refreshToken = req.cookies['refresh_token'];
     const { accessToken } = await firstValueFrom(
-      this.authServiceClient.send(
-        { cmd: 'refreshToken' },
-        { token: refreshToken },
-      ),
+      this.authService.send({ cmd: 'refreshToken' }, { token: refreshToken }),
     );
 
     this.cookieService.setTokenCookie(res, accessToken);
@@ -70,7 +112,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const { user, accessToken, refreshToken } = await firstValueFrom(
-      this.authServiceClient.send({ cmd: 'login' }, { email, password }),
+      this.authService.send({ cmd: 'login' }, { email, password }),
     );
 
     this.cookieService.setTokenCookie(res, accessToken);
@@ -87,7 +129,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await firstValueFrom(
-      this.authServiceClient.send({ cmd: 'logout' }, { userId: req.user.id }),
+      this.authService.send({ cmd: 'logout' }, { userId: req.user.id }),
     );
 
     this.cookieService.clearTokensCookie(res);
@@ -101,7 +143,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await firstValueFrom(
-      this.authServiceClient.send(
+      this.authService.send(
         { cmd: 'registerUser' },
         { ...registerUserDto, provider: AuthProvider.native },
       ),
@@ -121,14 +163,11 @@ export class AuthController {
   ) {
     try {
       let user = await firstValueFrom(
-        this.usersServiceClient.send(
-          { cmd: 'findUser' },
-          { email: req.user.email },
-        ),
+        this.usersService.send({ cmd: 'findUser' }, { email: req.user.email }),
       );
       if (!user) {
         user = await firstValueFrom(
-          this.authServiceClient.send(
+          this.authService.send(
             { cmd: 'registerUser' },
             {
               provider: AuthProvider.google,
@@ -145,7 +184,7 @@ export class AuthController {
               req.user.avatarUrl,
             );
             await firstValueFrom(
-              this.usersServiceClient.send(
+              this.usersService.send(
                 { cmd: 'updateUser' },
                 { id: user.id, data: { avatarUrl } },
               ),
@@ -157,7 +196,7 @@ export class AuthController {
       }
 
       const { accessToken, refreshToken } = await firstValueFrom(
-        this.authServiceClient.send(
+        this.authService.send(
           { cmd: 'getTokens' },
           {
             email: req.user.email,

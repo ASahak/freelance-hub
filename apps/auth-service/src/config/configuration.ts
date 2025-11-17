@@ -9,4 +9,5 @@ export default () => ({
   googleClientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
   googleRedirectURI: process.env.GOOGLE_OAUTH_REDIRECT_URI,
   appOrigin: process.env.APP_ORIGIN,
+  twoFactorSecret: process.env.TWO_FA_SECRET_KEY,
 });

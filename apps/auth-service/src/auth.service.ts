@@ -8,6 +8,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { authenticator } from 'otplib';
+import * as crypto from 'crypto-js';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
 import { JwtPayload, Tokens } from './common/types';
@@ -15,18 +17,93 @@ import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
 } from '@apps/auth-service/src/common/constants/global';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     @Inject(MICROSERVICES.Users.name) private readonly usersClient: ClientProxy,
+    private readonly configService: ConfigService,
   ) {}
+
+  private encryptSecret(secret: string): string {
+    return crypto.AES.encrypt(
+      secret,
+      this.configService.get('twoFactorSecret')!,
+    ).toString();
+  }
+
+  private decryptSecret(encryptedSecret: string): string {
+    const bytes = crypto.AES.decrypt(
+      encryptedSecret,
+      this.configService.get('twoFactorSecret')!,
+    );
+    return bytes.toString(crypto.enc.Utf8);
+  }
+
+  async generateTwoFactorSecret(userId: string, email: string) {
+    const secret = authenticator.generateSecret();
+    const otpAuthUrl = authenticator.keyuri(email, 'Freelance Hub', secret);
+
+    await firstValueFrom(
+      this.usersClient.send(
+        { cmd: 'setTwoFactorSecret' },
+        { userId, secret: this.encryptSecret(secret) },
+      ),
+    );
+
+    return { otpAuthUrl }; // This will be used to generate a QR code on the frontend
+  }
+
+  async verifyAndEnable2FA(userId: string, code: string) {
+    const user: User = await firstValueFrom(
+      this.usersClient.send({ cmd: 'findOneUser' }, { id: userId }),
+    );
+    if (!user.twoFactorSecret) {
+      throw new UnauthorizedException('2FA not enabled');
+    }
+
+    const secret = this.decryptSecret(user.twoFactorSecret);
+
+    const isValid = authenticator.check(code, secret);
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid 2FA code');
+    }
+
+    // If valid, officially enable 2FA
+    await firstValueFrom(
+      this.usersClient.send({ cmd: 'enableTwoFactor' }, { userId }),
+    );
+    return { success: true };
+  }
+
+  async loginWith2FA(userId: string, code: string) {
+    const user: User = await firstValueFrom(
+      this.usersClient.send({ cmd: 'findOneUser' }, { id: userId }),
+    );
+    if (!user.twoFactorSecret) {
+      throw new UnauthorizedException('2FA not activated');
+    }
+
+    const secret = this.decryptSecret(user.twoFactorSecret);
+
+    const isValid = authenticator.check(code, secret);
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid 2FA code');
+    }
+
+    // Code is valid, NOW we can issue tokens
+    return this.getTokens(user.id, user.email); // Assuming getTokens issues both access/refresh tokens
+  }
 
   async login(
     email: string,
     pass: string,
-  ): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+  ): Promise<
+    | { user: User; accessToken: string; refreshToken: string }
+    | { twoFactorRequired: boolean; userId: string }
+  > {
     const user: User | null = await firstValueFrom(
       this.usersClient.send(
         { cmd: 'findUser' },
@@ -42,6 +119,11 @@ export class AuthService {
 
       if (!isPasswordValid) {
         throw new UnauthorizedException('Invalid password');
+      }
+
+      if (user.isTwoFactorEnabled) {
+        // Return a partial success response, forcing the user to complete 2FA
+        return { twoFactorRequired: true, userId: user.id };
       }
 
       const { accessToken, refreshToken } = await this.getTokens(

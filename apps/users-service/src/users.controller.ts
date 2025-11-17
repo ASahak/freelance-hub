@@ -16,6 +16,18 @@ export class UsersController {
     });
   }
 
+  @MessagePattern({ cmd: 'setTwoFactorSecret' })
+  setTwoFactorSecret(@Payload() data: { userId: string; secret: string }) {
+    return this.usersService.update(data.userId, {
+      twoFactorSecret: data.secret,
+    });
+  }
+
+  @MessagePattern({ cmd: 'enableTwoFactor' })
+  enableTwoFactor(@Payload() data: { userId: string }) {
+    return this.usersService.update(data.userId, { isTwoFactorEnabled: true });
+  }
+
   @MessagePattern({ cmd: 'getAll' })
   async getAll() {
     const users = await this.usersService.findAll();
