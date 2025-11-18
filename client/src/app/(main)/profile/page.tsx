@@ -8,7 +8,7 @@ export default function UserProfile() {
       <Grid templateColumns="30rem 1fr" gap={2} py={8}>
        <GridItem>
          <VStack spacing={4}>
-           <Avatar />
+           {/*<Avatar />*/}
          </VStack>
        </GridItem>
         <GridItem>

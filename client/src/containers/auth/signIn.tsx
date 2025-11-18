@@ -25,7 +25,7 @@ import {
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Controller, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ErrorMessage } from '@hookform/error-message';
 import { Logo } from '@/components/ui';
 import { ROUTES } from '@/common/constants/routes';
@@ -45,6 +45,7 @@ type Inputs = {
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
   const {
     handleSubmit,
     control,
@@ -66,9 +67,14 @@ const SignIn = () => {
   >({
     mutationFn: signIn,
     onSuccess: async () => {
+      const redirectPath = searchParams.get('redirect');
       queryClient.setQueryData(QUERY_FACTORY.me, null);
       await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me });
-      router.push(ROUTES.HOME);
+      setTimeout(() => {
+
+      console.log(redirectPath);
+      window.location.href = redirectPath || ROUTES.HOME;
+      }, 2000)
     },
     onError: (error) => {
       toast({

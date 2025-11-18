@@ -33,7 +33,7 @@ async function getInitialUser(): Promise<IUser | null> {
 export default async function RootLayout({ children }: Readonly<IChildren>) {
   const cookieStore = await cookies();
   const initialUser = await getInitialUser();
-
+  console.log(initialUser, 'initialUser');
   return (
     <html lang="en">
       <body>

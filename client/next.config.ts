@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
       poll: 1000,
       aggregateTimeout: 300, // Add a delay before rebuilding
     };
-    return config;
+    return config
   },
   images: {
     remotePatterns: [
