@@ -70,11 +70,8 @@ const SignIn = () => {
       const redirectPath = searchParams.get('redirect');
       queryClient.setQueryData(QUERY_FACTORY.me, null);
       await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me });
-      setTimeout(() => {
-
       console.log(redirectPath);
-      window.location.href = redirectPath || ROUTES.HOME;
-      }, 2000)
+      router.push(redirectPath || ROUTES.HOME);
     },
     onError: (error) => {
       toast({

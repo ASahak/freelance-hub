@@ -12,6 +12,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadAvatar } from '@/services/user';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { User } from '@libs/types/user.type';
 
 // Define your query key factory (assuming you have one)
 const QUERY_FACTORY = {
@@ -29,10 +30,11 @@ export const Avatar = memo(() => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 1. Get the user data from the React Query cache
-  const { data: user, isLoading: isUserLoading } = useQuery({
+  const { data: userData, isLoading: isUserLoading } = useQuery({
     queryKey: QUERY_FACTORY.me,
     enabled: false, // Assuming user is already fetched by AuthProvider
   });
+  const user: User = userData as User;
 
   // 2. --- UPLOAD MUTATION ---
   const uploadMutation = useMutation({
@@ -120,7 +122,7 @@ export const Avatar = memo(() => {
       <ChakraAvatar
         size="2xl"
         name={user?.name || user?.email}
-        src={user?.avatarUrl}
+        src={user?.avatarUrl || ''}
       />
 
       {/* Hidden file input */}

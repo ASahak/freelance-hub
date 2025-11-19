@@ -7,6 +7,7 @@ async function getInitialUser(): Promise<IUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get('access_token')?.value;
 
+  console.log(process.env.NEXT_PUBLIC_API_URL, 'URL', token);
   if (!token) {
     return null;
   }

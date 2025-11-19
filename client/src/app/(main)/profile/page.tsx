@@ -6,14 +6,12 @@ export default function UserProfile() {
   return (
     <Container>
       <Grid templateColumns="30rem 1fr" gap={2} py={8}>
-       <GridItem>
-         <VStack spacing={4}>
-           {/*<Avatar />*/}
-         </VStack>
-       </GridItem>
         <GridItem>
-          B
+          <VStack spacing={4}>
+            <Avatar />
+          </VStack>
         </GridItem>
+        <GridItem>B</GridItem>
       </Grid>
     </Container>
   );
