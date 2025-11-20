@@ -23,10 +23,16 @@ const nextConfig: NextConfig = {
   },
   // eslint-disable-next-line
   async rewrites() {
+    const apiUrl =
+      process.env.API_GATEWAY_URL ||
+      process.env.INTERNAL_API_URL ||
+      'http://api-gateway:5000';
+
+    console.log('Proxy Destination:', apiUrl);
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.API_GATEWAY_URL || process.env.INTERNAL_API_URL}/:path*`,
+        destination: `${apiUrl}/:path*`,
       },
     ];
   },
