@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/common/constants/routes';
 import { User as IUser } from '@libs/types/user.type';
 import { useAuth } from '@/providers/authProvider';
-import { Spinner } from '@/components/ui';
+import { SmartImage, Spinner } from '@/components/ui';
 
 type IProps = {
   data: IUser;
@@ -28,7 +28,7 @@ export const User = memo(({ data }: IProps) => {
   const { logout, isLoggingOut } = useAuth();
 
   return (
-    <Menu variant="base" closeOnSelect={false}>
+    <Menu variant="base" closeOnSelect>
       <MenuButton
         as={Button}
         rounded={'full'}
@@ -42,7 +42,22 @@ export const User = memo(({ data }: IProps) => {
         maxW="20rem"
       >
         <HStack>
-          <Avatar size={'md'} src={data.avatarUrl || ''} />
+          {!data?.avatarUrl ? (
+            <Avatar size="md" w="3rem" h="3rem" name={data?.name} />
+          ) : (
+            <SmartImage
+              spinnerSize={20}
+              src={data.avatarUrl}
+              alt="Avatar"
+              fill
+              containerProps={{ w: '3rem', h: '3rem' }}
+              sizes="5rem"
+              style={{
+                objectFit: 'cover',
+                borderRadius: '100%',
+              }}
+            />
+          )}
           <Text isTruncated>{data.name}</Text>
           <ChevronDownIcon fontSize="1.6rem" />
         </HStack>

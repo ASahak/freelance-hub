@@ -7,13 +7,12 @@ async function getInitialUser(): Promise<IUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get('access_token')?.value;
 
-  console.log(process.env.NEXT_PUBLIC_API_URL, 'URL', token);
   if (!token) {
     return null;
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+    const response = await fetch(`${process.env.INTERNAL_API_URL}/auth/me`, {
       headers: {
         Cookie: `access_token=${token}`,
       },
@@ -34,7 +33,7 @@ async function getInitialUser(): Promise<IUser | null> {
 export default async function RootLayout({ children }: Readonly<IChildren>) {
   const cookieStore = await cookies();
   const initialUser = await getInitialUser();
-  console.log(initialUser, 'initialUser');
+
   return (
     <html lang="en">
       <body>

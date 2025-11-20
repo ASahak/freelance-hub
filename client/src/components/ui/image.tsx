@@ -7,6 +7,7 @@ import NextImage, { ImageProps as NextImageProps } from 'next/image';
 
 interface SmartImageProps extends Omit<NextImageProps, 'onLoad' | 'onError'> {
   fallbackSrc?: string;
+  spinnerSize?: number;
   borderRadius?: string | number;
   containerProps?: React.ComponentProps<typeof Box>;
 }
@@ -15,6 +16,7 @@ export function SmartImage({
   fallbackSrc = '/imageFallback.jpg',
   borderRadius = '0px',
   containerProps,
+  spinnerSize = 30,
   ...props
 }: SmartImageProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,9 +36,9 @@ export function SmartImage({
       {isLoading && (
         <Center position="absolute" inset={0} zIndex={1}>
           <Spinner
-            w="30px"
-            h="30px"
-            size="4px"
+            w={`${spinnerSize}px`}
+            h={`${spinnerSize}px`}
+            size={`${spinnerSize / 10}px`}
             color="var(--chakra-colors-blue-300)"
           />
         </Center>

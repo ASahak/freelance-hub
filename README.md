@@ -5,8 +5,8 @@
 ```bash
   npm run dev
 ```
-The backend server should now be running and accessible at http://localhost:5000.
-The client should now be running and accessible at http://localhost:3000.
+The backend server should now be running and accessible at http://127.0.0.1:5000.
+The client should now be running and accessible at http://127.0.0.1:3000.
 
 It will follow the installation process of client and microservices
 
@@ -101,7 +101,7 @@ This command will sync your Prisma schema with the database, creating all necess
 ## API Documentation
 This project includes a Swagger UI for easy API exploration and testing. Once the backend server is running, navigate to the following URL in your browser:
 
-http://localhost:5000/api-docs
+http://127.0.0.1:5000/api-docs
 
 You will see a complete, interactive documentation of all available API endpoints, models, and DTOs.
 

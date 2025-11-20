@@ -1,7 +1,6 @@
 import api from '@/lib/api';
 import { User } from '@libs/types/user.type';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { API_BASE_URL } from '@/common/constants/global';
 
 export const uploadAvatar = async (file: File): Promise<User> => {
   const formData = new FormData();
@@ -13,5 +12,10 @@ export const uploadAvatar = async (file: File): Promise<User> => {
     },
   });
 
+  return response.data;
+};
+
+export const removeAvatar = async (): Promise<User> => {
+  const response = await api.delete('/users/avatar');
   return response.data;
 };

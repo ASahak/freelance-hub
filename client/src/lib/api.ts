@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { ROUTES } from '@/common/constants/routes';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { API_BASE_URL } from '@/common/constants/global';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

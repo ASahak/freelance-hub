@@ -14,7 +14,7 @@ export class CookieService {
     res.cookie('access_token', token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'none',
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
     });
   }
@@ -25,7 +25,7 @@ export class CookieService {
     res.cookie('refresh_token', token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'none',
+      sameSite: isProduction ? 'none' : 'lax',
       path: '/',
       maxAge: ms(REFRESH_TOKEN_EXPIRES_IN),
     });
@@ -37,13 +37,13 @@ export class CookieService {
     res.clearCookie('access_token', {
       httpOnly: true,
       path: '/',
-      sameSite: 'none',
+      sameSite: isProduction ? 'none' : 'lax',
       secure: isProduction,
     });
     res.clearCookie('refresh_token', {
       httpOnly: true,
       path: '/',
-      sameSite: 'none',
+      sameSite: isProduction ? 'none' : 'lax',
       secure: isProduction,
     });
   }

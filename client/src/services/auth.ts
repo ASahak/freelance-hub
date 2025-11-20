@@ -1,12 +1,8 @@
-import {
-  ICreateUser,
-  ISignInCredentials,
-} from '@/common/interfaces/user';
+import { ICreateUser, ISignInCredentials } from '@/common/interfaces/user';
 import { User as IUser } from '@libs/types/user.type';
 import api from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { API_BASE_URL } from '@/common/constants/global';
 
 export const getMe = async (): Promise<IUser> => {
   try {

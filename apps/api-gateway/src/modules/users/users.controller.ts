@@ -74,6 +74,27 @@ export class UsersController {
     return new UserEntity(updatedUser);
   }
 
+  @Delete('avatar')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserEntity,
+    description: 'Avatar removed successfully',
+  })
+  async removeAvatar(@Req() req: AuthenticatedRequest): Promise<UserEntity> {
+    // We delegate the logic to the gateway service
+    const updatedUser = await firstValueFrom(
+      this.userServiceClient.send(
+        { cmd: 'updateUser' },
+        {
+          id: req.user.id,
+          data: { avatarUrl: null },
+        },
+      ),
+    );
+    return new UserEntity(updatedUser);
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

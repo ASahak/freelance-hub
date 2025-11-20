@@ -25,7 +25,7 @@ export const RootProvider = ({ children, initialUser }: IProps) => {
     <ReactSkeletonProvider
       value={{
         skeletonAnimation: 'slide' as SKELETON_ANIMATION_VARIANTS,
-        isDark: true,
+        isDark: false,
         colorTheme: {
           dark: {
             main: 'var(--chakra-colors-gray-700)',

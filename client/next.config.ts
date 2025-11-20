@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
       poll: 1000,
       aggregateTimeout: 300, // Add a delay before rebuilding
     };
-    return config
+    return config;
   },
   images: {
     remotePatterns: [
@@ -20,6 +20,15 @@ const nextConfig: NextConfig = {
         hostname: '*',
       },
     ],
+  },
+  // eslint-disable-next-line
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.API_GATEWAY_URL || process.env.INTERNAL_API_URL}/:path*`,
+      },
+    ];
   },
 };
 
