@@ -2,11 +2,10 @@ import { ICreateUser, ISignInCredentials } from '@/common/interfaces/user';
 import { User as IUser } from '@libs/types/user.type';
 import api from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
-import { API_BASE_URL } from '@/common/constants/global';
 
 export const getMe = async (): Promise<IUser> => {
   try {
-    const response = await api.get(`${API_BASE_URL}/auth/me`);
+    const response = await api.get('/auth/me');
 
     return response.data;
   } catch (err: any) {
@@ -17,11 +16,7 @@ export const getMe = async (): Promise<IUser> => {
 
 export const logoutUser = async () => {
   try {
-    await api.post(
-      `${API_BASE_URL}/auth/logout`,
-      {},
-      { withCredentials: true },
-    );
+    await api.post('/auth/logout', {}, { withCredentials: true });
 
     return true;
   } catch (err: any) {
@@ -32,7 +27,7 @@ export const logoutUser = async () => {
 
 export const createUser = async (data: ICreateUser): Promise<IUser> => {
   try {
-    const response = await api.post(`${API_BASE_URL}/auth/register`, data, {
+    const response = await api.post('/auth/register', data, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -47,7 +42,7 @@ export const createUser = async (data: ICreateUser): Promise<IUser> => {
 
 export const signIn = async (data: ISignInCredentials): Promise<IUser> => {
   try {
-    const response = await api.post(`${API_BASE_URL}/auth/login`, data, {
+    const response = await api.post('/auth/login', data, {
       headers: {
         'Content-Type': 'application/json',
       },

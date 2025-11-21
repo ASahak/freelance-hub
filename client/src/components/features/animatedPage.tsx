@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
 import { Flex } from '@chakra-ui/react';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 const variants = {
   initial: { opacity: 0, x: 0, y: -5, zIndex: 2 },
@@ -17,10 +17,19 @@ export const AnimatedPage = memo(
   ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
+    const animationKey = useMemo(() => {
+      const segments = pathname.split('/').filter(Boolean);
+
+      if (segments.length === 0) {
+        return 'root';
+      }
+      return segments[0];
+    }, [pathname]);
+
     return (
       <AnimatePresence mode="wait">
         <motion.div
-          key={pathname}
+          key={animationKey}
           initial="initial"
           animate="in"
           variants={variants}

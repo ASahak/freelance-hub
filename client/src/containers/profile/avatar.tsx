@@ -7,6 +7,8 @@ import {
   Button,
   useToast,
   Icon,
+  VStack,
+  Heading,
 } from '@chakra-ui/react';
 import { RxShare2, RxTrash } from 'react-icons/rx';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -89,78 +91,83 @@ export const Avatar = memo(() => {
   const isUploading = uploadMutation.isPending;
 
   return (
-    <Flex
-      w="14rem"
-      h="14rem"
-      pos="relative"
-      overflow="hidden"
-      rounded="full"
-      role="group"
-    >
-      {isUploading ? (
-        <Skeleton
-          styles={{ width: '14rem', height: '14rem' }}
-          grid={{ skeletons: [{ r: '100%' }] }}
-        />
-      ) : (
-        <>
-          {!user?.avatarUrl ? (
-            <ChakraAvatar size="2xl" w="full" h="full" name={user?.name} />
-          ) : (
-            <SmartImage
-              src={user.avatarUrl}
-              alt="Avatar"
-              fill
-              containerProps={{ w: '14rem', h: '14rem' }}
-              sizes="25rem"
-              style={{
-                objectFit: 'cover',
-                borderRadius: '100%',
-              }}
-            />
-          )}
+    <VStack spacing={3} w="full">
+      <Flex
+        w="14rem"
+        h="14rem"
+        pos="relative"
+        overflow="hidden"
+        rounded="full"
+        role="group"
+      >
+        {isUploading ? (
+          <Skeleton
+            styles={{ width: '14rem', height: '14rem' }}
+            grid={{ skeletons: [{ r: '100%' }] }}
+          />
+        ) : (
+          <>
+            {!user?.avatarUrl ? (
+              <ChakraAvatar size="2xl" w="full" h="full" name={user?.name} />
+            ) : (
+              <SmartImage
+                src={user.avatarUrl}
+                alt="Avatar"
+                fill
+                containerProps={{ w: '14rem', h: '14rem' }}
+                sizes="25rem"
+                style={{
+                  objectFit: 'cover',
+                  borderRadius: '100%',
+                }}
+              />
+            )}
 
-          <Flex
-            pos="absolute"
-            w="full"
-            h="full"
-            opacity={0}
-            visibility="hidden"
-            transition=".2s"
-            bgColor="rgba(0, 0, 0, .7)"
-            _groupHover={{ opacity: 1, visibility: 'visible' }}
-          >
             <Flex
-              _groupHover={{ transform: 'translateY(0px)' }}
-              transition=".2s"
-              transform="translateY(10px)"
-              justifyContent="center"
-              alignItems="center"
+              pos="absolute"
               w="full"
               h="full"
-              gap={6}
+              opacity={0}
+              visibility="hidden"
+              transition=".2s"
+              bgColor="rgba(0, 0, 0, .7)"
+              _groupHover={{ opacity: 1, visibility: 'visible' }}
             >
-              <Button variant="unstyled" onClick={onChooseFile}>
-                <Icon as={RxShare2} fontSize="2.8rem" color="white" />
-              </Button>
-              {user?.avatarUrl ? (
-                <Button variant="unstyled" onClick={onRemove}>
-                  <Icon as={RxTrash} fontSize="2.8rem" color="red.400" />
+              <Flex
+                _groupHover={{ transform: 'translateY(0px)' }}
+                transition=".2s"
+                transform="translateY(10px)"
+                justifyContent="center"
+                alignItems="center"
+                w="full"
+                h="full"
+                gap={6}
+              >
+                <Button variant="unstyled" onClick={onChooseFile}>
+                  <Icon as={RxShare2} fontSize="2.8rem" color="white" />
                 </Button>
-              ) : null}
+                {user?.avatarUrl ? (
+                  <Button variant="unstyled" onClick={onRemove}>
+                    <Icon as={RxTrash} fontSize="2.8rem" color="red.400" />
+                  </Button>
+                ) : null}
+              </Flex>
             </Flex>
-          </Flex>
-        </>
-      )}
+          </>
+        )}
 
-      {/* Hidden file input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={onUpload}
-        accept="image/png, image/jpeg, image/webp"
-        style={{ display: 'none' }}
-      />
-    </Flex>
+        {/* Hidden file input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={onUpload}
+          accept="image/png, image/jpeg, image/webp"
+          style={{ display: 'none' }}
+        />
+      </Flex>
+      <Heading isTruncated w="full" textAlign="center">
+        {user?.name}
+      </Heading>
+    </VStack>
   );
 });
