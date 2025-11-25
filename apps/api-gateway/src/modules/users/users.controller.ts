@@ -5,7 +5,6 @@ import {
   Get,
   Inject,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -110,7 +109,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  async getUser(@Param('id', ParseIntPipe) id: string) {
+  async getUser(@Param('id') id: string) {
     return new UserEntity(
       await firstValueFrom(
         this.userServiceClient.send({ cmd: 'findUser' }, { id }),
@@ -123,14 +122,14 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: UserEntity })
   async updateUser(
-    @Param('id', ParseIntPipe) id: string,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return new UserEntity(
       await firstValueFrom(
         this.userServiceClient.send(
           { cmd: 'updateUser' },
-          { id, updateUserDto },
+          { id, data: updateUserDto },
         ),
       ),
     );
@@ -140,7 +139,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
-  async removeUser(@Param('id', ParseIntPipe) id: string) {
+  async removeUser(@Param('id') id: string) {
     return new UserEntity(
       await firstValueFrom(
         this.userServiceClient.send({ cmd: 'removeUser' }, id),

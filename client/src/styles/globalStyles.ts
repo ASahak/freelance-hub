@@ -25,6 +25,21 @@ export default {
         overflow: 'hidden',
       }),
     },
+    '.auth-code-input-container': {
+      display: 'flex',
+      gap: '1rem',
+      justifyContent: 'center',
+    },
+    '.auth-code-input': {
+      width: '6rem',
+      height: '6rem',
+      border: '1px solid',
+      borderColor: 'gray.150',
+      borderRadius: '4px',
+      bgColor: 'gray.50',
+      textAlign: 'center',
+      fontSize: '2.8rem',
+    },
     '#chakra-toast-manager-top-right': {
       top: '10rem !important',
     },

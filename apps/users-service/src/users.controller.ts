@@ -51,6 +51,14 @@ export class UsersController {
     return await this.usersService.update(id, data);
   }
 
+  @MessagePattern({ cmd: 'disableTwoFactor' })
+  disableTwoFactor(@Payload() data: { userId: string }) {
+    return this.usersService.update(data.userId, {
+      isTwoFactorEnabled: false,
+      twoFactorSecret: null,
+    });
+  }
+
   @MessagePattern({ cmd: 'removeUser' })
   async removeUser(@Payload() id: string) {
     return await this.usersService.remove(id);

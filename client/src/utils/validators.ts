@@ -1,6 +1,18 @@
 import * as yup from 'yup';
 import { UserRole } from '@/common/enums/user';
 
+export const Verify2faSchema = yup.object().shape({
+  code: yup
+    .string()
+    .required('Code is required.')
+    .length(6, 'Code must be exactly 6 digits.')
+    .matches(/^\d+$/, 'Code must contain only digits.'),
+});
+
+export const ProfileSecuritySchema = yup.object().shape({
+  isTwoFactorEnabled: yup.boolean().default(false),
+});
+
 export const SignInSchema = yup.object().shape({
   email: yup
     .string()

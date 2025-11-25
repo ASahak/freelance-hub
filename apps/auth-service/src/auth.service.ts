@@ -58,7 +58,7 @@ export class AuthService {
 
   async verifyAndEnable2FA(userId: string, code: string) {
     const user: User = await firstValueFrom(
-      this.usersClient.send({ cmd: 'findOneUser' }, { id: userId }),
+      this.usersClient.send({ cmd: 'findUser' }, { id: userId }),
     );
     if (!user.twoFactorSecret) {
       throw new UnauthorizedException('2FA not enabled');
@@ -80,7 +80,7 @@ export class AuthService {
 
   async loginWith2FA(userId: string, code: string) {
     const user: User = await firstValueFrom(
-      this.usersClient.send({ cmd: 'findOneUser' }, { id: userId }),
+      this.usersClient.send({ cmd: 'findUser' }, { id: userId }),
     );
     if (!user.twoFactorSecret) {
       throw new UnauthorizedException('2FA not activated');
@@ -95,6 +95,21 @@ export class AuthService {
 
     // Code is valid, NOW we can issue tokens
     return this.getTokens(user.id, user.email); // Assuming getTokens issues both access/refresh tokens
+  }
+
+  async disable2FA(userId: string, password: string) {
+    const user = await firstValueFrom(
+      this.usersClient.send({ cmd: 'findUser' }, { id: userId }), // Ensure this returns the password!
+    );
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid password');
+    }
+
+    return firstValueFrom(
+      this.usersClient.send({ cmd: 'disableTwoFactor' }, { userId }),
+    );
   }
 
   async login(

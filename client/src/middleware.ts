@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ROUTES } from '@/common/constants/routes';
 
-const protectedRoutes = [ROUTES.PROFILE];
+export const protectedRoutes = [ROUTES.PROFILE];
 
-const publicOnlyRoutes = [ROUTES.SIGN_IN, ROUTES.SIGN_UP];
+const publicOnlyRoutes = [ROUTES.SIGN_IN, ROUTES.SIGN_UP, ROUTES.VERIFY_2FA];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token');

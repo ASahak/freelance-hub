@@ -17,6 +17,9 @@ import {
 import { MobileBottomDrawer } from '@/components/features';
 import { usePopup } from '@/providers/popupProvider';
 import { useGlobalVariables } from '@/providers/globalVariables';
+import { POPUP_TYPES } from '@/common/constants/popup';
+import { Disable2fa } from './disable2fa';
+import { Qr2fa } from './qr2fa';
 
 const overlayColor = '#1717177a'; // gray.800/50
 type IProps = {
@@ -25,15 +28,19 @@ type IProps = {
 function Popup({ isNested }: IProps) {
   const { isMobile } = useGlobalVariables();
   const { motionPreset, nested, onCloseComplete, ...rest } = usePopup();
-  const { popupSettings, popupTitle, popupType, isOpen, onClose } = isNested
-    ? nested
-    : rest;
+  const { popupSettings, popupTitle, popupType, popupData, isOpen, onClose } =
+    isNested ? nested : rest;
 
   const isCentered = popupSettings.isCenter ?? true;
   const modalRef = useRef(null);
 
   const renderContent = () => {
+    const props = { ...popupData, isNested };
     switch (popupType) {
+      case POPUP_TYPES.DISABLE_2FA:
+        return <Disable2fa {...(props as any)} />;
+      case POPUP_TYPES.QR_FOR_2FA:
+        return <Qr2fa {...(props as any)} />;
       default:
         return <div>Unknown popup type</div>;
     }

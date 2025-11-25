@@ -41,6 +41,14 @@ export class AuthController {
     return await this.authService.login(email, password);
   }
 
+  @MessagePattern({ cmd: '2fa-disable' })
+  async disable2fa(
+    @Payload() { userId, password }: { userId: string; password: string },
+  ) {
+    console.log(`Disabling users 2fa for: ${userId}`);
+    return await this.authService.disable2FA(userId, password);
+  }
+
   @MessagePattern({ cmd: 'registerUser' })
   async register(@Payload() user: User) {
     return await firstValueFrom(

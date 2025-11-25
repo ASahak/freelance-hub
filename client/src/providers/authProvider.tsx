@@ -1,11 +1,20 @@
 'use client';
 
-import { createContext, useContext, ReactNode, useMemo } from 'react';
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMe, logoutUser } from '@/services/auth';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { User as IUser } from '@libs/types/user.type';
 import { useToast } from '@chakra-ui/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ROUTES } from '@/common/constants/routes';
+import { protectedRoutes } from '@/middleware';
 
 interface AuthContextType {
   user: IUser | undefined;
@@ -20,6 +29,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const toast = useToast();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const {
     data: user,
@@ -52,6 +63,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const isAuthenticated = !!user && !isError;
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const isProtectedRoute = protectedRoutes.some((route) =>
+      pathname.startsWith(route),
+    );
+
+    if (isProtectedRoute && !user) {
+      window.location.href = `${ROUTES.SIGN_IN}?redirect=${pathname}`;
+    }
+  }, [user, isLoading, pathname, router]);
 
   const _value = useMemo(
     () => ({

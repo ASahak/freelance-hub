@@ -54,3 +54,46 @@ export const signIn = async (data: ISignInCredentials): Promise<IUser> => {
     throw new Error(`Sign in user failed: ${errorMessage}`);
   }
 };
+
+export const loginWith2fa = async (data: {
+  userId: string;
+  code: string;
+}): Promise<IUser> => {
+  try {
+    const response = await api.post('/auth/2fa/login', data);
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Verify 2fa failed: ${errorMessage}`);
+  }
+};
+
+export const generate2faSecret = async (): Promise<{ qrCodeUrl: string }> => {
+  try {
+    const response = await api.post('/auth/2fa/generate');
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Generate 2fa failed: ${errorMessage}`);
+  }
+};
+
+export const verify2fa = async (code: string): Promise<IUser> => {
+  try {
+    const response = await api.post('/auth/2fa/verify', { code });
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Verify 2fa failed: ${errorMessage}`);
+  }
+};
+
+export const disable2fa = async (password: string): Promise<IUser> => {
+  try {
+    const response = await api.post('/auth/2fa/disable', { password });
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Disable 2fa failed: ${errorMessage}`);
+  }
+};

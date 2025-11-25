@@ -66,8 +66,19 @@ const SignIn = () => {
     ISignInCredentials
   >({
     mutationFn: signIn,
-    onSuccess: async () => {
+    onSuccess: async (response: any) => {
       const redirectPath = searchParams.get('redirect');
+      if (response.twoFactorRequired) {
+        const params = new URLSearchParams();
+
+        params.set('userId', response.userId);
+        if (redirectPath) {
+          params.set('redirect', redirectPath);
+        }
+
+        return router.push(`${ROUTES.VERIFY_2FA}?${params.toString()}`);
+      }
+
       queryClient.setQueryData(QUERY_FACTORY.me, null);
       await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me });
       console.log(redirectPath);

@@ -49,6 +49,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async generate2FA(@Req() req: AuthenticatedRequest) {
+    console.log(`Generating qr for: ${req.user.id}`, req.user);
     const { otpAuthUrl } = await firstValueFrom(
       this.authService.send(
         { cmd: '2fa-generate-secret' },
@@ -70,6 +71,21 @@ export class AuthController {
       this.authService.send(
         { cmd: '2fa-verify-and-enable' },
         { userId: req.user.id, code },
+      ),
+    );
+  }
+
+  @Post('2fa/disable')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async disable2FA(
+    @Req() req: AuthenticatedRequest,
+    @Body() body: { password: string },
+  ) {
+    return firstValueFrom(
+      this.authService.send(
+        { cmd: '2fa-disable' },
+        { userId: req.user.id, password: body.password },
       ),
     );
   }
@@ -111,9 +127,18 @@ export class AuthController {
     @Body() { email, password }: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { user, accessToken, refreshToken } = await firstValueFrom(
+    const response = await firstValueFrom(
       this.authService.send({ cmd: 'login' }, { email, password }),
     );
+
+    if (response.twoFactorRequired) {
+      return {
+        twoFactorRequired: true,
+        userId: response.userId,
+      };
+    }
+
+    const { user, accessToken, refreshToken } = response;
 
     this.cookieService.setTokenCookie(res, accessToken);
     this.cookieService.setRefreshTokenCookie(res, refreshToken);

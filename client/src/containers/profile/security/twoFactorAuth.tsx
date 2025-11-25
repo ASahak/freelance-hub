@@ -27,7 +27,6 @@ export const TwoFactorAuth = memo(() => {
       <Controller
         name="isTwoFactorEnabled"
         control={control}
-        rules={{ required: 'Full name is required' }}
         render={({ field: { onChange, value, ref } }) => (
           <Box>
             <FormControl display="flex" alignItems="center" gap={4}>
@@ -45,7 +44,7 @@ export const TwoFactorAuth = memo(() => {
                 fontWeight={400}
                 cursor="pointer"
               >
-                Enable 2fa
+                {value ? 'Disable' : 'Enable'} 2fa
               </FormLabel>
             </FormControl>
             <ErrorMessage

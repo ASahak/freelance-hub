@@ -20,17 +20,7 @@ export const updateUser = async (
   data: Partial<User>,
 ): Promise<User> => {
   try {
-    const response = await api.patch(
-      `/users/${userId}`,
-      {
-        data,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const response = await api.patch(`/users/${userId}`, data);
 
     return response.data;
   } catch (err: any) {
