@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -65,7 +65,8 @@ const Verify2fa = () => {
     setCode(res);
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
     if (userId) {
       onVerify({ userId, code });
     }
@@ -95,7 +96,7 @@ const Verify2fa = () => {
           </Text>
         </CardHeader>
 
-        <CardBody>
+        <CardBody as="form" onSubmit={onSubmit}>
           <VStack spacing={8}>
             <AuthCode
               allowedCharacters="numeric"
@@ -105,7 +106,7 @@ const Verify2fa = () => {
             />
 
             <Button
-              onClick={onSubmit}
+              type="submit"
               w="full"
               variant="primary"
               isLoading={isPending}
