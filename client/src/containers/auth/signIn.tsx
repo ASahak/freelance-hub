@@ -264,7 +264,7 @@ const SignIn = () => {
             </Flex>
 
             <Button
-              variant="popover-btn"
+              variant="input"
               w="full"
               justifyContent="center"
               gap={3}

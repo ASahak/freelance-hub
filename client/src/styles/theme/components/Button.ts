@@ -40,75 +40,47 @@ export default defineStyleConfig({
       w: 'auto',
       p: 0,
     },
-    'popover-btn': ({ colorMode }) => ({
-      fontFamily: 'Montserrat, sans-serif',
-      fontWeight: '500',
-      color:
-        colorMode === 'dark'
-          ? 'var(--chakra-colors-blue-300)'
-          : 'var(--chakra-colors-gray-450)',
-      bgColor: 'transparent',
-      borderColor:
-        colorMode === 'dark'
-          ? 'var(--chakra-colors-gray-600)'
-          : 'var(--chakra-colors-gray-150)',
+    input: {
       border: '1px solid',
-      rounded: '0.8rem',
+      borderColor: 'gray.150',
+      boxShadow: 'none',
+      borderRadius: '0.8rem ',
+      fontWeight: 400,
+      bgColor: 'white',
+      color: 'black',
+      fontSize: '1.4rem',
+      py: '1.2rem',
+      px: '1.4rem',
+      h: '4rem',
       display: 'flex',
-      h: 'auto',
       justifyContent: 'space-between',
       alignItems: 'center',
-      fontSize: '1.4rem',
       _hover: {
         bgColor: 'transparent',
-        borderColor:
-          colorMode === 'dark'
-            ? 'var(--chakra-colors-blue-350)'
-            : 'var(--chakra-colors-blue-250)',
+        borderColor: 'blue.300',
       },
       _active: {
         bgColor: 'transparent',
-        borderColor:
-          colorMode === 'dark'
-            ? 'var(--chakra-colors-blue-350)'
-            : 'var(--chakra-colors-blue-250)',
+        borderColor: 'blue.300',
         _hover: {
-          borderColor:
-            colorMode === 'dark'
-              ? 'var(--chakra-colors-blue-350)'
-              : 'var(--chakra-colors-blue-250)',
+          borderColor: 'blue.300',
         },
       },
       _focus: {
         boxShadow: 'none',
         bgColor: 'transparent',
-        borderColor:
-          colorMode === 'dark'
-            ? 'var(--chakra-colors-blue-350)'
-            : 'var(--chakra-colors-blue-250)',
+        borderColor: 'blue.300',
         _hover: {
-          borderColor:
-            colorMode === 'dark'
-              ? 'var(--chakra-colors-blue-350)'
-              : 'var(--chakra-colors-blue-250)',
+          borderColor: 'blue.300',
         },
       },
       _disabled: {
         opacity: 0.7,
-        borderColor:
-          colorMode === 'dark'
-            ? 'var(--chakra-colors-gray-600) !important'
-            : 'var(--chakra-colors-gray-150) !important',
-        color:
-          colorMode === 'dark' ? '#373A43 !important' : '#AFB4BC !important',
       },
       _invalid: {
-        borderColor:
-          colorMode === 'dark'
-            ? 'var(--chakra-colors-magenta-350)'
-            : 'var(--chakra-colors-red-300)',
+        borderColor: 'red.300',
       },
-    }),
+    },
     'pagination-btn': ({ colorMode }) => ({
       fontFamily: 'Montserrat, sans-serif',
       fontWeight: '500',

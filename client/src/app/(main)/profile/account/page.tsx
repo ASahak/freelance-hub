@@ -1,10 +1,5 @@
-import { Heading, Text } from '@chakra-ui/react';
+import { AccountForm } from '@/containers/profile/account/form';
 
 export default function AccountPage() {
-  return (
-    <div>
-      <Heading mb={4}>Account</Heading>
-      <Text>This is your public profile information form.</Text>
-    </div>
-  );
+  return <AccountForm />;
 }

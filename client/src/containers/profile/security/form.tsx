@@ -1,9 +1,10 @@
 'use client';
 
+import * as yup from 'yup';
 import { memo, useEffect } from 'react';
 import { TwoFactorAuth } from './twoFactorAuth';
 import { useAuth } from '@/providers/authProvider';
-import { Box, Button, Flex, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { User } from '@libs/types/user.type';
@@ -15,10 +16,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ProfileSecuritySchema } from '@/utils/validators';
 import { generate2faSecret } from '@/services/auth';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 
-type SecurityInputs = {
-  isTwoFactorEnabled: boolean;
-};
+type FormData = yup.InferType<typeof ProfileSecuritySchema>;
 
 export const SecurityForm = memo(() => {
   const { user } = useAuth();
@@ -26,7 +26,7 @@ export const SecurityForm = memo(() => {
   const queryClient = useQueryClient();
   const { openPopup } = usePopup();
 
-  const methods = useForm<SecurityInputs>({
+  const methods = useForm<FormData>({
     mode: 'onSubmit',
     resolver: yupResolver(ProfileSecuritySchema),
     defaultValues: {
@@ -40,11 +40,11 @@ export const SecurityForm = memo(() => {
   } = methods;
 
   const updateMutation = useMutation({
-    mutationFn: (data: Partial<SecurityInputs>) => updateUser(user!.id, data),
+    mutationFn: (data: Partial<FormData>) => updateUser(user!.id, data),
     onSuccess: (updatedUser: User) => {
       toast({ title: 'Profile updated', status: 'success' });
       // Update React Query cache
-      queryClient.setQueryData(['user', 'me'], updatedUser);
+      queryClient.setQueryData(QUERY_FACTORY.me, updatedUser);
       reset({
         isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
       });
@@ -69,7 +69,7 @@ export const SecurityForm = memo(() => {
     },
   });
 
-  const onSubmit = (data: SecurityInputs) => {
+  const onSubmit = (data: FormData) => {
     const changedData = getDirtyValues(dirtyFields, data);
 
     if (Object.keys(changedData).length > 0) {
@@ -94,20 +94,22 @@ export const SecurityForm = memo(() => {
   }, [user]);
 
   return (
-    <FormProvider {...methods}>
-      <Box flex={1} w="full">
-        <TwoFactorAuth />
-      </Box>
-      <Flex justify="flex-end" w="full">
-        <Button
-          onClick={handleSubmit(onSubmit)}
-          isDisabled={!isDirty}
-          isLoading={updateMutation.isPending || generateMutation.isPending}
-          variant="primary"
-        >
-          Save Changes
-        </Button>
-      </Flex>
-    </FormProvider>
+    <VStack spacing={8} alignItems="start" w="full" flex={1}>
+      <FormProvider {...methods}>
+        <Box flex={1} w="full">
+          <TwoFactorAuth />
+        </Box>
+        <Flex justify="flex-end" w="full">
+          <Button
+            onClick={handleSubmit(onSubmit)}
+            isDisabled={!isDirty}
+            isLoading={updateMutation.isPending || generateMutation.isPending}
+            variant="primary"
+          >
+            Save Changes
+          </Button>
+        </Flex>
+      </FormProvider>
+    </VStack>
   );
 });

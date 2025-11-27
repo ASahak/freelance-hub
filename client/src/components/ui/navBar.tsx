@@ -103,7 +103,7 @@ export const NavBar = memo(() => {
       )}
       <Flex display={{ base: 'flex', md: 'none' }}>
         <Button
-          variant="popover-btn"
+          variant="input"
           p={0}
           w="4rem"
           h="4rem"
@@ -149,7 +149,7 @@ export const NavBar = memo(() => {
                         >
                           <Logo isSmall />
                           <Button
-                            variant="popover-btn"
+                            variant="input"
                             p={0}
                             px="0.4rem"
                             w="4rem"

@@ -43,7 +43,7 @@ export const Hero = () => {
           <Button
             size="lg"
             justifyContent="center"
-            variant="popover-btn"
+            variant="input"
             fontWeight={600}
             onClick={() => router.push(ROUTES.CREATE_JOB)}
           >

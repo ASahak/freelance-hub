@@ -1,10 +1,5 @@
-import { VStack } from '@chakra-ui/react';
-import { SecurityForm } from '@/containers/profile/security';
+import { SecurityForm } from '@/containers/profile/security/form';
 
 export default function SecurityPage() {
-  return (
-    <VStack spacing={6} flex={1}>
-      <SecurityForm />
-    </VStack>
-  );
+  return <SecurityForm />;
 }

@@ -1,10 +1,5 @@
-import { Heading, Text } from '@chakra-ui/react';
+import { PublicProfileForm } from '@/containers/profile/general/form';
 
 export default function PublicProfilePage() {
-  return (
-    <div>
-      <Heading mb={4}>Public Profile</Heading>
-      <Text>This is your public profile information form.</Text>
-    </div>
-  );
+  return <PublicProfileForm />;
 }
