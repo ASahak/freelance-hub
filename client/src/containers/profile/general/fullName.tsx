@@ -21,7 +21,7 @@ export const FullName = memo(() => {
   } = useFormContext();
 
   return (
-    <FormControl>
+    <FormControl w="full">
       <FormLabel htmlFor="name" fontSize="1.4rem">
         FullName
       </FormLabel>

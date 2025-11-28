@@ -24,6 +24,7 @@ import type { AuthenticatedRequest } from '../../common/interfaces/authenticated
 import { FilesService } from '../files/files.service';
 import { CookieService } from '../cookie/cookie.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -73,6 +74,28 @@ export class AuthController {
         { userId: req.user.id, code },
       ),
     );
+  }
+
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Password updated successfully' })
+  async changePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    await firstValueFrom(
+      this.authService.send(
+        { cmd: 'change-password' },
+        {
+          userId: req.user.id,
+          oldPass: dto.currentPassword,
+          newPass: dto.newPassword,
+        }
+      )
+    );
+
+    return { success: true, message: 'Password updated successfully' };
   }
 
   @Post('2fa/disable')

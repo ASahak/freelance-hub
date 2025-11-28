@@ -13,6 +13,13 @@ export class AuthController {
     private readonly usersServiceClient: ClientProxy,
   ) {}
 
+  @MessagePattern({ cmd: 'change-password' })
+  async changePassword(
+    @Payload() data: { userId: string; oldPass: string; newPass: string }
+  ) {
+    return this.authService.changePassword(data.userId, data.oldPass, data.newPass);
+  }
+
   @MessagePattern({ cmd: '2fa-generate-secret' })
   async generate2FASecret(
     @Payload() { userId, email }: { userId: string; email: string },

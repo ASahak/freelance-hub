@@ -5,6 +5,21 @@ export const PublicProfileSchema = yup.object().shape({
   name: yup.string().required('FullName is required.'),
 });
 
+export const ChangePasswordSchema = yup.object().shape({
+  currentPassword: yup
+    .string()
+    .required('Current password is required to authorize changes.'),
+  newPassword: yup
+    .string()
+    .required('New password is required.')
+    .min(8, 'Password must be at least 8 characters long.')
+    .notOneOf([yup.ref('currentPassword')], 'New password cannot be the same as the old one.'),
+  confirmNewPassword: yup
+    .string()
+    .oneOf([yup.ref('newPassword')], 'Passwords must match.')
+    .required('Please confirm your new password.'),
+});
+
 export const AccountSchema = yup.object().shape({
   email: yup
     .string()
@@ -14,10 +29,6 @@ export const AccountSchema = yup.object().shape({
     .mixed<UserRole>()
     .oneOf(Object.values(UserRole))
     .required('Role is required.'),
-});
-
-export const ProfileSecuritySchema = yup.object().shape({
-  isTwoFactorEnabled: yup.boolean().default(false),
 });
 
 export const SignInSchema = yup.object().shape({

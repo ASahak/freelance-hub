@@ -2,7 +2,7 @@
 
 import * as yup from 'yup';
 import { memo, useEffect } from 'react';
-import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react';
+import { Button, Flex, useToast, VStack } from '@chakra-ui/react';
 import { useAuth } from '@/providers/authProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -66,13 +66,11 @@ export const PublicProfileForm = memo(() => {
   }, [user]);
 
   return (
-    <VStack spacing={8} alignItems="start" w="full">
-      <FormProvider {...methods}>
-        <Box flex={1} w="full">
-          <VStack spacing={6}>
-            <FullName />
-          </VStack>
-        </Box>
+    <FormProvider {...methods}>
+      <VStack spacing={8} alignItems="start" w="full">
+        <VStack spacing={8} flex={1} w="full" alignItems="start">
+          <FullName/>
+        </VStack>
         <Flex justify="flex-end" w="full">
           <Button
             onClick={handleSubmit(onSubmit)}
@@ -83,7 +81,7 @@ export const PublicProfileForm = memo(() => {
             Save Changes
           </Button>
         </Flex>
-      </FormProvider>
-    </VStack>
+      </VStack>
+    </FormProvider>
   );
 });
