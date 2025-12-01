@@ -1,31 +1,37 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import {
-  Box, Button, Flex,
+  Button,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
-  Switch,
-  Text, useToast,
+  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  SimpleGrid,
+  Text,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { ErrorMessage } from '@hookform/error-message';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { ChangePasswordSchema } from '@/utils/validators';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { User } from '@libs/types/user.type';
-import { QUERY_FACTORY } from '@/common/constants/queryFactory';
-import { updateUser } from '@/services/user';
-import { useAuth } from '@/providers/authProvider';
+import { useMutation } from '@tanstack/react-query';
+import { changePassword } from '@/services/auth';
+import { getErrorMessage } from '@/utils/getErrorMessage';
+import { FaEye, FaEyeSlash, FaLock } from 'react-icons/fa';
 
 type FormData = yup.InferType<typeof ChangePasswordSchema>;
 export const ChangePassword = memo(() => {
-  const { user } = useAuth();
   const toast = useToast();
-  const queryClient = useQueryClient();
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
 
   const methods = useForm<FormData>({
     mode: 'onSubmit',
@@ -40,75 +46,197 @@ export const ChangePassword = memo(() => {
     handleSubmit,
     reset,
     control,
-    formState: { errors, isDirty, dirtyFields },
+    formState: { errors, isDirty },
   } = methods;
 
-  const updateMutation = useMutation({
-    mutationFn: (data: Partial<FormData>) => updateUser(user!.id, data),
-    onSuccess: (updatedUser: User) => {
-      toast({ title: 'Profile updated', status: 'success' });
-      // Update React Query cache
-      queryClient.setQueryData(QUERY_FACTORY.me, updatedUser);
+  const { mutate, isPending } = useMutation({
+    mutationFn: changePassword,
+    onSuccess: () => {
+      toast({
+        title: 'Password Changed',
+        description: 'Your password has been updated successfully.',
+        status: 'success',
+      });
       reset({
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       });
     },
-    onError: () => {
-      toast({ title: 'Update failed', status: 'error' });
+    onError: (error: any) => {
+      toast({
+        title: 'Failed to change password',
+        description: getErrorMessage(error),
+        status: 'error',
+      });
     },
   });
 
+  const onSubmit = (data: any) => {
+    mutate({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    });
+  };
+
   return (
-    <VStack spacing={4} alignItems="start" w="full">
+    <VStack spacing={8} alignItems="start" w="full">
       <Heading mb={4} fontSize="2.2rem" fontWeight={500}>
-        Two factor authentication
+        Change password
       </Heading>
-      <Controller
-        name="isTwoFactorEnabled"
-        control={control}
-        render={({ field: { onChange, value, ref } }) => (
-          <Box>
-            <FormControl display="flex" alignItems="center" gap={4}>
-              <Switch
-                size="lg"
-                id="two-factor"
-                ref={ref}
-                isChecked={!!value}
-                onChange={onChange}
-              />
-              <FormLabel
-                htmlFor="two-factor"
-                mb="0"
-                fontSize="1.4rem"
-                fontWeight={400}
-                cursor="pointer"
+      <FormControl>
+        <FormLabel htmlFor="password" fontSize="1.4rem">
+          Current Password
+        </FormLabel>
+        <Controller
+          name="currentPassword"
+          control={control}
+          render={({ field }) => (
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                left={2}
+                bottom={0}
+                m="auto"
               >
-                {value ? 'Disable' : 'Enable'} 2fa
-              </FormLabel>
-            </FormControl>
-            <ErrorMessage
-              errors={errors}
-              name="isTwoFactorEnabled"
-              render={({ message }) => (
-                <Text w="full" color="red.300" fontSize="1.3rem">
-                  {message}
-                </Text>
-              )}
-            />
-          </Box>
-        )}
-      />
+                <Icon as={FaLock} color="gray.400" fontSize="1.6rem" />
+              </InputLeftElement>
+              <Input
+                id="password"
+                variant="base"
+                pl={14}
+                type={showCurrent ? 'text' : 'password'}
+                placeholder="Current password"
+                {...field}
+              />
+              <InputRightElement right={2} bottom={0} m="auto">
+                <Button
+                  variant="unstyled"
+                  size="lg"
+                  display="flex"
+                  h="fit-content"
+                  onClick={() => setShowCurrent(!showCurrent)}
+                >
+                  <Icon
+                    as={showCurrent ? FaEyeSlash : FaEye}
+                    color="gray.500"
+                  />
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          )}
+        />
+        <ErrorMessage
+          errors={errors}
+          name="currentPassword"
+          render={({ message }) => (
+            <Text w="full" color="red.300" fontSize="1.3rem">
+              {message}
+            </Text>
+          )}
+        />
+      </FormControl>
+
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} w="full">
+        <FormControl>
+          <FormLabel htmlFor="newPassword" fontSize="1.4rem">
+            New Password
+          </FormLabel>
+          <Controller
+            name="newPassword"
+            control={control}
+            render={({ field }) => (
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  left={2}
+                  bottom={0}
+                  m="auto"
+                >
+                  <Icon as={FaLock} color="gray.400" fontSize="1.6rem" />
+                </InputLeftElement>
+                <Input
+                  id="newPassword"
+                  variant="base"
+                  pl={14}
+                  type={showNew ? 'text' : 'password'}
+                  placeholder="Create a password"
+                  {...field}
+                />
+                <InputRightElement right={2} bottom={0} m="auto">
+                  <Button
+                    variant="unstyled"
+                    size="lg"
+                    display="flex"
+                    h="fit-content"
+                    onClick={() => setShowNew(!showNew)}
+                  >
+                    <Icon as={showNew ? FaEyeSlash : FaEye} color="gray.500" />
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            )}
+          />
+          <ErrorMessage
+            errors={errors}
+            name="newPassword"
+            render={({ message }) => (
+              <Text w="full" color="red.300" fontSize="1.3rem">
+                {message}
+              </Text>
+            )}
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel htmlFor="confirmPassword" fontSize="1.4rem">
+            Confirm new Password
+          </FormLabel>
+          <Controller
+            name="confirmNewPassword"
+            control={control}
+            render={({ field }) => (
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  left={2}
+                  bottom={0}
+                  m="auto"
+                >
+                  <Icon as={FaLock} color="gray.400" fontSize="1.6rem" />
+                </InputLeftElement>
+                <Input
+                  id="confirmPassword"
+                  variant="base"
+                  pl={14}
+                  type={'password'}
+                  placeholder="Confirm password"
+                  {...field}
+                />
+              </InputGroup>
+            )}
+          />
+          <ErrorMessage
+            errors={errors}
+            name="confirmNewPassword"
+            render={({ message }) => (
+              <Text w="full" color="red.300" fontSize="1.3rem">
+                {message}
+              </Text>
+            )}
+          />
+        </FormControl>
+      </SimpleGrid>
+
       <Flex justify="flex-end" w="full">
-        {/*<Button*/}
-        {/*  onClick={handleSubmit(onSubmit)}*/}
-        {/*  isDisabled={!isDirty}*/}
-        {/*  isLoading={updateMutation.isPending || generateMutation.isPending}*/}
-        {/*  variant="primary"*/}
-        {/*>*/}
-        {/*  Save Changes*/}
-        {/*</Button>*/}
+        <Button
+          onClick={handleSubmit(onSubmit)}
+          isDisabled={!isDirty}
+          isLoading={isPending}
+          variant="primary"
+        >
+          Change Password
+        </Button>
       </Flex>
     </VStack>
   );

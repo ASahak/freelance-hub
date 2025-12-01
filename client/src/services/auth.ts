@@ -97,3 +97,7 @@ export const disable2fa = async (password: string): Promise<IUser> => {
     throw new Error(`Disable 2fa failed: ${errorMessage}`);
   }
 };
+
+export const changePassword = async (data: any): Promise<void> => {
+  await api.post('/auth/change-password', data);
+};

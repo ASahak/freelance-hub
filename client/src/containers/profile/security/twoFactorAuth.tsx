@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -25,10 +25,11 @@ export const TwoFactorAuth = memo(() => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const { openPopup } = usePopup();
-  const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false)
+  const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
 
   const updateMutation = useMutation({
-    mutationFn: ({ isTwoFactorEnabled }: { isTwoFactorEnabled: boolean }) => updateUser(user!.id, { isTwoFactorEnabled }),
+    mutationFn: ({ isTwoFactorEnabled }: { isTwoFactorEnabled: boolean }) =>
+      updateUser(user!.id, { isTwoFactorEnabled }),
     onSuccess: (updatedUser: User) => {
       toast({ title: 'Profile updated', status: 'success' });
       // Update React Query cache
@@ -55,25 +56,18 @@ export const TwoFactorAuth = memo(() => {
     },
   });
 
-  const onChange = () => {
-    setIsTwoFactorEnabled(prevState => !prevState)
-  }
-
-  // const onSubmit = (data: FormData) => {
-  //   const changedData = getDirtyValues(dirtyFields, data);
-  //
-  //   if (Object.keys(changedData).length > 0) {
-  //     if (Object.hasOwn(changedData, 'isTwoFactorEnabled')) {
-  //       if (changedData.isTwoFactorEnabled) {
-  //         return generateMutation.mutate();
-  //       } else {
-  //         return openPopup(POPUP_TYPES.DISABLE_2FA, '');
-  //       }
-  //     }
-  //
-  //     updateMutation.mutate(changedData);
-  //   }
-  // };
+  const onToggle = () => {
+    if (isTwoFactorEnabled) {
+      openPopup(POPUP_TYPES.DISABLE_2FA, '', {
+        onDisabled: () => {
+          setIsTwoFactorEnabled(false);
+        },
+      });
+    } else {
+      setIsTwoFactorEnabled(true);
+      generateMutation.mutate();
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -82,29 +76,29 @@ export const TwoFactorAuth = memo(() => {
   }, [user]);
 
   return (
-    <VStack spacing={4} alignItems="start" w="full">
+    <VStack spacing={8} alignItems="start" w="full">
       <Heading mb={4} fontSize="2.2rem" fontWeight={500}>
         Two factor authentication
       </Heading>
-        <Box>
-          <FormControl display="flex" alignItems="center" gap={4}>
-            <Switch
-              size="lg"
-              id="two-factor"
-              isChecked={isTwoFactorEnabled}
-              onChange={onChange}
-            />
-            <FormLabel
-              htmlFor="two-factor"
-              mb="0"
-              fontSize="1.4rem"
-              fontWeight={400}
-              cursor="pointer"
-            >
-              {isTwoFactorEnabled ? 'Disable' : 'Enable'} 2fa
-            </FormLabel>
-          </FormControl>
-        </Box>
+      <Box>
+        <FormControl display="flex" alignItems="center" gap={4}>
+          <Switch
+            size="lg"
+            id="two-factor"
+            isChecked={isTwoFactorEnabled}
+            onChange={onToggle}
+          />
+          <FormLabel
+            htmlFor="two-factor"
+            mb="0"
+            fontSize="1.4rem"
+            fontWeight={400}
+            cursor="pointer"
+          >
+            {isTwoFactorEnabled ? 'Disable' : 'Enable'} 2fa
+          </FormLabel>
+        </FormControl>
+      </Box>
     </VStack>
   );
 });

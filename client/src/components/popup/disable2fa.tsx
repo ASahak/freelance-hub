@@ -7,7 +7,10 @@ import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { useState } from 'react';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 
-export const Disable2fa = () => {
+type IProps = {
+  onDisabled: () => void;
+};
+export const Disable2fa = ({ onDisabled }: IProps) => {
   const { onClose } = usePopup();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -17,6 +20,7 @@ export const Disable2fa = () => {
     mutationFn: disable2fa,
     onSuccess: (updatedUser) => {
       queryClient.setQueryData(QUERY_FACTORY.me, updatedUser);
+      onDisabled();
       toast({ title: '2FA Disabled', status: 'success' });
       onClose();
       setPassword('');

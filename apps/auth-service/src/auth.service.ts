@@ -19,7 +19,6 @@ import {
   REFRESH_TOKEN_EXPIRES_IN,
 } from '@apps/auth-service/src/common/constants/global';
 import { ConfigService } from '@nestjs/config';
-import { ROUNDS_OF_HASHING } from '@apps/users-service/src/common/constants/global';
 
 @Injectable()
 export class AuthService {
@@ -30,8 +29,14 @@ export class AuthService {
   ) {}
 
   async changePassword(userId: string, oldPass: string, newPass: string) {
+    if (oldPass === newPass) {
+      throw new BadRequestException(
+        'New password cannot be the same as the current password.',
+      );
+    }
+
     const user = await firstValueFrom(
-      this.usersClient.send({ cmd: 'findUser' }, { id: userId })
+      this.usersClient.send({ cmd: 'findUser' }, { id: userId }),
     );
 
     if (!user) {
@@ -40,7 +45,7 @@ export class AuthService {
 
     if (user.provider !== AuthProvider.native) {
       throw new BadRequestException(
-        `You cannot change your password because you logged in via ${user.provider}.`
+        `You cannot change your password because you logged in via ${user.provider}.`,
       );
     }
 
@@ -49,13 +54,11 @@ export class AuthService {
       throw new UnauthorizedException('Current password is incorrect');
     }
 
-    const hashedNewPassword = await bcrypt.hash(newPass, ROUNDS_OF_HASHING);
-
     return await firstValueFrom(
       this.usersClient.send(
         { cmd: 'updateUser' },
-        { id: userId, data: { password: hashedNewPassword } }
-      )
+        { id: userId, data: { password: newPass } },
+      ),
     );
   }
 
