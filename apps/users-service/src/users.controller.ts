@@ -78,4 +78,21 @@ export class UsersController {
   findUserByRefreshToken(@Payload() data: { refreshToken: string }) {
     return this.usersService.findUserByRefreshToken(data.refreshToken);
   }
+
+  @MessagePattern({ cmd: 'setPasswordResetToken' })
+  setPasswordResetToken(
+    @Payload() data: { userId: string; hashedToken: string; expiresAt: Date },
+  ) {
+    return this.usersService.update(data.userId, {
+      passwordResetTokenHash: data.hashedToken,
+      passwordResetExpiresAt: data.expiresAt,
+    });
+  }
+
+  @MessagePattern({ cmd: 'findUserByResetToken' })
+  findUserByResetToken(@Payload() data: { hashedToken: string }) {
+    return this.usersService.findOne({
+      passwordResetTokenHash: data.hashedToken,
+    });
+  }
 }

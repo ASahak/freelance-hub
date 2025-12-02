@@ -8,8 +8,9 @@ const publicOnlyRoutes = [ROUTES.SIGN_IN, ROUTES.SIGN_UP, ROUTES.VERIFY_2FA];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token');
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
+  const isSessionExpired = searchParams.get('reason') === 'session_expired';
   // (If user is NOT logged in, redirect them away from protected routes)
   const isAccessingProtectedRoute = protectedRoutes.some((path) =>
     pathname.startsWith(path),
@@ -31,9 +32,16 @@ export function middleware(request: NextRequest) {
   );
 
   if (isAccessingPublicOnlyRoute) {
-    if (token) {
+    if (token && !isSessionExpired) {
       // User is logged in, redirect them to their main page
       return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
+    }
+
+    if (isSessionExpired && token) {
+      const response = NextResponse.next();
+      response.cookies.delete('access_token');
+      response.cookies.delete('refresh_token');
+      return response;
     }
   }
 

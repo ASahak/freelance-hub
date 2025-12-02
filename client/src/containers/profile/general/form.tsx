@@ -69,7 +69,7 @@ export const PublicProfileForm = memo(() => {
     <FormProvider {...methods}>
       <VStack spacing={8} alignItems="start" w="full">
         <VStack spacing={8} flex={1} w="full" alignItems="start">
-          <FullName/>
+          <FullName />
         </VStack>
         <Flex justify="flex-end" w="full">
           <Button

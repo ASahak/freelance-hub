@@ -13,6 +13,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const isTokenExpiredError = error.response.data.error === 'TokenExpired';
+
     if (
       error.response.status === 401 &&
       isTokenExpiredError &&
@@ -36,8 +37,11 @@ api.interceptors.response.use(
         // (You would redirect to /login here)
         console.error('Refresh token failed, logging out');
 
-        if (typeof window !== 'undefined') {
-          window.location.href = ROUTES.SIGN_IN;
+        if (
+          typeof window !== 'undefined' &&
+          window.location.pathname !== ROUTES.SIGN_IN
+        ) {
+          window.location.href = `${ROUTES.SIGN_IN}?reason=session_expired`;
         }
 
         const errorMessage = getErrorMessage(refreshError);

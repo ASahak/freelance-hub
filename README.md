@@ -97,6 +97,12 @@ This command will sync your Prisma schema with the database, creating all necess
   npx prisma studio
 ```
 
+### Example
+```
+docker-compose exec users-service npx prisma migrate dev --schema=./apps/users-service/prisma/schema.prisma --name some_name 
+```
+
+
 
 ## API Documentation
 This project includes a Swagger UI for easy API exploration and testing. Once the backend server is running, navigate to the following URL in your browser:

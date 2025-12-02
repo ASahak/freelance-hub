@@ -91,11 +91,25 @@ export class AuthController {
           userId: req.user.id,
           oldPass: dto.currentPassword,
           newPass: dto.newPassword,
-        }
-      )
+        },
+      ),
     );
 
     return { success: true, message: 'Password updated successfully' };
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: { email: string }) {
+    return firstValueFrom(
+      this.authService.send({ cmd: 'forgot-password' }, { email: body.email }),
+    );
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: { token: string; newPassword: string }) {
+    return firstValueFrom(
+      this.authService.send({ cmd: 'reset-password' }, body),
+    );
   }
 
   @Post('2fa/disable')

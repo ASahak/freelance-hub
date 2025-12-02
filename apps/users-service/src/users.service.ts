@@ -20,7 +20,11 @@ export class UsersService {
     return this.userRepository.findAll();
   }
 
-  findOne(where: { id?: string; email?: string }) {
+  findOne(where: {
+    id?: string;
+    email?: string;
+    passwordResetTokenHash?: string;
+  }) {
     return this.userRepository.findOne(where);
   }
 

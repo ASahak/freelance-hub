@@ -13,7 +13,10 @@ export const ChangePasswordSchema = yup.object().shape({
     .string()
     .required('New password is required.')
     .min(8, 'Password must be at least 8 characters long.')
-    .notOneOf([yup.ref('currentPassword')], 'New password cannot be the same as the old one.'),
+    .notOneOf(
+      [yup.ref('currentPassword')],
+      'New password cannot be the same as the old one.',
+    ),
   confirmNewPassword: yup
     .string()
     .oneOf([yup.ref('newPassword')], 'Passwords must match.')
@@ -40,6 +43,28 @@ export const SignInSchema = yup.object().shape({
     .string()
     .required('Password is required.')
     .min(8, 'Password must be at least 8 characters long.'),
+});
+
+export const ForgotPasswordSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Please enter a valid email address.')
+    .required('Email is required.'),
+});
+
+export const ResetPasswordSchema = yup.object().shape({
+  newPassword: yup
+    .string()
+    .required('New password is required.')
+    .min(8, 'Password must be at least 8 characters long.')
+    .notOneOf(
+      [yup.ref('currentPassword')],
+      'New password cannot be the same as the old one.',
+    ),
+  confirmNewPassword: yup
+    .string()
+    .oneOf([yup.ref('newPassword')], 'Passwords must match.')
+    .required('Please confirm your new password.'),
 });
 
 export const SignUpSchema = SignInSchema.concat(

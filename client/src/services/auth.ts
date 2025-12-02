@@ -101,3 +101,32 @@ export const disable2fa = async (password: string): Promise<IUser> => {
 export const changePassword = async (data: any): Promise<void> => {
   await api.post('/auth/change-password', data);
 };
+
+export const forgotPassword = async (data: { email: string }) => {
+  try {
+    return await api.post('/auth/forgot-password', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Forgot password failed: ${errorMessage}`);
+  }
+};
+
+export const resetPassword = async (data: {
+  token: string;
+  newPassword: string;
+}) => {
+  try {
+    return await api.post('/auth/reset-password', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Reset password failed: ${errorMessage}`);
+  }
+};

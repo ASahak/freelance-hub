@@ -31,7 +31,7 @@ services:
       - ./apps/api-gateway/.env
     depends_on:
       - users-service
-#      - auth-service
+      - auth-service
 
   users-service:
     build:
