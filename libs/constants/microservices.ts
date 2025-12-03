@@ -9,4 +9,9 @@ export const MICROSERVICES = {
     host: 'auth-service',
     port: 5002,
   },
+  Mail: {
+    name: 'MailService',
+    host: 'mail-service',
+    port: 5003,
+  },
 };

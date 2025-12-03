@@ -10,13 +10,15 @@ import * as bcrypt from 'bcrypt';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { authenticator } from 'otplib';
-import * as crypto from 'crypto-js';
+import * as cryptoJS from 'crypto-js';
+import * as crypto from 'crypto';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
 import { JwtPayload, Tokens } from './common/types';
 import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
+  ROUNDS_OF_HASHING,
 } from '@apps/auth-service/src/common/constants/global';
 import { ConfigService } from '@nestjs/config';
 
@@ -25,8 +27,87 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     @Inject(MICROSERVICES.Users.name) private readonly usersClient: ClientProxy,
+    @Inject(MICROSERVICES.Mail.name) private readonly mailClient: ClientProxy,
     private readonly configService: ConfigService,
   ) {}
+
+  async forgotPassword(email: string) {
+    const user = await firstValueFrom(
+      this.usersClient.send({ cmd: 'findUser' }, { email }),
+    );
+
+    if (!user || user.provider !== AuthProvider.native) {
+      return { message: 'If that email exists, a reset link has been sent.' };
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1hour
+
+    await firstValueFrom(
+      this.usersClient.send(
+        { cmd: 'setPasswordResetToken' },
+        {
+          userId: user.id,
+          hashedToken,
+          expiresAt,
+        },
+      ),
+    );
+
+    const resetLink = `${this.configService.get('appOrigin')}/reset-password?token=${resetToken}`;
+    console.log(`[EMAIL SERVICE MOCK] To: ${email}, Link: ${resetLink}`);
+
+    await firstValueFrom(
+      this.mailClient.send(
+        { cmd: 'sendResetPassword' },
+        {
+          email,
+          url: resetLink,
+        },
+      ),
+    );
+
+    return { message: 'If that email exists, a reset link has been sent.' };
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await firstValueFrom(
+      this.usersClient.send({ cmd: 'findUserByResetToken' }, { hashedToken }),
+    );
+
+    if (!user) {
+      throw new BadRequestException('Token is invalid or expired');
+    }
+
+    if (new Date() > new Date(user.passwordResetExpiresAt)) {
+      throw new BadRequestException('Token is invalid or expired');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, ROUNDS_OF_HASHING);
+
+    await firstValueFrom(
+      this.usersClient.send(
+        { cmd: 'updateUser' },
+        {
+          id: user.id,
+          data: {
+            password: hashedPassword,
+            passwordResetTokenHash: null,
+            passwordResetExpiresAt: null,
+          },
+        },
+      ),
+    );
+
+    return { message: 'Password reset successfully' };
+  }
 
   async changePassword(userId: string, oldPass: string, newPass: string) {
     if (oldPass === newPass) {
@@ -63,18 +144,18 @@ export class AuthService {
   }
 
   private encryptSecret(secret: string): string {
-    return crypto.AES.encrypt(
+    return cryptoJS.AES.encrypt(
       secret,
       this.configService.get('twoFactorSecret')!,
     ).toString();
   }
 
   private decryptSecret(encryptedSecret: string): string {
-    const bytes = crypto.AES.decrypt(
+    const bytes = cryptoJS.AES.decrypt(
       encryptedSecret,
       this.configService.get('twoFactorSecret')!,
     );
-    return bytes.toString(crypto.enc.Utf8);
+    return bytes.toString(cryptoJS.enc.Utf8);
   }
 
   async generateTwoFactorSecret(userId: string, email: string) {

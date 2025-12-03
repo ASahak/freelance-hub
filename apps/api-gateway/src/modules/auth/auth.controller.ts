@@ -53,7 +53,7 @@ export class AuthController {
     console.log(`Generating qr for: ${req.user.id}`, req.user);
     const { otpAuthUrl } = await firstValueFrom(
       this.authService.send(
-        { cmd: '2fa-generate-secret' },
+        { cmd: '2faGenerateSecret' },
         { userId: req.user.id, email: req.user.email },
       ),
     );
@@ -70,7 +70,7 @@ export class AuthController {
   ) {
     return firstValueFrom(
       this.authService.send(
-        { cmd: '2fa-verify-and-enable' },
+        { cmd: '2faVerifyAndEnable' },
         { userId: req.user.id, code },
       ),
     );
@@ -86,7 +86,7 @@ export class AuthController {
   ) {
     await firstValueFrom(
       this.authService.send(
-        { cmd: 'change-password' },
+        { cmd: 'changePassword' },
         {
           userId: req.user.id,
           oldPass: dto.currentPassword,
@@ -101,14 +101,14 @@ export class AuthController {
   @Post('forgot-password')
   async forgotPassword(@Body() body: { email: string }) {
     return firstValueFrom(
-      this.authService.send({ cmd: 'forgot-password' }, { email: body.email }),
+      this.authService.send({ cmd: 'forgotPassword' }, { email: body.email }),
     );
   }
 
   @Post('reset-password')
   async resetPassword(@Body() body: { token: string; newPassword: string }) {
     return firstValueFrom(
-      this.authService.send({ cmd: 'reset-password' }, body),
+      this.authService.send({ cmd: 'resetPassword' }, body),
     );
   }
 
@@ -121,7 +121,7 @@ export class AuthController {
   ) {
     return firstValueFrom(
       this.authService.send(
-        { cmd: '2fa-disable' },
+        { cmd: '2faDisable' },
         { userId: req.user.id, password: body.password },
       ),
     );
@@ -134,7 +134,7 @@ export class AuthController {
   ) {
     // This call will fail if the code is wrong
     const { user, accessToken, refreshToken } = await firstValueFrom(
-      this.authService.send({ cmd: '2fa-login' }, { userId, code }),
+      this.authService.send({ cmd: '2faLogin' }, { userId, code }),
     );
 
     // If successful, set the cookies and return the user

@@ -34,6 +34,7 @@ const ForgotPassword = () => {
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     mode: 'onSubmit',
@@ -45,11 +46,12 @@ const ForgotPassword = () => {
   const toast = useToast();
   const { mutate, isPending } = useMutation({
     mutationFn: forgotPassword,
-    onSuccess: () => {
+    onSuccess: (message: string) => {
       toast({
-        title: 'Check your email!',
+        title: message,
         status: 'success',
       });
+      reset({ email: '' });
     },
     onError: (error) => {
       toast({

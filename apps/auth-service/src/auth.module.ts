@@ -19,6 +19,14 @@ import configuration from './config/configuration';
     PassportModule,
     ClientsModule.register([
       {
+        name: MICROSERVICES.Mail.name,
+        transport: Transport.TCP,
+        options: {
+          host: MICROSERVICES.Mail.host,
+          port: MICROSERVICES.Mail.port,
+        },
+      },
+      {
         name: MICROSERVICES.Users.name,
         transport: Transport.TCP,
         options: {

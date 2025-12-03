@@ -104,11 +104,12 @@ export const changePassword = async (data: any): Promise<void> => {
 
 export const forgotPassword = async (data: { email: string }) => {
   try {
-    return await api.post('/auth/forgot-password', data, {
+    const { data: res } = await api.post('/auth/forgot-password', data, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    return res.message || 'Check your email!';
   } catch (err: any) {
     const errorMessage = getErrorMessage(err);
     throw new Error(`Forgot password failed: ${errorMessage}`);

@@ -1,0 +1,22 @@
+node_modules
+
+dist
+dest
+build
+
+.husky
+
+.vscode
+.idea
+
+# Test files
+**/*.spec.js
+**/*spec.js
+**/*.spec.ts
+*spec.ts
+**/*.test.js
+**/*test.js
+**/*.test.ts
+**/*test.ts
+**/__tests__/**
+
