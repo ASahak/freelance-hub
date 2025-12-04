@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { UserRole, AuthProvider } from '@libs/types/user.type';
 
 export class RegisterUserDto {
@@ -39,10 +33,6 @@ export class RegisterUserDto {
   @IsOptional()
   @IsString()
   avatarUrl: string | null;
-
-  @ApiProperty({ required: false, type: Boolean, default: false })
-  @IsBoolean()
-  isTwoFactorEnabled: boolean;
 }
 
 export class CreateUserDto {
@@ -76,8 +66,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   avatarUrl?: string | null;
-
-  @ApiProperty({ required: false, type: Boolean, default: false })
-  @IsBoolean()
-  isTwoFactorEnabled: boolean;
 }

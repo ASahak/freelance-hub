@@ -121,11 +121,12 @@ export const resetPassword = async (data: {
   newPassword: string;
 }) => {
   try {
-    return await api.post('/auth/reset-password', data, {
+    const { data: res } = await api.post('/auth/reset-password', data, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    return res.message || 'Password changed!';
   } catch (err: any) {
     const errorMessage = getErrorMessage(err);
     throw new Error(`Reset password failed: ${errorMessage}`);

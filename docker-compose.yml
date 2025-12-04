@@ -65,6 +65,7 @@ services:
     depends_on:
       - db
       - users-service
+      - mail-service
 
   mail-service:
     build:

@@ -18,8 +18,7 @@ import { JwtPayload, Tokens } from './common/types';
 import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
-  ROUNDS_OF_HASHING,
-} from '@apps/auth-service/src/common/constants/global';
+} from './common/constants/global';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -59,7 +58,7 @@ export class AuthService {
       ),
     );
 
-    const resetLink = `${this.configService.get('appOrigin')}/reset-password?token=${resetToken}`;
+    const resetLink = `${this.configService.get('appOrigin')}/change-password?token=${resetToken}`;
     console.log(`[EMAIL SERVICE MOCK] To: ${email}, Link: ${resetLink}`);
 
     await firstValueFrom(
@@ -82,15 +81,9 @@ export class AuthService {
       this.usersClient.send({ cmd: 'findUserByResetToken' }, { hashedToken }),
     );
 
-    if (!user) {
+    if (!user || new Date() > new Date(user.passwordResetExpiresAt)) {
       throw new BadRequestException('Token is invalid or expired');
     }
-
-    if (new Date() > new Date(user.passwordResetExpiresAt)) {
-      throw new BadRequestException('Token is invalid or expired');
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, ROUNDS_OF_HASHING);
 
     await firstValueFrom(
       this.usersClient.send(
@@ -98,14 +91,14 @@ export class AuthService {
         {
           id: user.id,
           data: {
-            password: hashedPassword,
+            password: newPassword,
             passwordResetTokenHash: null,
             passwordResetExpiresAt: null,
           },
         },
       ),
     );
-
+    console.log('Password reset successfully');
     return { message: 'Password reset successfully' };
   }
 

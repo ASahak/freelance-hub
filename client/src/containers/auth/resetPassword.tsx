@@ -19,6 +19,7 @@ import {
   useToast,
   InputRightElement,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash, FaLock } from 'react-icons/fa';
 import { Controller, useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
@@ -36,10 +37,12 @@ type FormData = yup.InferType<typeof ResetPasswordSchema>;
 const ResetPassword = () => {
   const [showNew, setShowNew] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     mode: 'onSubmit',
@@ -52,11 +55,16 @@ const ResetPassword = () => {
   const toast = useToast();
   const { mutate, isPending } = useMutation({
     mutationFn: resetPassword,
-    onSuccess: () => {
+    onSuccess: (message: string) => {
       toast({
-        title: 'Check your email!',
+        title: message,
         status: 'success',
       });
+      reset({
+        newPassword: '',
+        confirmNewPassword: '',
+      });
+      router.push(ROUTES.SIGN_IN);
     },
     onError: (error) => {
       toast({

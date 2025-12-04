@@ -6,8 +6,8 @@ import { MailService } from './mail.service';
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @MessagePattern('sendResetPassword')
+  @MessagePattern({ cmd: 'sendResetPassword' })
   async handleResetPassword(@Payload() data: { email: string; url: string }) {
-    await this.mailService.sendResetPassword(data.email, data.url);
+    return await this.mailService.sendResetPassword(data.email, data.url);
   }
 }

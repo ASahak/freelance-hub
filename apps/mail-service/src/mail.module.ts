@@ -30,7 +30,7 @@ import configuration from './config/configuration';
           from: '"No Reply" <noreply@freelancehub.com>',
         },
         template: {
-          dir: join(__dirname, 'templates'),
+          dir: join(process.cwd(), 'dist', 'templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,

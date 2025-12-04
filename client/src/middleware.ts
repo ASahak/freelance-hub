@@ -4,7 +4,13 @@ import { ROUTES } from '@/common/constants/routes';
 
 export const protectedRoutes = [ROUTES.PROFILE];
 
-const publicOnlyRoutes = [ROUTES.SIGN_IN, ROUTES.SIGN_UP, ROUTES.VERIFY_2FA];
+const publicOnlyRoutes = [
+  ROUTES.SIGN_IN,
+  ROUTES.SIGN_UP,
+  ROUTES.VERIFY_2FA,
+  ROUTES.FORGOT_PASS,
+  ROUTES.CHANGE_PASS,
+];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token');

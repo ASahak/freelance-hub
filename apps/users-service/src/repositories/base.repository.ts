@@ -4,9 +4,12 @@ import { IBaseRepository } from './interfaces/base.repository.interface';
 import { IDelegate } from './interfaces/delegate.interface';
 
 @Injectable()
-export abstract class BaseRepository<T, WhereInput, CreateInput, UpdateInput>
-  implements IBaseRepository<T, WhereInput, CreateInput, UpdateInput>
-{
+export abstract class BaseRepository<
+  T,
+  WhereInput,
+  CreateInput,
+  UpdateInput,
+> implements IBaseRepository<T, WhereInput, CreateInput, UpdateInput> {
   protected abstract readonly delegate: IDelegate<
     T,
     WhereInput,

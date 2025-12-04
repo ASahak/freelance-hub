@@ -13,5 +13,6 @@ export class MailService {
       context: { url },
     });
     console.log(`Email sent to ${email}`);
+    return { success: true };
   }
 }

@@ -6,5 +6,5 @@ export default () => ({
   host: MICROSERVICES.Mail.host,
   mailHost: process.env.MAIL_HOST,
   mailUser: process.env.MAIL_USER,
-  mailPassword: process.env.MAIL_PASSWRORD,
+  mailPassword: process.env.MAIL_PASSWORD,
 });

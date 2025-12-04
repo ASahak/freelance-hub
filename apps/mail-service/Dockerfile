@@ -6,6 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
+COPY ./apps/mail-service/src/templates ./src/templates
 COPY ./apps/mail-service/src/templates ./dist/templates
 
 RUN npm install --save-optional @css-inline/css-inline-linux-x64-musl
