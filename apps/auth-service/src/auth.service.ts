@@ -14,12 +14,13 @@ import * as cryptoJS from 'crypto-js';
 import * as crypto from 'crypto';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
-import { JwtPayload, Tokens } from './common/types';
+import { Tokens } from './common/types';
 import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
 } from './common/constants/global';
 import { ConfigService } from '@nestjs/config';
+import { IMeta } from '@libs/types/session.type';
 
 @Injectable()
 export class AuthService {
@@ -203,7 +204,7 @@ export class AuthService {
     }
 
     // Code is valid, NOW we can issue tokens
-    return this.getTokens(user.id, user.email); // Assuming getTokens issues both access/refresh tokens
+    return this.getTokens({ userId: user.id, email: user.email }); // Assuming getTokens issues both access/refresh tokens
   }
 
   async disable2FA(userId: string, password: string) {
@@ -224,6 +225,7 @@ export class AuthService {
   async login(
     email: string,
     pass: string,
+    meta: IMeta
   ): Promise<
     | { user: User; accessToken: string; refreshToken: string }
     | { twoFactorRequired: boolean; userId: string }
@@ -250,17 +252,25 @@ export class AuthService {
         return { twoFactorRequired: true, userId: user.id };
       }
 
-      const { accessToken, refreshToken } = await this.getTokens(
-        user.id,
+      const { refreshToken } = await this.getTokens({
+        userId: user.id,
         email,
+      });
+
+      const session = await firstValueFrom(
+        this.usersClient.send({ cmd: 'createSession' }, {
+          userId: user.id,
+          refreshToken,
+          ip: meta.ip,
+          userAgent: meta.userAgent
+        })
       );
 
-      await firstValueFrom(
-        this.usersClient.send(
-          { cmd: 'setRefreshToken' },
-          { userId: user.id, refreshToken },
-        ),
-      );
+      const { accessToken } = await this.getTokens({
+        userId: user.id,
+        sessionId: session.id,
+        email,
+      });
 
       return { accessToken, refreshToken, user };
     } else {
@@ -268,12 +278,7 @@ export class AuthService {
     }
   }
 
-  async getTokens(userId: string, email: string): Promise<Tokens> {
-    const jwtPayload: JwtPayload = {
-      id: userId,
-      email: email,
-    };
-
+  async getTokens(jwtPayload: { userId: string, email: string, sessionId?: string }): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
         expiresIn: ACCESS_TOKEN_EXPIRES_IN,
@@ -289,9 +294,9 @@ export class AuthService {
     };
   }
 
-  async logout(userId: string) {
+  async logout(sessionId: string, userId: string) {
     return firstValueFrom(
-      this.usersClient.send({ cmd: 'clearRefreshToken' }, { userId }),
+      this.usersClient.send({ cmd: 'deleteSession' }, { sessionId, userId }),
     );
   }
 
@@ -300,10 +305,18 @@ export class AuthService {
       throw new UnauthorizedException('No refresh token');
     }
 
+    const session = await firstValueFrom(
+      this.usersClient.send({ cmd: 'findSessionByHash' }, { refreshToken })
+    );
+
+    if (!session || new Date() > new Date(session.expiresAt)) {
+      throw new UnauthorizedException('Session expired');
+    }
+
     const user = await firstValueFrom(
       this.usersClient.send(
-        { cmd: 'findUserByRefreshToken' },
-        { refreshToken },
+        { cmd: 'findUser' },
+        { id: session.id },
       ),
     );
 
@@ -313,7 +326,7 @@ export class AuthService {
       );
     }
 
-    const { accessToken } = await this.getTokens(user.id, user.email);
+    const { accessToken } = await this.getTokens({ userId: user.id, email: user.email, sessionId: session.id });
 
     return { accessToken };
   }

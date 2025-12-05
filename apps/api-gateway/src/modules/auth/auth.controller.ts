@@ -1,9 +1,9 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   HttpStatus,
-  Inject,
+  Inject, Param,
   Post,
   Req,
   Res,
@@ -25,15 +25,16 @@ import { FilesService } from '../files/files.service';
 import { CookieService } from '../cookie/cookie.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { getMeta } from '@apps/api-gateway/src/utils/global';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
   constructor(
     @Inject(MICROSERVICES.Auth.name)
-    private readonly authService: ClientProxy,
+    private readonly authClient: ClientProxy,
     @Inject(MICROSERVICES.Users.name)
-    private readonly usersService: ClientProxy,
+    private readonly usersClient: ClientProxy,
     private readonly filesService: FilesService,
     private readonly cookieService: CookieService,
     private configService: ConfigService,
@@ -52,7 +53,7 @@ export class AuthController {
   async generate2FA(@Req() req: AuthenticatedRequest) {
     console.log(`Generating qr for: ${req.user.id}`, req.user);
     const { otpAuthUrl } = await firstValueFrom(
-      this.authService.send(
+      this.authClient.send(
         { cmd: '2faGenerateSecret' },
         { userId: req.user.id, email: req.user.email },
       ),
@@ -69,7 +70,7 @@ export class AuthController {
     @Body() { code }: { code: string },
   ) {
     return firstValueFrom(
-      this.authService.send(
+      this.authClient.send(
         { cmd: '2faVerifyAndEnable' },
         { userId: req.user.id, code },
       ),
@@ -85,7 +86,7 @@ export class AuthController {
     @Body() dto: ChangePasswordDto,
   ) {
     await firstValueFrom(
-      this.authService.send(
+      this.authClient.send(
         { cmd: 'changePassword' },
         {
           userId: req.user.id,
@@ -101,14 +102,14 @@ export class AuthController {
   @Post('forgot-password')
   async forgotPassword(@Body() body: { email: string }) {
     return firstValueFrom(
-      this.authService.send({ cmd: 'forgotPassword' }, { email: body.email }),
+      this.authClient.send({ cmd: 'forgotPassword' }, { email: body.email }),
     );
   }
 
   @Post('reset-password')
   async resetPassword(@Body() body: { token: string; newPassword: string }) {
     return firstValueFrom(
-      this.authService.send({ cmd: 'resetPassword' }, body),
+      this.authClient.send({ cmd: 'resetPassword' }, body),
     );
   }
 
@@ -120,7 +121,7 @@ export class AuthController {
     @Body() body: { password: string },
   ) {
     return firstValueFrom(
-      this.authService.send(
+      this.authClient.send(
         { cmd: '2faDisable' },
         { userId: req.user.id, password: body.password },
       ),
@@ -134,7 +135,7 @@ export class AuthController {
   ) {
     // This call will fail if the code is wrong
     const { user, accessToken, refreshToken } = await firstValueFrom(
-      this.authService.send({ cmd: '2faLogin' }, { userId, code }),
+      this.authClient.send({ cmd: '2faLogin' }, { userId, code }),
     );
 
     // If successful, set the cookies and return the user
@@ -151,7 +152,7 @@ export class AuthController {
   ) {
     const refreshToken = req.cookies['refresh_token'];
     const { accessToken } = await firstValueFrom(
-      this.authService.send({ cmd: 'refreshToken' }, { token: refreshToken }),
+      this.authClient.send({ cmd: 'refreshToken' }, { token: refreshToken }),
     );
 
     this.cookieService.setTokenCookie(res, accessToken);
@@ -160,12 +161,11 @@ export class AuthController {
 
   @Post('login')
   @ApiOkResponse({ type: UserEntity })
-  async login(
-    @Body() { email, password }: LoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async login(@Req() req: Request, @Body() { email, password }: LoginDto, @Res({ passthrough: true }) res: Response) {
+    const meta = getMeta(req);
+
     const response = await firstValueFrom(
-      this.authService.send({ cmd: 'login' }, { email, password }),
+      this.authClient.send({ cmd: 'login' }, { email, password, meta }),
     );
 
     if (response.twoFactorRequired) {
@@ -183,6 +183,29 @@ export class AuthController {
     return new UserEntity(user);
   }
 
+  @Get('sessions')
+  @UseGuards(JwtAuthGuard)
+  async getActiveSessions(@Req() req: AuthenticatedRequest) {
+    const currentSessionId = req.user['sessionId'];
+
+    const sessions = await firstValueFrom(
+      this.usersClient.send({ cmd: 'getUserSessions' }, { userId: req.user.id })
+    );
+
+    return sessions.map(s => ({
+      ...s,
+      isCurrent: s.id === currentSessionId
+    }));
+  }
+
+  @Delete('sessions/:id')
+  @UseGuards(JwtAuthGuard)
+  async revokeSession(@Param('id') sessionId: string, @Req() req: AuthenticatedRequest) {
+    return firstValueFrom(
+      this.usersClient.send({ cmd: 'deleteSession' }, { sessionId, userId: req.user.id })
+    );
+  }
+
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ description: 'User logged out successfully.' })
@@ -190,8 +213,10 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const sessionId = req.user['sessionId'];
+
     await firstValueFrom(
-      this.authService.send({ cmd: 'logout' }, { userId: req.user.id }),
+      this.authClient.send({ cmd: 'logout' }, { userId: req.user.id, sessionId }),
     );
 
     this.cookieService.clearTokensCookie(res);
@@ -205,7 +230,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await firstValueFrom(
-      this.authService.send(
+      this.authClient.send(
         { cmd: 'registerUser' },
         { ...registerUserDto, provider: AuthProvider.native },
       ),
@@ -225,11 +250,11 @@ export class AuthController {
   ) {
     try {
       let user = await firstValueFrom(
-        this.usersService.send({ cmd: 'findUser' }, { email: req.user.email }),
+        this.usersClient.send({ cmd: 'findUser' }, { email: req.user.email }),
       );
       if (!user) {
         user = await firstValueFrom(
-          this.authService.send(
+          this.authClient.send(
             { cmd: 'registerUser' },
             {
               provider: AuthProvider.google,
@@ -246,7 +271,7 @@ export class AuthController {
               req.user.avatarUrl,
             );
             await firstValueFrom(
-              this.usersService.send(
+              this.usersClient.send(
                 { cmd: 'updateUser' },
                 { id: user.id, data: { avatarUrl } },
               ),
@@ -258,7 +283,7 @@ export class AuthController {
       }
 
       const { accessToken, refreshToken } = await firstValueFrom(
-        this.authService.send(
+        this.authClient.send(
           { cmd: 'getTokens' },
           {
             email: req.user.email,

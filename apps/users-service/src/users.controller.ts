@@ -64,16 +64,6 @@ export class UsersController {
     return await this.usersService.remove(id);
   }
 
-  @MessagePattern({ cmd: 'setRefreshToken' })
-  setRefreshToken(@Payload() data: { userId: string; refreshToken: string }) {
-    return this.usersService.setRefreshToken(data.userId, data.refreshToken);
-  }
-
-  @MessagePattern({ cmd: 'clearRefreshToken' })
-  clearRefreshToken(@Payload() data: { userId: string }) {
-    return this.usersService.clearRefreshToken(data.userId);
-  }
-
   @MessagePattern({ cmd: 'findUserByRefreshToken' })
   findUserByRefreshToken(@Payload() data: { refreshToken: string }) {
     return this.usersService.findUserByRefreshToken(data.refreshToken);
@@ -94,5 +84,30 @@ export class UsersController {
     return this.usersService.findOne({
       passwordResetTokenHash: data.hashedToken,
     });
+  }
+
+  @MessagePattern({ cmd: 'createSession' })
+  createSession(@Payload() data: { userId: string; refreshToken: string; expiresAt: Date; ip?: string; userAgent?: string }) {
+    return this.usersService.createSession(data);
+  }
+
+  @MessagePattern({ cmd: 'findSessionByHash' })
+  findSessionByHash(@Payload() data: { refreshToken: string }) {
+    return this.usersService.findSessionByHash(data.refreshToken);
+  }
+
+  @MessagePattern({ cmd: 'getUserSessions' })
+  getUserSessions(@Payload() data: { userId: string }) {
+    return this.usersService.getUserSessions(data.userId);
+  }
+
+  @MessagePattern({ cmd: 'deleteSession' })
+  deleteSession(@Payload() data: { sessionId: string; userId: string }) {
+    return this.usersService.deleteSession(data.sessionId, data.userId);
+  }
+
+  @MessagePattern({ cmd: 'deleteAllOtherSessions' })
+  deleteAllOtherSessions(@Payload() data: { userId: string; currentSessionId: string }) {
+    return this.usersService.deleteAllOtherSessions(data.userId, data.currentSessionId);
   }
 }

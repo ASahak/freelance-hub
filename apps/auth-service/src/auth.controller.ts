@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import type { User } from '@prisma/client';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { firstValueFrom } from 'rxjs';
+import { IMeta } from '@libs/types/session.type';
 
 @Controller('auth')
 export class AuthController {
@@ -57,9 +58,9 @@ export class AuthController {
 
   @MessagePattern({ cmd: 'login' })
   async login(
-    @Payload() { email, password }: { email: string; password: string },
+    @Payload() { email, password, meta }: { email: string; password: string, meta: IMeta },
   ) {
-    return await this.authService.login(email, password);
+    return await this.authService.login(email, password, meta);
   }
 
   @MessagePattern({ cmd: '2faDisable' })
@@ -84,11 +85,11 @@ export class AuthController {
 
   @MessagePattern({ cmd: 'getTokens' })
   getTokens(@Payload() data: { id: string; email: string }) {
-    return this.authService.getTokens(data.id, data.email);
+    return this.authService.getTokens({ userId: data.id, email: data.email });
   }
 
   @MessagePattern({ cmd: 'logout' })
-  logout(@Payload() data: { userId: string }) {
-    return this.authService.logout(data.userId);
+  logout(@Payload() data: { sessionId: string, userId: string }) {
+    return this.authService.logout(data.sessionId, data.userId);
   }
 }

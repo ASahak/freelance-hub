@@ -1,12 +1,17 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ROUNDS_OF_HASHING } from './common/constants/global';
 import { UserRepository } from './repositories/user.repository';
+import { SessionRepository } from './repositories/session.repository';
 import { User } from '@prisma/client';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UsersService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private readonly sessionRepository: SessionRepository,
+  ) {}
 
   async create(user: User) {
     if (user.password) {
@@ -43,17 +48,59 @@ export class UsersService {
     return this.userRepository.remove(id);
   }
 
-  async setRefreshToken(userId: string, hashedToken: string) {
-    return this.userRepository.update(userId, {
-      refreshToken: hashedToken,
+  async findUserByRefreshToken(hashedToken: string) {
+    return this.userRepository.findOne({ refreshToken: hashedToken });
+  }
+
+  async createSession(data: { userId: string; refreshToken: string; ip?: string; userAgent?: string }) {
+    return this.sessionRepository.create({
+      user: { connect: { id: data.userId } },
+      refreshToken: data.refreshToken,
+      ipAddress: data.ip,
+      userAgent: data.userAgent,
     });
   }
 
-  async clearRefreshToken(userId: string) {
-    return this.userRepository.update(userId, { refreshToken: null });
+  /**
+   * Finds a session by the refresh token hash.
+   */
+  async findSessionByHash(refreshToken: string) {
+    return this.sessionRepository.findOne({ refreshToken });
   }
 
-  async findUserByRefreshToken(hashedToken: string) {
-    return this.userRepository.findOne({ refreshToken: hashedToken });
+  /**
+   * Gets all sessions for a user (for the "Active Sessions" list).
+   */
+  async getUserSessions(userId: string) {
+    return this.sessionRepository.findAllByUserId(userId);
+  }
+
+  /**
+   * Deletes a specific session.
+   * CRITICAL: We must verify the session belongs to the user requesting the delete.
+   */
+  async deleteSession(sessionId: string, userId: string) {
+    const session = await this.sessionRepository.findOne({ id: sessionId });
+
+    if (!session) {
+      throw new RpcException(new NotFoundException('Session not found'));
+    }
+
+    if (session.userId !== userId) {
+      // If the session exists but belongs to someone else, do not delete it.
+      // Throwing NotFound is safer than Forbidden to avoid leaking info.
+      throw new RpcException(new NotFoundException('Session not found'));
+    }
+
+    return this.sessionRepository.remove(sessionId);
+  }
+
+  /**
+   * Deletes all sessions for a user EXCEPT the current one.
+   * Used for "Log out of all other devices".
+   */
+  async deleteAllOtherSessions(userId: string, currentSessionId: string) {
+    // This delegates to the custom method we added to SessionRepository
+    return this.sessionRepository.deleteManyExclude(userId, currentSessionId);
   }
 }

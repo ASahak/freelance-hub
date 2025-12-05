@@ -7,10 +7,11 @@ import { UserRepository } from './repositories/user.repository';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import configuration from './config/configuration';
+import { SessionRepository } from './repositories/session.repository';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, UserRepository],
+  providers: [UsersService, UserRepository, SessionRepository],
   imports: [
     PrismaModule,
     ConfigModule.forRoot({

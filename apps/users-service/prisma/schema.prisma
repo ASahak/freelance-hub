@@ -22,11 +22,25 @@ model User {
   role                   UserRole     @default(geek)
   jobs                   Job[]
   avatarUrl              String?
-  refreshToken           String?      @unique
   twoFactorSecret        String?
   isTwoFactorEnabled     Boolean      @default(false)
   passwordResetTokenHash String?      @unique
   passwordResetExpiresAt DateTime?
+  sessions               Session[]
+}
+
+model Session {
+  id           String  @id @default(cuid())
+  userId       String
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken String? @unique
+
+  createdAt  DateTime @default(now())
+  lastActive DateTime @default(now())
+
+  ipAddress  String?
+  userAgent  String?
+  deviceType String?
 }
 
 model Job {
