@@ -1,7 +1,10 @@
 import { Box } from '@chakra-ui/react';
-import { IWithChildren } from '@/common/types/global';
+import { IChildren } from '@/common/types/global';
 
-export const Tile = ({ children, ...rest }: Readonly<IWithChildren<any>>) => (
+export const Tile = ({
+  children,
+  ...rest
+}: Readonly<IChildren> & Record<string, any>) => (
   <Box
     p={6}
     rounded="md"

@@ -2,9 +2,9 @@ import { Container, Tile } from '@/components/ui';
 import { Divider, Grid, GridItem, VStack } from '@chakra-ui/react';
 import { Avatar } from '@/containers/profile/avatar';
 import { SectionsPanel } from '@/containers/profile/sectionsPanel';
-import { IWithChildren } from '@/common/types/global';
+import { IChildren } from '@/common/types/global';
 
-export default function ProfileLayout({ children }: IWithChildren<never>) {
+export default function ProfileLayout({ children }: IChildren) {
   return (
     <Container display="flex">
       <Grid

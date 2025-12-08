@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { IWithChildren } from '@/common/types/global';
+import { IChildren } from '@/common/types/global';
 import BaseLayout from '@/components/layout/base';
 
 export const metadata: Metadata = {
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   description: 'FreelanceHub' /* todo */,
 };
 
-export default function MainLayout({ children }: Readonly<IWithChildren<any>>) {
+export default function MainLayout({ children }: Readonly<IChildren>) {
   return <BaseLayout>{children}</BaseLayout>;
 }

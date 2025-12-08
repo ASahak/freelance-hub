@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { ChakraProvider, RootProvider } from '@/providers';
-import { IWithChildren } from '@/common/types/global';
+import { IChildren } from '@/common/types/global';
 import { User as IUser } from '@libs/types/user.type';
 
 async function getInitialUser(): Promise<IUser | null> {
@@ -30,9 +30,7 @@ async function getInitialUser(): Promise<IUser | null> {
   }
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<IWithChildren<any>>) {
+export default async function RootLayout({ children }: Readonly<IChildren>) {
   const cookieStore = await cookies();
   const initialUser = await getInitialUser();
 

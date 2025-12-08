@@ -3,10 +3,10 @@
 import { Flex, VStack } from '@chakra-ui/react';
 import Header from './header';
 import Footer from './footer';
-import { IWithChildren } from '@/common/types/global';
+import { IChildren } from '@/common/types/global';
 import { AnimatedPage } from '@/components/features';
 
-const BaseLayout = ({ children }: IWithChildren<any>) => {
+const BaseLayout = ({ children }: IChildren) => {
   return (
     <VStack as="main" h="100dvh" overflowX="hidden" spacing={0}>
       <Header />
