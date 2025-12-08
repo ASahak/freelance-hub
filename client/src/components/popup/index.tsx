@@ -20,6 +20,7 @@ import { useGlobalVariables } from '@/providers/globalVariables';
 import { POPUP_TYPES } from '@/common/constants/popup';
 import { Disable2fa } from './disable2fa';
 import { Qr2fa } from './qr2fa';
+import { Confirm } from './confirm';
 
 const overlayColor = '#1717177a'; // gray.800/50
 type IProps = {
@@ -41,6 +42,8 @@ function Popup({ isNested }: IProps) {
         return <Disable2fa {...(props as any)} />;
       case POPUP_TYPES.QR_FOR_2FA:
         return <Qr2fa {...(props as any)} />;
+      case POPUP_TYPES.CONFIRM:
+        return <Confirm {...(props as any)} />;
       default:
         return <div>Unknown popup type</div>;
     }

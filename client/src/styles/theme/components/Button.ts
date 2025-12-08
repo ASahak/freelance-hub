@@ -532,22 +532,21 @@ export default defineStyleConfig({
         bgColor: colorMode === 'dark' ? 'gray.560' : 'gray.60',
       },
     }),
-    secondary: ({ colorMode }) => ({
+    danger: {
       fontSize: '1.3rem',
       fontFamily: 'Montserrat, sans-serif',
       fontWeight: '600',
-      color: colorMode === 'dark' ? 'blue.250' : 'blue.300',
-      bg: colorMode === 'dark' ? '#2366FB14' : '#2366FB14',
-      border: 'none',
+      color: 'white',
+      bg: 'red.300',
       rounded: '0.6rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       h: 'auto',
       _hover: {
-        bgColor: colorMode === 'dark' ? 'gray.560' : 'gray.60',
+        bgColor: 'red.400',
       },
-    }),
+    },
   },
   defaultProps: {},
 });

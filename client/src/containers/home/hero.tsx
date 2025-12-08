@@ -34,7 +34,7 @@ export const Hero = () => {
           direction={{ base: 'column', sm: 'row' }}
         >
           <Button
-            size="lg"
+            size="md"
             variant="primary"
             onClick={() => router.push(ROUTES.GEEKS)}
           >

@@ -81,7 +81,6 @@ const SignIn = () => {
 
       queryClient.setQueryData(QUERY_FACTORY.me, null);
       await queryClient.invalidateQueries({ queryKey: QUERY_FACTORY.me });
-      console.log(redirectPath);
       router.push(redirectPath || ROUTES.HOME);
     },
     onError: (error) => {

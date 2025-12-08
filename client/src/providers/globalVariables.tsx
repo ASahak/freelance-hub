@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import { useBreakpointValue, useToast } from '@chakra-ui/react';
-import { IChildren } from '@/common/types/global';
+import { IWithChildren } from '@/common/types/global';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 export interface GlobalVariablesType {
@@ -35,7 +35,7 @@ export const useGlobalVariables = (): GlobalVariablesType => {
   return context;
 };
 
-export const GlobalVariablesProvider = ({ children }: IChildren) => {
+export const GlobalVariablesProvider = ({ children }: IWithChildren<never>) => {
   const [navDrawerIsOpen, setNavDrawerIsOpen] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();

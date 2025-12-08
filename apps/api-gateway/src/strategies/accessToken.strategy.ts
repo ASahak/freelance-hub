@@ -25,7 +25,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     configService: ConfigService,
     @Inject(MICROSERVICES.Users.name)
-    private readonly usersServiceClient: ClientProxy,
+    private readonly usersClient: ClientProxy,
   ) {
     super({
       jwtFromRequest: cookieExtractor,
@@ -33,18 +33,18 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { email: string }) {
+  async validate(payload: { email: string; sessionId: string }) {
     const user = await firstValueFrom(
-      this.usersServiceClient.send(
-        { cmd: 'findUser' },
-        { email: payload.email },
+      this.usersClient.send(
+        { cmd: 'validateSession' },
+        { sessionId: payload.sessionId },
       ),
     );
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Session invalidated');
     }
 
-    return user;
+    return { ...user, sessionId: payload.sessionId };
   }
 }

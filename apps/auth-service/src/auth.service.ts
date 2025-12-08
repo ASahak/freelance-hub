@@ -12,6 +12,7 @@ import { firstValueFrom } from 'rxjs';
 import { authenticator } from 'otplib';
 import * as cryptoJS from 'crypto-js';
 import * as crypto from 'crypto';
+import { UAParser } from 'ua-parser-js';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
 import { Tokens } from './common/types';
@@ -137,6 +138,37 @@ export class AuthService {
     );
   }
 
+  private async establishSession(user: User, meta: IMeta) {
+    const { refreshToken } = await this.getTokens({
+      userId: user.id,
+      email: user.email,
+    });
+
+    const parser = new UAParser(meta.userAgent);
+    const deviceType = parser.getDevice().type || 'desktop';
+
+    const session = await firstValueFrom(
+      this.usersClient.send(
+        { cmd: 'createSession' },
+        {
+          refreshToken,
+          deviceType,
+          userId: user.id,
+          ipAddress: meta.ip,
+          userAgent: meta.userAgent,
+        },
+      ),
+    );
+
+    const { accessToken } = await this.getTokens({
+      userId: user.id,
+      email: user.email,
+      sessionId: session.id,
+    });
+
+    return { user, accessToken, refreshToken };
+  }
+
   private encryptSecret(secret: string): string {
     return cryptoJS.AES.encrypt(
       secret,
@@ -188,7 +220,7 @@ export class AuthService {
     return { success: true };
   }
 
-  async loginWith2FA(userId: string, code: string) {
+  async loginWith2FA(userId: string, code: string, meta: IMeta) {
     const user: User = await firstValueFrom(
       this.usersClient.send({ cmd: 'findUser' }, { id: userId }),
     );
@@ -204,7 +236,7 @@ export class AuthService {
     }
 
     // Code is valid, NOW we can issue tokens
-    return this.getTokens({ userId: user.id, email: user.email }); // Assuming getTokens issues both access/refresh tokens
+    return this.establishSession(user, meta);
   }
 
   async disable2FA(userId: string, password: string) {
@@ -225,7 +257,7 @@ export class AuthService {
   async login(
     email: string,
     pass: string,
-    meta: IMeta
+    meta: IMeta,
   ): Promise<
     | { user: User; accessToken: string; refreshToken: string }
     | { twoFactorRequired: boolean; userId: string }
@@ -252,33 +284,17 @@ export class AuthService {
         return { twoFactorRequired: true, userId: user.id };
       }
 
-      const { refreshToken } = await this.getTokens({
-        userId: user.id,
-        email,
-      });
-
-      const session = await firstValueFrom(
-        this.usersClient.send({ cmd: 'createSession' }, {
-          userId: user.id,
-          refreshToken,
-          ip: meta.ip,
-          userAgent: meta.userAgent
-        })
-      );
-
-      const { accessToken } = await this.getTokens({
-        userId: user.id,
-        sessionId: session.id,
-        email,
-      });
-
-      return { accessToken, refreshToken, user };
+      return this.establishSession(user, meta);
     } else {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
   }
 
-  async getTokens(jwtPayload: { userId: string, email: string, sessionId?: string }): Promise<Tokens> {
+  async getTokens(jwtPayload: {
+    userId: string;
+    email: string;
+    sessionId?: string;
+  }): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
         expiresIn: ACCESS_TOKEN_EXPIRES_IN,
@@ -306,7 +322,7 @@ export class AuthService {
     }
 
     const session = await firstValueFrom(
-      this.usersClient.send({ cmd: 'findSessionByHash' }, { refreshToken })
+      this.usersClient.send({ cmd: 'findSessionByHash' }, { refreshToken }),
     );
 
     if (!session || new Date() > new Date(session.expiresAt)) {
@@ -314,10 +330,7 @@ export class AuthService {
     }
 
     const user = await firstValueFrom(
-      this.usersClient.send(
-        { cmd: 'findUser' },
-        { id: session.id },
-      ),
+      this.usersClient.send({ cmd: 'findUser' }, { id: session.id }),
     );
 
     if (!user) {
@@ -326,7 +339,11 @@ export class AuthService {
       );
     }
 
-    const { accessToken } = await this.getTokens({ userId: user.id, email: user.email, sessionId: session.id });
+    const { accessToken } = await this.getTokens({
+      userId: user.id,
+      email: user.email,
+      sessionId: session.id,
+    });
 
     return { accessToken };
   }

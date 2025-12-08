@@ -51,14 +51,16 @@ export class AuthController {
 
   @MessagePattern({ cmd: '2faLogin' })
   async loginWith2FA(
-    @Payload() { userId, code }: { userId: string; code: string },
+    @Payload()
+    { userId, code, meta }: { userId: string; code: string; meta: IMeta },
   ) {
-    return this.authService.loginWith2FA(userId, code);
+    return this.authService.loginWith2FA(userId, code, meta);
   }
 
   @MessagePattern({ cmd: 'login' })
   async login(
-    @Payload() { email, password, meta }: { email: string; password: string, meta: IMeta },
+    @Payload()
+    { email, password, meta }: { email: string; password: string; meta: IMeta },
   ) {
     return await this.authService.login(email, password, meta);
   }
@@ -89,7 +91,7 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: 'logout' })
-  logout(@Payload() data: { sessionId: string, userId: string }) {
+  logout(@Payload() data: { sessionId: string; userId: string }) {
     return this.authService.logout(data.sessionId, data.userId);
   }
 }

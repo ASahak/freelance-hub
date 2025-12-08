@@ -4,6 +4,13 @@ import { ROUTES } from '@/common/constants/routes';
 
 export const protectedRoutes = [ROUTES.PROFILE];
 
+const clearCookies = () => {
+  const response = NextResponse.next();
+  response.cookies.delete('access_token');
+  response.cookies.delete('refresh_token');
+  return response;
+};
+
 const publicOnlyRoutes = [
   ROUTES.SIGN_IN,
   ROUTES.SIGN_UP,
@@ -17,6 +24,11 @@ export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   const isSessionExpired = searchParams.get('reason') === 'session_expired';
+
+  if (isSessionExpired) {
+    return clearCookies();
+  }
+
   // (If user is NOT logged in, redirect them away from protected routes)
   const isAccessingProtectedRoute = protectedRoutes.some((path) =>
     pathname.startsWith(path),
@@ -44,10 +56,7 @@ export function middleware(request: NextRequest) {
     }
 
     if (isSessionExpired && token) {
-      const response = NextResponse.next();
-      response.cookies.delete('access_token');
-      response.cookies.delete('refresh_token');
-      return response;
+      return clearCookies();
     }
   }
 

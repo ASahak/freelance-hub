@@ -14,6 +14,7 @@ import { getDirtyValues } from '@/utils/helpers/global';
 import { Email } from './email';
 import { Role } from './role';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
+import { Tile } from '@/components/ui';
 
 type FormData = yup.InferType<typeof AccountSchema>;
 
@@ -75,8 +76,12 @@ export const AccountForm = memo(() => {
       <FormProvider {...methods}>
         <Box flex={1} w="full">
           <VStack spacing={6}>
-            <Email />
-            <Role />
+            <Tile>
+              <Email />
+            </Tile>
+            <Tile>
+              <Role />
+            </Tile>
           </VStack>
         </Box>
         <Flex justify="flex-end" w="full">

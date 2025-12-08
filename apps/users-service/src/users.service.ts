@@ -3,8 +3,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ROUNDS_OF_HASHING } from './common/constants/global';
 import { UserRepository } from './repositories/user.repository';
 import { SessionRepository } from './repositories/session.repository';
-import { User } from '@prisma/client';
+import { User, Session as SessionClient } from '@prisma/client';
 import { RpcException } from '@nestjs/microservices';
+import { Session } from '@libs/types/session.type';
 
 @Injectable()
 export class UsersService {
@@ -52,13 +53,20 @@ export class UsersService {
     return this.userRepository.findOne({ refreshToken: hashedToken });
   }
 
-  async createSession(data: { userId: string; refreshToken: string; ip?: string; userAgent?: string }) {
+  async createSession(data: Partial<Session> & { refreshToken: string }) {
     return this.sessionRepository.create({
       user: { connect: { id: data.userId } },
       refreshToken: data.refreshToken,
-      ipAddress: data.ip,
+      deviceType: data.deviceType,
+      ipAddress: data.ipAddress,
       userAgent: data.userAgent,
     });
+  }
+
+  async validateSession(
+    sessionId: string,
+  ): Promise<(SessionClient & { user: User }) | null> {
+    return this.sessionRepository.findUser(sessionId);
   }
 
   /**

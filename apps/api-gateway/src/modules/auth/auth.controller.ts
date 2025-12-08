@@ -1,9 +1,11 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   HttpStatus,
-  Inject, Param,
+  Inject,
+  Param,
   Post,
   Req,
   Res,
@@ -21,6 +23,7 @@ import { UserRole, AuthProvider } from '@libs/types/user.type';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { UserEntity } from '../users/entity/user.entity';
 import type { AuthenticatedRequest } from '../../common/interfaces/authenticated-request.interface';
+import type { Request } from 'express';
 import { FilesService } from '../files/files.service';
 import { CookieService } from '../cookie/cookie.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
@@ -108,9 +111,7 @@ export class AuthController {
 
   @Post('reset-password')
   async resetPassword(@Body() body: { token: string; newPassword: string }) {
-    return firstValueFrom(
-      this.authClient.send({ cmd: 'resetPassword' }, body),
-    );
+    return firstValueFrom(this.authClient.send({ cmd: 'resetPassword' }, body));
   }
 
   @Post('2fa/disable')
@@ -130,12 +131,16 @@ export class AuthController {
 
   @Post('2fa/login')
   async loginWith2FA(
+    @Req() req: Request,
     @Body() { userId, code }: { userId: string; code: string },
     @Res({ passthrough: true }) res: Response,
   ) {
+    const meta = getMeta(req);
+    console.log('META:', meta);
+
     // This call will fail if the code is wrong
     const { user, accessToken, refreshToken } = await firstValueFrom(
-      this.authClient.send({ cmd: '2faLogin' }, { userId, code }),
+      this.authClient.send({ cmd: '2faLogin' }, { userId, code, meta }),
     );
 
     // If successful, set the cookies and return the user
@@ -161,8 +166,13 @@ export class AuthController {
 
   @Post('login')
   @ApiOkResponse({ type: UserEntity })
-  async login(@Req() req: Request, @Body() { email, password }: LoginDto, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Req() req: Request,
+    @Body() { email, password }: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const meta = getMeta(req);
+    console.log('META:', meta);
 
     const response = await firstValueFrom(
       this.authClient.send({ cmd: 'login' }, { email, password, meta }),
@@ -189,20 +199,29 @@ export class AuthController {
     const currentSessionId = req.user['sessionId'];
 
     const sessions = await firstValueFrom(
-      this.usersClient.send({ cmd: 'getUserSessions' }, { userId: req.user.id })
+      this.usersClient.send(
+        { cmd: 'getUserSessions' },
+        { userId: req.user.id },
+      ),
     );
 
-    return sessions.map(s => ({
+    return sessions.map((s) => ({
       ...s,
-      isCurrent: s.id === currentSessionId
+      isCurrent: s.id === currentSessionId,
     }));
   }
 
   @Delete('sessions/:id')
   @UseGuards(JwtAuthGuard)
-  async revokeSession(@Param('id') sessionId: string, @Req() req: AuthenticatedRequest) {
+  async revokeSession(
+    @Param('id') sessionId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
     return firstValueFrom(
-      this.usersClient.send({ cmd: 'deleteSession' }, { sessionId, userId: req.user.id })
+      this.usersClient.send(
+        { cmd: 'deleteSession' },
+        { sessionId, userId: req.user.id },
+      ),
     );
   }
 
@@ -213,10 +232,13 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const sessionId = req.user['sessionId'];
+    const sessionId = req.user.sessionId;
 
     await firstValueFrom(
-      this.authClient.send({ cmd: 'logout' }, { userId: req.user.id, sessionId }),
+      this.authClient.send(
+        { cmd: 'logout' },
+        { userId: req.user.id, sessionId },
+      ),
     );
 
     this.cookieService.clearTokensCookie(res);

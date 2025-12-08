@@ -2,7 +2,7 @@
 
 import * as yup from 'yup';
 import { memo, useEffect } from 'react';
-import { Button, Flex, useToast, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react';
 import { useAuth } from '@/providers/authProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { User } from '@libs/types/user.type';
 import { getDirtyValues } from '@/utils/helpers/global';
 import { FullName } from './fullName';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
+import { Tile } from '@/components/ui';
 
 type FormData = yup.InferType<typeof PublicProfileSchema>;
 
@@ -68,9 +69,13 @@ export const PublicProfileForm = memo(() => {
   return (
     <FormProvider {...methods}>
       <VStack spacing={8} alignItems="start" w="full">
-        <VStack spacing={8} flex={1} w="full" alignItems="start">
-          <FullName />
-        </VStack>
+        <Box flex={1} w="full">
+          <Tile>
+            <VStack spacing={8} w="full" alignItems="start">
+              <FullName />
+            </VStack>
+          </Tile>
+        </Box>
         <Flex justify="flex-end" w="full">
           <Button
             onClick={handleSubmit(onSubmit)}

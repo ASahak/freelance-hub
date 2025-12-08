@@ -2,6 +2,7 @@ import { ICreateUser, ISignInCredentials } from '@/common/interfaces/user';
 import { User as IUser } from '@libs/types/user.type';
 import api from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { Session } from '@libs/types/session.type';
 
 export const getMe = async (): Promise<IUser> => {
   try {
@@ -131,4 +132,18 @@ export const resetPassword = async (data: {
     const errorMessage = getErrorMessage(err);
     throw new Error(`Reset password failed: ${errorMessage}`);
   }
+};
+
+export const getActiveSessions = async (): Promise<Session[]> => {
+  try {
+    const response = await api.get('/auth/sessions');
+    return response.data;
+  } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
+    throw new Error(`Failed to fetch sessions: ${errorMessage}`);
+  }
+};
+
+export const revokeSession = async (sessionId: string): Promise<void> => {
+  await api.delete(`/auth/sessions/${sessionId}`);
 };

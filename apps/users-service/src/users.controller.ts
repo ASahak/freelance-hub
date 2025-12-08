@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import { type User } from '@prisma/client';
+import { Session } from '@libs/types/session.type';
 
 @Controller('users')
 export class UsersController {
@@ -87,8 +88,19 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'createSession' })
-  createSession(@Payload() data: { userId: string; refreshToken: string; expiresAt: Date; ip?: string; userAgent?: string }) {
+  createSession(@Payload() data: Partial<Session> & { refreshToken: string }) {
     return this.usersService.createSession(data);
+  }
+
+  @MessagePattern({ cmd: 'validateSession' })
+  async validateSession(@Payload() data: { sessionId: string }) {
+    const session = await this.usersService.validateSession(data.sessionId);
+
+    if (!session) {
+      return null;
+    }
+
+    return session.user;
   }
 
   @MessagePattern({ cmd: 'findSessionByHash' })
@@ -107,7 +119,12 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: 'deleteAllOtherSessions' })
-  deleteAllOtherSessions(@Payload() data: { userId: string; currentSessionId: string }) {
-    return this.usersService.deleteAllOtherSessions(data.userId, data.currentSessionId);
+  deleteAllOtherSessions(
+    @Payload() data: { userId: string; currentSessionId: string },
+  ) {
+    return this.usersService.deleteAllOtherSessions(
+      data.userId,
+      data.currentSessionId,
+    );
   }
 }

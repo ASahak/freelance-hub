@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     retry: 0,
     gcTime: 0,
     staleTime: 0,
+    refetchInterval: 10000,
   });
 
   const { mutate: logout, isPending } = useMutation({

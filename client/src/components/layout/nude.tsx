@@ -1,10 +1,10 @@
 'use client';
 
 import { Flex } from '@chakra-ui/react';
-import { IChildren } from '@/common/types/global';
+import { IWithChildren } from '@/common/types/global';
 import { AnimatedPage } from '@/components/features';
 
-const NudeLayout = ({ children }: IChildren) => {
+const NudeLayout = ({ children }: IWithChildren<any>) => {
   return (
     <Flex w="full" h="100dvh" align="center" justify="center" bg="gray.50">
       <AnimatedPage>{children}</AnimatedPage>

@@ -1,3 +1,3 @@
 import React from 'react';
 
-export type IChildren = { children: React.ReactNode };
+export type IWithChildren<T> = { children: React.ReactNode } & T;

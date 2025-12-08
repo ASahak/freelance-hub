@@ -31,7 +31,7 @@ export const SectionsPanel = memo(() => {
               p={3}
               rounded="md"
               transition="all 0.2s"
-              bg={isActive ? 'gray.100' : 'transparent'}
+              bg={isActive ? 'gray.150' : 'transparent'}
             >
               <Icon as={section.icon} fontSize="1.8rem" />
               <Text fontSize="1.5rem" fontWeight={isActive ? 600 : 500}>
