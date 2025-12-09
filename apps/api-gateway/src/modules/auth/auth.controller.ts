@@ -9,13 +9,15 @@ import {
   Post,
   Req,
   Res,
+  Sse,
   UseGuards,
+  MessageEvent,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { GoogleOauthGuard } from '../../guards/google-oauth.guard';
 import { LoginDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -28,7 +30,8 @@ import { FilesService } from '../files/files.service';
 import { CookieService } from '../cookie/cookie.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { getMeta } from '@apps/api-gateway/src/utils/global';
+import { getMeta } from '../../utils/global';
+import { SseService } from '../../common/services/sse.service';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -41,6 +44,7 @@ export class AuthController {
     private readonly filesService: FilesService,
     private readonly cookieService: CookieService,
     private configService: ConfigService,
+    private readonly sseService: SseService,
   ) {}
 
   @Get('me')
@@ -136,7 +140,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const meta = getMeta(req);
-    console.log('META:', meta);
 
     // This call will fail if the code is wrong
     const { user, accessToken, refreshToken } = await firstValueFrom(
@@ -146,6 +149,9 @@ export class AuthController {
     // If successful, set the cookies and return the user
     this.cookieService.setTokenCookie(res, accessToken);
     this.cookieService.setRefreshTokenCookie(res, refreshToken);
+
+    this.sseService.notifyUser(user.id, 'session_update');
+
     return new UserEntity(user);
   }
 
@@ -189,8 +195,15 @@ export class AuthController {
 
     this.cookieService.setTokenCookie(res, accessToken);
     this.cookieService.setRefreshTokenCookie(res, refreshToken);
+    this.sseService.notifyUser(user.id, 'session_update');
 
     return new UserEntity(user);
+  }
+
+  @Sse('events')
+  @UseGuards(JwtAuthGuard)
+  sse(@Req() req: AuthenticatedRequest): Observable<MessageEvent> {
+    return this.sseService.addStream(req.user.id);
   }
 
   @Get('sessions')
@@ -240,6 +253,8 @@ export class AuthController {
         { userId: req.user.id, sessionId },
       ),
     );
+
+    this.sseService.notifyUser(req.user.id, 'session_update');
 
     this.cookieService.clearTokensCookie(res);
     res.status(HttpStatus.OK).json({ message: 'Logged out successfully' });

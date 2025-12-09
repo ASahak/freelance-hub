@@ -2,6 +2,7 @@ import axios from 'axios';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { ROUTES } from '@/common/constants/routes';
 import { API_BASE_URL } from '@/common/constants/global';
+import { protectedRoutes } from '@/middleware';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -39,7 +40,6 @@ api.interceptors.response.use(
     if (!error.response) return Promise.reject(new Error(error));
 
     const isTokenExpiredError = error.response.data.error === 'TokenExpired';
-
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
@@ -70,7 +70,12 @@ api.interceptors.response.use(
           return Promise.reject(new Error(errorMessage));
         }
       } else {
-        forceLogout();
+        const isAccessingProtectedRoutes = protectedRoutes.some((path) =>
+          window.location.pathname.startsWith(path),
+        );
+        if (isAccessingProtectedRoutes) {
+          forceLogout();
+        }
       }
     }
 

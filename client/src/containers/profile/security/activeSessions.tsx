@@ -29,6 +29,7 @@ import Skeleton, { DIRECTION } from 'react-skeleton-builder';
 import type { Session as ISession } from '@libs/types/session.type';
 import { usePopup } from '@/providers/popupProvider';
 import { POPUP_TYPES } from '@/common/constants/popup';
+import { useSSE } from '@/hooks';
 
 const getDeviceIcon = (type?: string) => {
   switch (type) {
@@ -141,6 +142,8 @@ const Session = memo(({ data, userId }: { data: ISession; userId: string }) => {
 
 export const ActiveSessions = memo(() => {
   const { user } = useAuth();
+
+  useSSE(); // listen to the server events: sessions updates
 
   const { data: sessions, isLoading } = useQuery({
     queryKey: QUERY_FACTORY.activeSessions(user?.id || ''),

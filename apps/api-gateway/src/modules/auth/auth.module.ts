@@ -10,6 +10,7 @@ import { AuthProxyModule } from '../proxy/auth-proxy.module';
 import { FilesModule } from '../files/files.module';
 import { CookieModule } from '../cookie/cookie.module';
 import { ACCESS_TOKEN_EXPIRES_IN } from '../../common/constants/global';
+import { SseService } from '../../common/services/sse.service';
 
 @Module({
   imports: [
@@ -30,7 +31,12 @@ import { ACCESS_TOKEN_EXPIRES_IN } from '../../common/constants/global';
     }),
   ],
   controllers: [AuthController],
-  providers: [AccessTokenStrategy, RefreshTokenStrategy, ConfigService],
+  providers: [
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    ConfigService,
+    SseService,
+  ],
   exports: [PassportModule],
 })
 export class AuthModule {}

@@ -160,6 +160,21 @@ export class AuthService {
       ),
     );
 
+    // Send email to notify user is someone logged in the account
+    const manageUrl = `${this.configService.get('appOrigin')}/profile/security`;
+    await firstValueFrom(
+      this.mailClient.send(
+        { cmd: 'sendLoginAlert' },
+        {
+          email: user.email,
+          device: meta.userAgent, // Ideally parse this to be pretty (e.g. "Chrome on Mac")
+          ip: meta.ip,
+          time: new Date().toLocaleString(),
+          manageUrl,
+        },
+      ),
+    );
+
     const { accessToken } = await this.getTokens({
       userId: user.id,
       email: user.email,

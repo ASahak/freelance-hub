@@ -9,7 +9,8 @@ import { AuthProxyModule } from './modules/proxy/auth-proxy.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CookieModule } from './modules/cookie/cookie.module';
 import { AuthController } from './modules/auth/auth.controller';
-import { FilesModule } from '@apps/api-gateway/src/modules/files/files.module';
+import { FilesModule } from './modules/files/files.module';
+import { SseService } from './common/services/sse.service';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FilesModule } from '@apps/api-gateway/src/modules/files/files.module';
     CookieModule,
   ],
   controllers: [AppController, UsersController, AuthController],
-  providers: [AppService],
+  providers: [AppService, SseService],
+  exports: [SseService],
 })
 export class AppModule {}

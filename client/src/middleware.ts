@@ -11,7 +11,7 @@ const clearCookies = () => {
   return response;
 };
 
-const publicOnlyRoutes = [
+const nonAuthOnlyRoutes = [
   ROUTES.SIGN_IN,
   ROUTES.SIGN_UP,
   ROUTES.VERIFY_2FA,
@@ -30,10 +30,10 @@ export function middleware(request: NextRequest) {
   }
 
   // (If user is NOT logged in, redirect them away from protected routes)
-  const isAccessingProtectedRoute = protectedRoutes.some((path) =>
+  const isAccessingProtectedRoutes = protectedRoutes.some((path) =>
     pathname.startsWith(path),
   );
-  if (isAccessingProtectedRoute) {
+  if (isAccessingProtectedRoutes) {
     if (!token) {
       const loginUrl = new URL(ROUTES.SIGN_IN, request.url);
 
@@ -44,12 +44,12 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // (If user IS logged in, redirect them away from public-only routes)
-  const isAccessingPublicOnlyRoute = publicOnlyRoutes.some((path) =>
+  // (If user IS logged in, redirect them away from non auth-only routes)
+  const isAccessingNonAuthOnlyRoute = nonAuthOnlyRoutes.some((path) =>
     pathname.startsWith(path),
   );
 
-  if (isAccessingPublicOnlyRoute) {
+  if (isAccessingNonAuthOnlyRoute) {
     if (token && !isSessionExpired) {
       // User is logged in, redirect them to their main page
       return NextResponse.redirect(new URL(ROUTES.HOME, request.url));

@@ -10,4 +10,9 @@ export class MailController {
   async handleResetPassword(@Payload() data: { email: string; url: string }) {
     return await this.mailService.sendResetPassword(data.email, data.url);
   }
+
+  @MessagePattern({ cmd: 'sendLoginAlert' })
+  async handleLoginAlert(@Payload() data: any) {
+    return await this.mailService.sendNewLoginAlert(data.email, data);
+  }
 }
