@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ROUNDS_OF_HASHING } from './common/constants/global';
+import { ROUNDS_OF_HASHING } from '@libs/constants/global';
 import { UserRepository } from './repositories/user.repository';
 import { SessionRepository } from './repositories/session.repository';
 import { User, Session as SessionClient } from '@prisma/client';
@@ -51,6 +51,14 @@ export class UsersService {
 
   async findUserByRefreshToken(hashedToken: string) {
     return this.userRepository.findOne({ refreshToken: hashedToken });
+  }
+
+  async deleteExpiredSessions(date: Date) {
+    return this.sessionRepository.deleteMany({
+      createdAt: {
+        lt: date,
+      },
+    });
   }
 
   async createSession(data: Partial<Session> & { refreshToken: string }) {

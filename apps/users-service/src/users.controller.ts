@@ -17,6 +17,11 @@ export class UsersController {
     });
   }
 
+  @MessagePattern({ cmd: 'deleteExpiredSessions' })
+  async deleteExpiredSessions(@Payload() payload: { date: Date }) {
+    return this.usersService.deleteExpiredSessions(payload.date);
+  }
+
   @MessagePattern({ cmd: 'setTwoFactorSecret' })
   setTwoFactorSecret(@Payload() data: { userId: string; secret: string }) {
     return this.usersService.update(data.userId, {

@@ -16,6 +16,12 @@ export class SessionRepository extends BaseRepository<
 
   protected readonly delegate = this.prisma.session;
 
+  async deleteMany(where: Prisma.SessionWhereInput) {
+    return this.delegate.deleteMany({
+      where,
+    });
+  }
+
   async findUser(
     sessionId: string,
   ): Promise<(Session & { user: User }) | null> {

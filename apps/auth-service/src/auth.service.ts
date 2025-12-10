@@ -13,15 +13,17 @@ import { authenticator } from 'otplib';
 import * as cryptoJS from 'crypto-js';
 import * as crypto from 'crypto';
 import { UAParser } from 'ua-parser-js';
+import dayjs from 'dayjs';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import { AuthProvider, User } from '@libs/types/user.type';
 import { Tokens } from './common/types';
 import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
-} from './common/constants/global';
+} from '@libs/constants/global';
 import { ConfigService } from '@nestjs/config';
-import { IMeta } from '@libs/types/session.type';
+import { IMeta, Session } from '@libs/types/session.type';
+import ms from 'ms';
 
 @Injectable()
 export class AuthService {
@@ -175,6 +177,12 @@ export class AuthService {
       ),
     );
 
+    console.log(1);
+    // check expired sessions
+    await this.clearExpiredSessions();
+
+    console.log(2);
+
     const { accessToken } = await this.getTokens({
       userId: user.id,
       email: user.email,
@@ -286,7 +294,7 @@ export class AuthService {
       ),
     );
 
-    console.log('Logging USER:', user);
+    console.log('Logging USER:', user?.id);
     if (user && user.provider === AuthProvider.native) {
       const isPasswordValid = await bcrypt.compare(pass, user.password);
 
@@ -312,9 +320,11 @@ export class AuthService {
   }): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
+        secret: this.configService.get('jwtAccessTokenSecret'),
         expiresIn: ACCESS_TOKEN_EXPIRES_IN,
       }),
       this.jwtService.signAsync(jwtPayload, {
+        secret: this.configService.get('jwtRefreshTokenSecret'),
         expiresIn: REFRESH_TOKEN_EXPIRES_IN,
       }),
     ]);
@@ -331,21 +341,41 @@ export class AuthService {
     );
   }
 
+  async clearExpiredSessions() {
+    const durationInMs = ms(REFRESH_TOKEN_EXPIRES_IN);
+
+    const cutoffDate = dayjs().subtract(durationInMs, 'ms').toDate();
+
+    return await firstValueFrom(
+      this.usersClient.send(
+        { cmd: 'deleteExpiredSessions' },
+        { date: cutoffDate },
+      ),
+    );
+  }
+
+  private isSessionExpired(date: Date | string) {
+    const durationInMs = ms(REFRESH_TOKEN_EXPIRES_IN);
+    const expirationDate = dayjs(date).add(durationInMs, 'ms');
+
+    return dayjs().isAfter(expirationDate);
+  }
+
   async refreshAccessToken(refreshToken: string) {
     if (!refreshToken) {
       throw new UnauthorizedException('No refresh token');
     }
 
-    const session = await firstValueFrom(
+    const session: Session | null = await firstValueFrom(
       this.usersClient.send({ cmd: 'findSessionByHash' }, { refreshToken }),
     );
 
-    if (!session || new Date() > new Date(session.expiresAt)) {
+    if (!session || this.isSessionExpired(session.createdAt)) {
       throw new UnauthorizedException('Session expired');
     }
 
     const user = await firstValueFrom(
-      this.usersClient.send({ cmd: 'findUser' }, { id: session.id }),
+      this.usersClient.send({ cmd: 'findUser' }, { id: session.userId }),
     );
 
     if (!user) {

@@ -9,7 +9,7 @@ import { UsersProxyModule } from '../proxy/user-proxy.module';
 import { AuthProxyModule } from '../proxy/auth-proxy.module';
 import { FilesModule } from '../files/files.module';
 import { CookieModule } from '../cookie/cookie.module';
-import { ACCESS_TOKEN_EXPIRES_IN } from '../../common/constants/global';
+import { ACCESS_TOKEN_EXPIRES_IN } from '@libs/constants/global';
 import { SseService } from '../../common/services/sse.service';
 
 @Module({

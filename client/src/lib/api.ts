@@ -11,22 +11,27 @@ const api = axios.create({
 
 const forceLogout = () => {
   if (typeof window !== 'undefined') {
-    const currentUrl = new URL(window.location.href);
-    const searchParams = currentUrl.searchParams;
+    const isAccessingProtectedRoutes = protectedRoutes.some((path) =>
+      window.location.pathname.startsWith(path),
+    );
+    if (isAccessingProtectedRoutes) {
+      const currentUrl = new URL(window.location.href);
+      const searchParams = currentUrl.searchParams;
 
-    if (
-      !searchParams.has('reason') ||
-      searchParams.get('reason') !== 'session_expired'
-    ) {
-      searchParams.set('reason', 'session_expired');
+      if (
+        !searchParams.has('reason') ||
+        searchParams.get('reason') !== 'session_expired'
+      ) {
+        searchParams.set('reason', 'session_expired');
 
-      if (window.location.pathname === ROUTES.SIGN_IN) {
-        // If already on sign-in page, just update URL without reload
-        const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-        window.history.replaceState(null, '', newUrl);
-      } else {
-        // Otherwise force redirect to sign-in
-        window.location.href = `${ROUTES.SIGN_IN}?${searchParams.toString()}`;
+        if (window.location.pathname === ROUTES.SIGN_IN) {
+          // If already on sign-in page, just update URL without reload
+          const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+          window.history.replaceState(null, '', newUrl);
+        } else {
+          // Otherwise force redirect to sign-in
+          window.location.href = `${ROUTES.SIGN_IN}?${searchParams.toString()}`;
+        }
       }
     }
   }
@@ -70,12 +75,7 @@ api.interceptors.response.use(
           return Promise.reject(new Error(errorMessage));
         }
       } else {
-        const isAccessingProtectedRoutes = protectedRoutes.some((path) =>
-          window.location.pathname.startsWith(path),
-        );
-        if (isAccessingProtectedRoutes) {
-          forceLogout();
-        }
+        forceLogout();
       }
     }
 

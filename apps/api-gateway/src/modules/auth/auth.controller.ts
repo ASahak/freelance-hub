@@ -32,6 +32,7 @@ import { MICROSERVICES } from '@libs/constants/microservices';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { getMeta } from '../../utils/global';
 import { SseService } from '../../common/services/sse.service';
+import { JwtRefreshAuthGuard } from '../../guards/jwt-refresh-auth.guard';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -156,6 +157,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @UseGuards(JwtRefreshAuthGuard)
   @ApiOkResponse({ type: UserEntity })
   async refreshToken(
     @Req() req: AuthenticatedRequest,

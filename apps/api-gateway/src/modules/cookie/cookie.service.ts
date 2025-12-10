@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { REFRESH_TOKEN_EXPIRES_IN } from '@apps/auth-service/src/common/constants/global';
+import { REFRESH_TOKEN_EXPIRES_IN } from '@libs/constants/global';
 import ms from 'ms';
 import { ConfigService } from '@nestjs/config';
 

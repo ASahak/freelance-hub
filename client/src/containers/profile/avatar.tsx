@@ -114,6 +114,7 @@ export const Avatar = memo(() => {
                 src={user.avatarUrl}
                 alt="Avatar"
                 fill
+                priority
                 containerProps={{ w: '14rem', h: '14rem' }}
                 sizes="25rem"
                 style={{

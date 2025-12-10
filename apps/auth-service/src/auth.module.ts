@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
+import { ScheduleModule } from '@nestjs/schedule';
 import { JwtModule } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { ACCESS_TOKEN_EXPIRES_IN } from './common/constants/global';
+import { ACCESS_TOKEN_EXPIRES_IN } from '@libs/constants/global';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import configuration from './config/configuration';
+import { SessionCleanupService } from './common/services/sessions-cleanup.service';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
@@ -38,7 +41,7 @@ import configuration from './config/configuration';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('jwtSecret'),
+        secret: configService.get<string>('jwtAccessTokenSecret'),
         signOptions: {
           expiresIn: ACCESS_TOKEN_EXPIRES_IN,
         },
@@ -47,6 +50,6 @@ import configuration from './config/configuration';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, SessionCleanupService],
 })
 export class AuthModule {}

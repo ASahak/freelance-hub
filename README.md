@@ -98,8 +98,8 @@ This command will sync your Prisma schema with the database, creating all necess
 ```
 
 ### Example
-```
-docker-compose exec users-service npx prisma migrate dev --schema=./apps/users-service/prisma/schema.prisma --name some_name 
+```bash
+  docker-compose exec users-service npx prisma migrate dev --schema=./apps/users-service/prisma/schema.prisma --name some_name 
 ```
 
 
