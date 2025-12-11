@@ -27,6 +27,95 @@ model User {
   passwordResetTokenHash String?      @unique
   passwordResetExpiresAt DateTime?
   sessions               Session[]
+  profile                Profile?
+
+  @@map("users")
+}
+
+enum AvailabilityStatus {
+  available // Green: Ready for new work
+  open // Yellow: Passive looking
+  busy // Red: Not available
+}
+
+model Profile {
+  id String @id @default(uuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  headline           String?
+  bio                String?            @db.Text
+  hourlyRate         Decimal?           @db.Decimal(10, 2)
+  currency           String             @default("USD")
+  availabilityStatus AvailabilityStatus @default(available)
+
+  country  String?
+  city     String?
+  timezone String?
+
+  githubUrl    String?
+  linkedinUrl  String?
+  portfolioUrl String?
+  resumeUrl    String?
+
+  skills      Skill[]
+  projects    Project[]
+  experiences Experience[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model Skill {
+  id   String @id @default(uuid())
+  name String @unique
+
+  profiles Profile[]
+
+  @@map("skills")
+}
+
+model Project {
+  id          String  @id @default(uuid())
+  title       String
+  description String? @db.Text
+  imageUrl    String?
+
+  demoUrl String?
+  repoUrl String?
+
+  technologies String[]
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model Experience {
+  id       String  @id @default(uuid())
+  company  String
+  role     String
+  location String?
+
+  startDate DateTime
+  endDate   DateTime?
+
+  description String? @db.Text
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("experiences")
 }
 
 model Session {
@@ -41,6 +130,8 @@ model Session {
   ipAddress  String?
   userAgent  String?
   deviceType String?
+
+  @@map("sessions")
 }
 
 model Job {
@@ -53,6 +144,8 @@ model Job {
   client      User     @relation(fields: [clientId], references: [id])
   clientId    String
   status      String   @default("open")
+
+  @@map("jobs")
 }
 
 datasource db {

@@ -2,7 +2,7 @@
 
 import * as yup from 'yup';
 import { memo, useEffect } from 'react';
-import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react';
+import { Button, Flex, useToast, VStack } from '@chakra-ui/react';
 import { useAuth } from '@/providers/authProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -69,23 +69,21 @@ export const PublicProfileForm = memo(() => {
   return (
     <FormProvider {...methods}>
       <VStack spacing={8} alignItems="start" w="full">
-        <Box flex={1} w="full">
-          <Tile>
-            <VStack spacing={8} w="full" alignItems="start">
-              <FullName />
-            </VStack>
-          </Tile>
-        </Box>
-        <Flex justify="flex-end" w="full">
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            isDisabled={!isDirty}
-            isLoading={updateMutation.isPending}
-            variant="primary"
-          >
-            Save Changes
-          </Button>
-        </Flex>
+        <Tile flex={1} w="full" display="flex" flexDir="column">
+          <VStack spacing={8} w="full" alignItems="start" flex={1}>
+            <FullName/>
+          </VStack>
+          <Flex justify="flex-end" w="full">
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              isDisabled={!isDirty}
+              isLoading={updateMutation.isPending}
+              variant="primary"
+            >
+              Save Changes
+            </Button>
+          </Flex>
+        </Tile>
       </VStack>
     </FormProvider>
   );

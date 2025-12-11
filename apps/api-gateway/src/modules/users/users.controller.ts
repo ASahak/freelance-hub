@@ -29,6 +29,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import type { AuthenticatedRequest } from '../../common/interfaces/authenticated-request.interface';
 import { FilesService } from '../files/files.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
+import { ProfileEntity } from '@apps/api-gateway/src/modules/users/entity/profile.entity';
 
 @Controller('users')
 @ApiTags('users')
@@ -38,6 +39,37 @@ export class UsersController {
     private readonly userServiceClient: ClientProxy,
     private readonly filesService: FilesService,
   ) {}
+
+  @Get(':id/profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Retrieved user profile' })
+  async getProfile(@Param('id') id: string) {
+    const profile = await firstValueFrom(
+      this.userServiceClient.send({ cmd: 'getProfile' }, { userId: id }),
+    );
+    return new ProfileEntity(profile);
+  }
+
+  @Patch('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Profile updated successfully' })
+  async updateProfile(
+    @Req() req: AuthenticatedRequest,
+    @Body() updateProfileDto: any, // Use a DTO specific to profile fields
+  ) {
+    const updatedProfile = await firstValueFrom(
+      this.userServiceClient.send(
+        { cmd: 'updateProfile' },
+        {
+          userId: req.user.id,
+          data: updateProfileDto,
+        },
+      ),
+    );
+    return updatedProfile;
+  }
 
   @Post('avatar')
   @UseGuards(JwtAuthGuard)
