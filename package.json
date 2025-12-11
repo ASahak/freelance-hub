@@ -13,7 +13,7 @@
   },
   "scripts": {
     "docker:build": "docker-compose up --build",
-    "dev": "docker-compose up --build",
+    "dev": "docker-compose up",
     "down": "docker-compose down",
     "build:server": "nest build",
     "build:client": "npm run build -C ./client",

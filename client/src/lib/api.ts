@@ -44,38 +44,32 @@ api.interceptors.response.use(
 
     if (!error.response) return Promise.reject(new Error(error));
 
-    const isTokenExpiredError = error.response.data.error === 'TokenExpired';
+    const isAuthRequest =
+      originalRequest.url.includes('/auth/refresh') ||
+      originalRequest.url.includes('/auth/login') ||
+      originalRequest.url.includes('/auth/logout');
+
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== '/auth/refresh' &&
-      originalRequest.url !== '/auth/login' &&
-      originalRequest.url !== '/auth/logout'
+      !isAuthRequest
     ) {
       originalRequest._retry = true;
 
-      if (isTokenExpiredError) {
-        try {
-          // Attempt to get a new access token from the /auth/refresh endpoint
-          await axios.post(
-            `${API_BASE_URL}/auth/refresh`,
-            {},
-            { withCredentials: true },
-          );
+      try {
+        await axios.post(
+          `${API_BASE_URL}/auth/refresh`,
+          {},
+          { withCredentials: true },
+        );
 
-          // If successful, retry the original request with the new cookie
-          return api(originalRequest);
-        } catch (refreshError) {
-          // If refresh fails, log the user out
-          console.error('Refresh token failed, logging out');
-
-          forceLogout();
-
-          const errorMessage = getErrorMessage(refreshError);
-          return Promise.reject(new Error(errorMessage));
-        }
-      } else {
+        return api(originalRequest);
+      } catch (refreshError) {
+        console.error('Refresh token failed, logging out');
         forceLogout();
+
+        const errorMessage = getErrorMessage(refreshError);
+        return Promise.reject(new Error(errorMessage));
       }
     }
 

@@ -20,6 +20,7 @@ services:
     container_name: api-gateway
     command: npm run start:dev @app/api-gateway
     volumes:
+      - ./libs:/app/libs
       - ./apps/api-gateway:/app/apps/api-gateway
       - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
@@ -39,6 +40,7 @@ services:
       dockerfile: ./apps/users-service/Dockerfile
     container_name: users-service
     volumes:
+      - ./libs:/app/libs
       - ./apps/users-service:/app/apps/users-service
       - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
@@ -57,6 +59,7 @@ services:
     container_name: auth-service
     command: npm run start:dev @app/auth-service
     volumes:
+      - ./libs:/app/libs
       - ./apps/auth-service:/app/apps/auth-service
       - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
@@ -74,6 +77,7 @@ services:
     container_name: mail-service
     command: npm run start:dev @app/mail-service
     volumes:
+      - ./libs:/app/libs
       - ./apps/mail-service:/app/apps/mail-service
       - ./nest-cli.json:/app/nest-cli.json
       - /app/node_modules
@@ -87,6 +91,7 @@ services:
     command: npm run dev --workspace=client
     container_name: frontend
     volumes:
+      - ./libs:/app/libs
       - ./client:/app/client
       - /app/node_modules
       - /app/client/.next

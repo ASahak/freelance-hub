@@ -70,6 +70,7 @@ export const Hero = () => {
             src="/hero.webp"
             alt="hero"
             fill
+            priority
             sizes="(max-width: 768px) 100vw, 50vw"
             style={{
               objectFit: 'cover',

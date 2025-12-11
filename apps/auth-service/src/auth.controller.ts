@@ -62,7 +62,6 @@ export class AuthController {
     @Payload()
     { email, password, meta }: { email: string; password: string; meta: IMeta },
   ) {
-    console.log(2222);
     return await this.authService.login(email, password, meta);
   }
 

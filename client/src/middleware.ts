@@ -20,8 +20,10 @@ const nonAuthOnlyRoutes = [
 ];
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('access_token');
   const { pathname, searchParams } = request.nextUrl;
+
+  const accessToken = request.cookies.get('access_token');
+  const refreshToken = request.cookies.get('refresh_token');
 
   const isSessionExpired = searchParams.get('reason') === 'session_expired';
 
@@ -34,13 +36,17 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(path),
   );
   if (isAccessingProtectedRoutes) {
-    if (!token) {
+    if (!accessToken && !refreshToken) {
       const loginUrl = new URL(ROUTES.SIGN_IN, request.url);
 
       // Add a 'redirect' query param so we can send them back after login
       loginUrl.searchParams.set('redirect', pathname);
 
       return NextResponse.redirect(loginUrl);
+    }
+
+    if (!accessToken && refreshToken) {
+      return NextResponse.next();
     }
   }
 
@@ -50,13 +56,9 @@ export function middleware(request: NextRequest) {
   );
 
   if (isAccessingNonAuthOnlyRoute) {
-    if (token && !isSessionExpired) {
+    if (accessToken || refreshToken) {
       // User is logged in, redirect them to their main page
       return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
-    }
-
-    if (isSessionExpired && token) {
-      return clearCookies();
     }
   }
 

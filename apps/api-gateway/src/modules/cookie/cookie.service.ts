@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
-import { REFRESH_TOKEN_EXPIRES_IN } from '@libs/constants/global';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} from '@libs/constants/global';
 import ms from 'ms';
 import { ConfigService } from '@nestjs/config';
 
@@ -16,6 +19,7 @@ export class CookieService {
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
       path: '/',
+      maxAge: ms(ACCESS_TOKEN_EXPIRES_IN),
     });
   }
 

@@ -180,7 +180,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const meta = getMeta(req);
-    console.log('META:', meta);
 
     const response = await firstValueFrom(
       this.authClient.send({ cmd: 'login' }, { email, password, meta }),

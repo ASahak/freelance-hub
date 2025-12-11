@@ -177,11 +177,8 @@ export class AuthService {
       ),
     );
 
-    console.log(1);
     // check expired sessions
     await this.clearExpiredSessions();
-
-    console.log(2);
 
     const { accessToken } = await this.getTokens({
       userId: user.id,
