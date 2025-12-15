@@ -1,8 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
-import { type User } from '@prisma/client';
+import type { Profile, User } from '@prisma/client';
 import { Session } from '@libs/types/session.type';
+import { UpdateProfileDto } from '@libs/dto/update-profile.dto';
 
 @Controller('users')
 export class UsersController {
@@ -15,6 +16,20 @@ export class UsersController {
     return await this.usersService.update(id, {
       avatarUrl,
     });
+  }
+
+  @MessagePattern({ cmd: 'updateProfile' })
+  async updateProfile(
+    @Payload() { userId, data }: { userId: string; data: UpdateProfileDto },
+  ): Promise<Profile> {
+    return await this.usersService.updateProfile(userId, data);
+  }
+
+  @MessagePattern({ cmd: 'getProfile' })
+  async getProfile(
+    @Payload() { userId }: { userId: string },
+  ): Promise<Profile | null> {
+    return this.usersService.getProfile(userId);
   }
 
   @MessagePattern({ cmd: 'deleteExpiredSessions' })

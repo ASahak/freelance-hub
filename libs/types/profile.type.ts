@@ -49,5 +49,5 @@ export interface Profile {
   skills: Skill[];
   projects: Project[];
   experiences: Experience[];
-  createdAt: string;
+  createdAt: Date;
 }

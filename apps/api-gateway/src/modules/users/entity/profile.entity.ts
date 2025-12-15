@@ -1,7 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AvailabilityStatus, Profile } from '@libs/types/profile.type';
 import { Exclude, Transform, Type } from 'class-transformer';
-import { IsEnum, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
 
 export class SkillEntity {
   @ApiProperty()
@@ -79,7 +85,10 @@ export class ProfileEntity implements Profile {
   @IsOptional()
   headline: string | null;
 
-  @ApiProperty({ example: 'I specialize in NestJS and React...', required: false })
+  @ApiProperty({
+    example: 'I specialize in NestJS and React...',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   bio: string | null;
@@ -95,7 +104,7 @@ export class ProfileEntity implements Profile {
   @ApiProperty({
     enum: AvailabilityStatus,
     example: AvailabilityStatus.available,
-    description: 'Current work availability status'
+    description: 'Current work availability status',
   })
   @IsEnum(AvailabilityStatus)
   availabilityStatus: AvailabilityStatus;
@@ -144,6 +153,7 @@ export class ProfileEntity implements Profile {
   @Type(() => ExperienceEntity)
   experiences: ExperienceEntity[];
 
-  @Transform(({ value }) => value?.toISOString())
-  createdAt: string;
+  @ApiProperty()
+  @Type(() => Date)
+  createdAt: Date;
 }

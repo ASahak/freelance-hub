@@ -6,13 +6,24 @@ import { SessionRepository } from './repositories/session.repository';
 import { User, Session as SessionClient } from '@prisma/client';
 import { RpcException } from '@nestjs/microservices';
 import { Session } from '@libs/types/session.type';
+import { ProfileRepository } from './repositories/profile.repository';
+import { UpdateProfileDto } from '@libs/dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     private userRepository: UserRepository,
     private readonly sessionRepository: SessionRepository,
+    private readonly profileRepository: ProfileRepository,
   ) {}
+
+  async getProfile(userId: string) {
+    return this.profileRepository.findByUserId(userId);
+  }
+
+  async updateProfile(userId: string, data: UpdateProfileDto) {
+    return this.profileRepository.upsert(userId, data);
+  }
 
   async create(user: User) {
     if (user.password) {

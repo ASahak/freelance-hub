@@ -3,6 +3,8 @@ import { UserRole } from '@/common/enums/user';
 
 export const PublicProfileSchema = yup.object().shape({
   name: yup.string().required('FullName is required.'),
+  city: yup.string().notRequired().default(''),
+  country: yup.string().notRequired().default(''),
 });
 
 export const ChangePasswordSchema = yup.object().shape({

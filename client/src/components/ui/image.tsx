@@ -31,7 +31,6 @@ export function SmartImage({
   const [retryCount, setRetryCount] = useState(0);
 
   const baseSrc = hasError && fallbackSrc ? fallbackSrc : src;
-
   const srcToRender =
     retryCount > 0 &&
     typeof baseSrc === 'string' &&

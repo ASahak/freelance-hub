@@ -1,9 +1,11 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   Inject,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -29,46 +31,55 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import type { AuthenticatedRequest } from '../../common/interfaces/authenticated-request.interface';
 import { FilesService } from '../files/files.service';
 import { MICROSERVICES } from '@libs/constants/microservices';
-import { ProfileEntity } from '@apps/api-gateway/src/modules/users/entity/profile.entity';
+import { ProfileEntity } from '../../modules/users/entity/profile.entity';
+import { UpdateProfileDto } from '@libs/dto/update-profile.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(
     @Inject(MICROSERVICES.Users.name)
-    private readonly userServiceClient: ClientProxy,
+    private readonly userClient: ClientProxy,
     private readonly filesService: FilesService,
   ) {}
 
   @Get(':id/profile')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor) // Important for @Transform to work
   @ApiOkResponse({ description: 'Retrieved user profile' })
   async getProfile(@Param('id') id: string) {
     const profile = await firstValueFrom(
-      this.userServiceClient.send({ cmd: 'getProfile' }, { userId: id }),
+      this.userClient.send({ cmd: 'getProfile' }, { userId: id }),
     );
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+
     return new ProfileEntity(profile);
   }
 
-  @Patch('profile')
+  @Patch(':id/profile')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ description: 'Profile updated successfully' })
   async updateProfile(
-    @Req() req: AuthenticatedRequest,
-    @Body() updateProfileDto: any, // Use a DTO specific to profile fields
+    @Param('id') id: string,
+    @Body() updateProfileDto: UpdateProfileDto,
   ) {
     const updatedProfile = await firstValueFrom(
-      this.userServiceClient.send(
+      this.userClient.send(
         { cmd: 'updateProfile' },
         {
-          userId: req.user.id,
+          userId: id,
           data: updateProfileDto,
         },
       ),
     );
-    return updatedProfile;
+    console.log(updatedProfile);
+    return plainToInstance(ProfileEntity, updatedProfile);
   }
 
   @Post('avatar')
@@ -93,7 +104,7 @@ export class UsersController {
     const uploadResult = await this.filesService.uploadAvatarFromFile(file);
 
     const updatedUser = await firstValueFrom(
-      this.userServiceClient.send(
+      this.userClient.send(
         { cmd: 'uploadAvatar' },
         {
           id: req.user.id,
@@ -115,7 +126,7 @@ export class UsersController {
   async removeAvatar(@Req() req: AuthenticatedRequest): Promise<UserEntity> {
     // We delegate the logic to the gateway service
     const updatedUser = await firstValueFrom(
-      this.userServiceClient.send(
+      this.userClient.send(
         { cmd: 'updateUser' },
         {
           id: req.user.id,
@@ -132,7 +143,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity, isArray: true })
   async getAll() {
     const users = await firstValueFrom(
-      this.userServiceClient.send({ cmd: 'getAll' }, null),
+      this.userClient.send({ cmd: 'getAll' }, null),
     );
     return users.map((user) => new UserEntity(user));
   }
@@ -143,9 +154,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity })
   async getUser(@Param('id') id: string) {
     return new UserEntity(
-      await firstValueFrom(
-        this.userServiceClient.send({ cmd: 'findUser' }, { id }),
-      ),
+      await firstValueFrom(this.userClient.send({ cmd: 'findUser' }, { id })),
     );
   }
 
@@ -159,7 +168,7 @@ export class UsersController {
   ) {
     return new UserEntity(
       await firstValueFrom(
-        this.userServiceClient.send(
+        this.userClient.send(
           { cmd: 'updateUser' },
           { id, data: updateUserDto },
         ),
@@ -173,9 +182,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity })
   async removeUser(@Param('id') id: string) {
     return new UserEntity(
-      await firstValueFrom(
-        this.userServiceClient.send({ cmd: 'removeUser' }, id),
-      ),
+      await firstValueFrom(this.userClient.send({ cmd: 'removeUser' }, id)),
     );
   }
 }
