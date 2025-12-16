@@ -1,7 +1,12 @@
 export enum AvailabilityStatus {
-  available, // Green: Ready for new work
-  open, // Yellow: Passive looking
-  busy, // Red: Not available
+  available = 'available',
+  open = 'open',
+  busy = 'busy',
+}
+
+export enum Gender {
+  male = 'male',
+  woman = 'woman',
 }
 
 export interface Skill {
@@ -46,6 +51,7 @@ export interface Profile {
   linkedinUrl: string | null;
   portfolioUrl: string | null;
   resumeUrl: string | null;
+  gender: Gender | null;
   skills: Skill[];
   projects: Project[];
   experiences: Experience[];

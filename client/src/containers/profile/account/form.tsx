@@ -74,22 +74,22 @@ export const AccountForm = memo(() => {
   return (
     <VStack spacing={8} alignItems="start" w="full">
       <FormProvider {...methods}>
-          <Tile flex={1} w="full" display="flex" flexDir="column">
-            <VStack spacing={6} flex={1}>
-              <Email/>
-              <Role/>
-            </VStack>
-            <Flex justify="flex-end" w="full">
-              <Button
-                onClick={handleSubmit(onSubmit)}
-                isDisabled={!isDirty}
-                isLoading={updateMutation.isPending}
-                variant="primary"
-              >
-                Save Changes
-              </Button>
-            </Flex>
-          </Tile>
+        <Tile flex={1} w="full" display="flex" flexDir="column">
+          <VStack spacing={6} flex={1}>
+            <Email />
+            <Role />
+          </VStack>
+          <Flex justify="flex-end" w="full">
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              isDisabled={!isDirty}
+              isLoading={updateMutation.isPending}
+              variant="primary"
+            >
+              Save Changes
+            </Button>
+          </Flex>
+        </Tile>
       </FormProvider>
     </VStack>
   );

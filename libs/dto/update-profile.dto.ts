@@ -10,13 +10,8 @@ import {
   Min,
   IsArray,
 } from 'class-validator';
-// import { AvailabilityStatus } from '@libs/types/profile.type';
-
-export enum AvailabilityStatus {
-  available = 'available',
-  open = 'open',
-  busy = 'busy',
-}
+import { Gender } from '@libs/types/profile.type';
+import { AvailabilityStatus } from '@libs/types/profile.type';
 
 export class UpdateProfileDto {
   @ApiProperty({
@@ -69,6 +64,11 @@ export class UpdateProfileDto {
   @IsString()
   @IsOptional()
   city?: string;
+
+  @ApiProperty({ enum: Gender, required: false })
+  @IsEnum(Gender)
+  @IsOptional()
+  gender?: Gender | null;
 
   @ApiProperty({ example: 'America/New_York', required: false })
   @IsString()

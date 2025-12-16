@@ -4,10 +4,12 @@ import { memo } from 'react';
 import { VStack, Text, Flex, Icon } from '@chakra-ui/react';
 import Link from 'next/link';
 import { FiShield, FiSettings, FiUser } from 'react-icons/fi';
+import { RxFileText } from "react-icons/rx";
 import { usePathname } from 'next/navigation';
 
 const sections = [
   { label: 'Public Profile', path: '/profile', icon: FiUser },
+  { label: 'Professional', path: '/profile/professional', icon: RxFileText },
   { label: 'Account', path: '/profile/account', icon: FiSettings },
   { label: 'Security', path: '/profile/security', icon: FiShield },
 ];

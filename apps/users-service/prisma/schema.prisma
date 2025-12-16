@@ -38,6 +38,11 @@ enum AvailabilityStatus {
   busy // Red: Not available
 }
 
+enum Gender {
+  male
+  woman
+}
+
 model Profile {
   id String @id @default(uuid())
 
@@ -49,10 +54,10 @@ model Profile {
   hourlyRate         Decimal?           @db.Decimal(10, 2)
   currency           String             @default("USD")
   availabilityStatus AvailabilityStatus @default(available)
-
-  country  String?
-  city     String?
-  timezone String?
+  gender             Gender?
+  country            String?
+  city               String?
+  timezone           String?
 
   githubUrl    String?
   linkedinUrl  String?

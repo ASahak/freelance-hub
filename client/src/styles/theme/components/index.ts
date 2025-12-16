@@ -14,3 +14,4 @@ export { default as Switch } from './Switch';
 export { default as Tabs } from './Tabs';
 export { default as Text } from './Text';
 export { default as Tooltip } from './Toolitp';
+export { default as Textarea } from './Textarea';

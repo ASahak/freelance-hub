@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AvailabilityStatus, Profile } from '@libs/types/profile.type';
+import { AvailabilityStatus, Gender, Profile } from '@libs/types/profile.type';
 import { Exclude, Transform, Type } from 'class-transformer';
 import {
   IsEnum,
@@ -92,6 +92,13 @@ export class ProfileEntity implements Profile {
   @IsString()
   @IsOptional()
   bio: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  gender: Gender | null;
 
   @ApiProperty({ example: 50.0, required: false, type: Number })
   @IsOptional()

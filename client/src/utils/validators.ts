@@ -1,10 +1,23 @@
 import * as yup from 'yup';
 import { UserRole } from '@/common/enums/user';
+import { Gender } from '@libs/types/profile.type';
 
 export const PublicProfileSchema = yup.object().shape({
   name: yup.string().required('FullName is required.'),
   city: yup.string().notRequired().default(''),
   country: yup.string().notRequired().default(''),
+  hourlyRate: yup.string().notRequired().default(''),
+});
+
+export const ProfessionalSchema = yup.object().shape({
+  headline: yup.string().notRequired().default(''),
+  bio: yup.string().notRequired().default(''),
+  gender: yup.string()
+    .oneOf(Object.values(Gender), 'Invalid gender selected')
+    .nullable()
+    .notRequired()
+    .default(null)
+    .transform((curr, orig) => (orig === '' ? null : curr)),
 });
 
 export const ChangePasswordSchema = yup.object().shape({

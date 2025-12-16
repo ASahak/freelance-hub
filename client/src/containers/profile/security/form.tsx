@@ -14,10 +14,16 @@ export const SecurityForm = memo(() => {
 
   return (
     <Tile>
-      <VStack spacing={10} alignItems="start" w="full" flex={1} divider={<Divider/>}>
-        <TwoFactorAuth/>
-        {user?.provider === AuthProvider.native ? <ChangePassword/> : null}
-        <ActiveSessions/>
+      <VStack
+        spacing={10}
+        alignItems="start"
+        w="full"
+        flex={1}
+        divider={<Divider />}
+      >
+        <TwoFactorAuth />
+        {user?.provider === AuthProvider.native ? <ChangePassword /> : null}
+        <ActiveSessions />
       </VStack>
     </Tile>
   );
