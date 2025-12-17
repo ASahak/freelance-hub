@@ -17,9 +17,10 @@ import { Rate } from './rate';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { Tile } from '@/components/ui';
 import { updateProfile } from '@/services/profile';
-import { Profile } from '@libs/types/profile.type';
+import { Profile, Gender as GenderEnum } from '@libs/types/profile.type';
 import { useLiveStates } from '@/hooks';
 import { useProfile } from '@/providers/profileProvider';
+import { Gender } from './gender';
 
 type FormData = yup.InferType<typeof PublicProfileSchema>;
 
@@ -38,6 +39,7 @@ export const PublicProfileForm = memo(() => {
       city: '',
       country: '',
       hourlyRate: '',
+      gender: null
     },
   });
   const {
@@ -52,10 +54,17 @@ export const PublicProfileForm = memo(() => {
     values,
   });
   const updateMutation = useMutation({
-    mutationFn: ({ name, country, city, hourlyRate }: Partial<FormData>) => {
+    mutationFn: ({ name, country, city, hourlyRate, gender }: Partial<FormData>) => {
       return Promise.all([
         updateUser(user!.id, { name }),
-        updateProfile(user!.id, { country, city, hourlyRate: Number(hourlyRate) }),
+        updateProfile(
+          user!.id,
+          {
+            country,
+            city,
+            hourlyRate: Number(hourlyRate),
+            gender: gender as GenderEnum
+          }),
       ]);
     },
     onSuccess: ([updatedUser, updatedProfile]: [User, Profile]) => {
@@ -71,6 +80,7 @@ export const PublicProfileForm = memo(() => {
         country: updatedProfile.country,
         city: updatedProfile.city || '',
         hourlyRate: updatedProfile.hourlyRate?.toString() || '',
+        gender: updatedProfile.gender || null,
       });
     },
     onError: () => {
@@ -102,6 +112,7 @@ export const PublicProfileForm = memo(() => {
         country: profile.country || '',
         city: profile.city || '',
         hourlyRate: profile.hourlyRate?.toString() || '',
+        gender: profile.gender || null,
       });
     }
   }, [profile, isProfileFetched]);
@@ -114,6 +125,7 @@ export const PublicProfileForm = memo(() => {
             <FullName />
             <Location isLoading={isProfileLoading} />
             <Rate />
+            <Gender isLoading={isProfileLoading} />
           </VStack>
           <Flex justify="flex-end" w="full">
             <Button

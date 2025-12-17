@@ -3,7 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { configDotenv } from 'dotenv';
 import { AppModule } from './app.module';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { DEFAULT_PORT } from './common/constants/global';
 
@@ -12,6 +12,7 @@ const port = process.env.PORT ?? DEFAULT_PORT;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useLogger(new Logger());
   app.use(cookieParser());
   app.enableCors({
     origin: process.env.APP_ORIGIN, // Allow your frontend origin

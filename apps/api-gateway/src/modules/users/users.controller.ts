@@ -4,7 +4,7 @@ import {
   Controller,
   Delete,
   Get,
-  Inject,
+  Inject, Logger,
   NotFoundException,
   Param,
   Patch,
@@ -38,6 +38,8 @@ import { plainToInstance } from 'class-transformer';
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
+
   constructor(
     @Inject(MICROSERVICES.Users.name)
     private readonly userClient: ClientProxy,
@@ -50,6 +52,8 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor) // Important for @Transform to work
   @ApiOkResponse({ description: 'Retrieved user profile' })
   async getProfile(@Param('id') id: string) {
+    this.logger.log(`Fetching Profile of User: ${id}`, );
+
     const profile = await firstValueFrom(
       this.userClient.send({ cmd: 'getProfile' }, { userId: id }),
     );
@@ -57,7 +61,7 @@ export class UsersController {
     if (!profile) {
       throw new NotFoundException('Profile not found');
     }
-
+    this.logger.log(`UserId: ${id} fetched profile of id: ${profile.id}`);
     return new ProfileEntity(profile);
   }
 
@@ -69,6 +73,9 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
+    this.logger.log(`Request received to update profile for User ID: ${id}`);
+
+    this.logger.debug(`Payload for Profile update of User ${id}: ${JSON.stringify(updateProfileDto)}`);
     const updatedProfile = await firstValueFrom(
       this.userClient.send(
         { cmd: 'updateProfile' },
@@ -78,7 +85,7 @@ export class UsersController {
         },
       ),
     );
-    console.log(updatedProfile);
+    this.logger.debug(`Profile updated for user ${id}:`, updatedProfile);
     return plainToInstance(ProfileEntity, updatedProfile);
   }
 

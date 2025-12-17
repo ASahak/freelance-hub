@@ -11,11 +11,11 @@ import { ProfessionalSchema } from '@/utils/validators';
 import { getDirtyValues } from '@/utils/helpers/global';
 import { Headline } from './headline';
 import { Bio } from './bio';
-import { Gender } from './gender';
+import { Skills } from './skills';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { Tile } from '@/components/ui';
 import { updateProfile } from '@/services/profile';
-import { Profile, Gender as GenderEnum } from '@libs/types/profile.type';
+import { Profile } from '@libs/types/profile.type';
 import { useLiveStates } from '@/hooks';
 import { useProfile } from '@/providers/profileProvider';
 
@@ -23,7 +23,7 @@ type FormData = yup.InferType<typeof ProfessionalSchema>;
 
 export const ProfessionalForm = memo(() => {
   const { user } = useAuth();
-  const { profile, isFetched: isProfileFetched, isLoading } = useProfile();
+  const { profile, isFetched: isProfileFetched } = useProfile();
 
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -34,7 +34,6 @@ export const ProfessionalForm = memo(() => {
     defaultValues: {
       headline: '',
       bio: '',
-      gender: null,
     },
   });
   const {
@@ -49,9 +48,9 @@ export const ProfessionalForm = memo(() => {
     values,
   });
   const updateMutation = useMutation({
-    mutationFn: ({ headline, bio, gender }: Partial<FormData>) => updateProfile(
+    mutationFn: ({ headline, bio }: Partial<FormData>) => updateProfile(
       user!.id,
-      { headline, bio, gender: gender as GenderEnum }
+      { headline, bio }
     ),
     onSuccess: (updatedProfile: Profile) => {
       toast({ title: 'Profile updated', status: 'success' });
@@ -63,7 +62,6 @@ export const ProfessionalForm = memo(() => {
       reset({
         headline: updatedProfile.headline || '',
         bio: updatedProfile.bio || '',
-        gender: updatedProfile.gender || null,
       });
     },
     onError: () => {
@@ -85,7 +83,6 @@ export const ProfessionalForm = memo(() => {
         ...liveStates.current.values,
         headline: profile.headline || '',
         bio: profile.bio || '',
-        gender: profile.gender || null,
       });
     }
   }, [profile, isProfileFetched]);
@@ -97,7 +94,7 @@ export const ProfessionalForm = memo(() => {
           <VStack spacing={8} w="full" alignItems="start" flex={1}>
             <Headline />
             <Bio />
-            <Gender isLoading={isLoading} />
+            <Skills />
           </VStack>
           <Flex justify="flex-end" w="full">
             <Button
