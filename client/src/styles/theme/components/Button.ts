@@ -57,7 +57,7 @@ export default defineStyleConfig({
       alignItems: 'center',
       _hover: {
         bgColor: 'transparent',
-        borderColor: 'blue.300',
+        borderColor: 'gray.200',
       },
       _active: {
         bgColor: 'transparent',

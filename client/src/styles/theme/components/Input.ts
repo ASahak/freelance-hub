@@ -27,6 +27,9 @@ export default defineStyleConfig({
         _focus: {
           borderColor: 'blue.300',
         },
+        _hover: {
+          borderColor: 'gray.200',
+        },
       },
     },
   },

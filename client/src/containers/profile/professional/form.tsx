@@ -34,6 +34,7 @@ export const ProfessionalForm = memo(() => {
     defaultValues: {
       headline: '',
       bio: '',
+      skills: [],
     },
   });
   const {
@@ -48,10 +49,7 @@ export const ProfessionalForm = memo(() => {
     values,
   });
   const updateMutation = useMutation({
-    mutationFn: ({ headline, bio }: Partial<FormData>) => updateProfile(
-      user!.id,
-      { headline, bio }
-    ),
+    mutationFn: (data: Partial<FormData>) => updateProfile(user!.id, data),
     onSuccess: (updatedProfile: Profile) => {
       toast({ title: 'Profile updated', status: 'success' });
       // Update React Query cache
@@ -62,6 +60,7 @@ export const ProfessionalForm = memo(() => {
       reset({
         headline: updatedProfile.headline || '',
         bio: updatedProfile.bio || '',
+        skills: updatedProfile.skills.map((skill) => skill.name),
       });
     },
     onError: () => {
@@ -83,6 +82,7 @@ export const ProfessionalForm = memo(() => {
         ...liveStates.current.values,
         headline: profile.headline || '',
         bio: profile.bio || '',
+        skills: profile.skills.map((skill) => skill.name),
       });
     }
   }, [profile, isProfileFetched]);

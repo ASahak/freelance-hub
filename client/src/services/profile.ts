@@ -15,7 +15,7 @@ export const getProfile = async (userId: string): Promise<Profile> => {
 
 export const updateProfile = async (
   userId: string,
-  data: Partial<Profile>,
+  data: Partial<Omit<Profile, 'skills'> & { skills: string[] }>,
 ): Promise<Profile> => {
   try {
     const response = await api.patch(`/users/${userId}/profile`, data);

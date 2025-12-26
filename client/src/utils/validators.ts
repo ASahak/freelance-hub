@@ -7,7 +7,8 @@ export const PublicProfileSchema = yup.object().shape({
   city: yup.string().notRequired().default(''),
   country: yup.string().notRequired().default(''),
   hourlyRate: yup.string().notRequired().default(''),
-  gender: yup.string()
+  gender: yup
+    .string()
     .oneOf(Object.values(Gender), 'Invalid gender selected')
     .nullable()
     .notRequired()
@@ -18,6 +19,7 @@ export const PublicProfileSchema = yup.object().shape({
 export const ProfessionalSchema = yup.object().shape({
   headline: yup.string().notRequired().default(''),
   bio: yup.string().notRequired().default(''),
+  skills: yup.array().of(yup.string().required()).optional().default([]),
 });
 
 export const ChangePasswordSchema = yup.object().shape({

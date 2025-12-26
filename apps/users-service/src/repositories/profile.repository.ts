@@ -32,33 +32,41 @@ export class ProfileRepository extends BaseRepository<
   async upsert(userId: string, data: UpdateProfileDto): Promise<Profile> {
     const { skills, ...scalarData } = data;
 
-    const skillConnect = skills?.map((skillName) => ({
-      where: { name: skillName },
-      create: { name: skillName },
-    }));
+    let skillIds: { id: string }[] = [];
 
-    // 2. Perform the Upsert
+    if (skills && skills.length > 0) {
+      skillIds = await Promise.all(
+        skills.map(async (name) => {
+          const skill = await this.prisma.skill.upsert({
+            where: { name },
+            update: {}, // If exists, do nothing
+            create: { name }, // If missing, create it
+          });
+          return { id: skill.id };
+        }),
+      );
+    }
+
     return this.prisma.profile.upsert({
       where: { userId },
       update: {
         ...scalarData,
-        // Only run this logic if 'skillConnect' exists
-        ...(skillConnect && {
+        // Only update skills if the array was provided (not undefined)
+        ...(skills && {
           skills: {
-            set: [], // Reset old skills
-            connectOrCreate: skillConnect, // Use the prepared variable
+            // 'set' replaces the entire list with the new IDs.
+            // This automatically handles disconnecting removed skills.
+            set: skillIds,
           },
         }),
       },
       create: {
         userId,
         ...scalarData,
-        // Only run this logic if 'skillConnect' exists
-        ...(skillConnect && {
-          skills: {
-            connectOrCreate: skillConnect,
-          },
-        }),
+        skills: {
+          // In create, we can just connect the IDs we found/created
+          connect: skillIds,
+        },
       },
       include: {
         skills: true,
