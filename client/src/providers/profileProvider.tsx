@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  createContext,
-  useContext,
-  ReactNode,
-  useMemo,
-} from 'react';
+import { createContext, useContext, ReactNode, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { getProfile } from '@/services/profile';
@@ -22,13 +17,13 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   const {
     data: profile,
     isLoading,
     isFetched,
-    error
+    error,
   } = useQuery({
     queryKey: QUERY_FACTORY.getProfile(user!.id),
     queryFn: () => getProfile(user!.id),
@@ -41,12 +36,14 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       profile,
       isLoading,
       isFetched,
-      error: error?.message || ''
+      error: error?.message || '',
     }),
     [profile, isLoading, error, isFetched],
   );
 
-  return <ProfileContext.Provider value={_value}>{children}</ProfileContext.Provider>;
+  return (
+    <ProfileContext.Provider value={_value}>{children}</ProfileContext.Provider>
+  );
 };
 
 export const useProfile = () => {

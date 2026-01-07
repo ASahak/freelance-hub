@@ -26,6 +26,5 @@ export class MailService {
       template: './new-login',
       context: data,
     });
-    return { success: true };
   }
 }

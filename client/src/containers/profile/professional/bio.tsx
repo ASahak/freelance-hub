@@ -1,12 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import {
-  FormControl,
-  FormLabel,
-  Text,
-  Textarea,
-} from '@chakra-ui/react';
+import { FormControl, FormLabel, Text, Textarea } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 

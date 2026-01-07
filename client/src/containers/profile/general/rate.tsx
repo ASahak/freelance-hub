@@ -1,15 +1,10 @@
 'use client';
 
 import { memo } from 'react';
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Text,
-} from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { useNumberFormat } from '@react-input/number-format'
+import { useNumberFormat } from '@react-input/number-format';
 
 export const Rate = memo(() => {
   const {
@@ -19,8 +14,8 @@ export const Rate = memo(() => {
   const inputRef = useNumberFormat({
     locales: 'en',
     maximumFractionDigits: 18,
-    groupDisplay: false
-  })
+    groupDisplay: false,
+  });
 
   return (
     <FormControl w="full">

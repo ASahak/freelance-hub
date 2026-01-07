@@ -4,7 +4,12 @@ import React, { memo } from 'react';
 import {
   Button,
   FormControl,
-  FormLabel, HStack, Menu, MenuButton, MenuItem, MenuList,
+  FormLabel,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
 } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -28,50 +33,40 @@ export const Gender = memo(({ isLoading }: { isLoading: boolean }) => {
         name="gender"
         control={control}
         render={({ field }) => (
-          <Menu
-            variant="base"
-            closeOnSelect={false}
-          >
+          <Menu variant="base" closeOnSelect={false}>
             {({ onClose }) => (
               <>
-                <MenuButton
-                  as={Button}
-                  variant="input"
-                  w="full"
-                >
+                <MenuButton as={Button} variant="input" w="full">
                   <HStack justifyContent="space-between" alignItems="center">
                     <Text isTruncated>
                       {field.value?.toUpperCase() || 'Select a gender...'}
                     </Text>
                     {isLoading ? (
-                      <Spinner
-                        w="2rem"
-                        h="2rem"
-                        size="2px"
-                        color="blue.300"
-                      />
+                      <Spinner w="2rem" h="2rem" size="2px" color="blue.300" />
                     ) : (
-                      <ChevronDownIcon fontSize="1.6rem"/>
+                      <ChevronDownIcon fontSize="1.6rem" />
                     )}
                   </HStack>
                 </MenuButton>
 
                 <MenuList w="30rem">
-                  {Object.values(GenderEnum).map((gender: string) => (<MenuItem
-                    key={gender}
-                    fontSize="1.4rem"
-                    fontWeight={500}
-                    onClick={() => {
-                      field.onChange(gender);
-                      onClose()
-                    }}
-                    {...(gender === field.value && {
-                      bgColor: 'blue.300 !important',
-                      color: '#fff !important',
-                    })}
-                  >
-                    {gender.toUpperCase()}
-                  </MenuItem>))}
+                  {Object.values(GenderEnum).map((gender: string) => (
+                    <MenuItem
+                      key={gender}
+                      fontSize="1.4rem"
+                      fontWeight={500}
+                      onClick={() => {
+                        field.onChange(gender);
+                        onClose();
+                      }}
+                      {...(gender === field.value && {
+                        bgColor: 'blue.300 !important',
+                        color: '#fff !important',
+                      })}
+                    >
+                      {gender.toUpperCase()}
+                    </MenuItem>
+                  ))}
                 </MenuList>
               </>
             )}

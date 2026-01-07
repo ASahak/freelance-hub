@@ -4,7 +4,8 @@ import {
   Controller,
   Delete,
   Get,
-  Inject, Logger,
+  Inject,
+  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -52,7 +53,7 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor) // Important for @Transform to work
   @ApiOkResponse({ description: 'Retrieved user profile' })
   async getProfile(@Param('id') id: string) {
-    this.logger.log(`Fetching Profile of User: ${id}`, );
+    this.logger.log(`Fetching Profile of User: ${id}`);
 
     const profile = await firstValueFrom(
       this.userClient.send({ cmd: 'getProfile' }, { userId: id }),
@@ -75,7 +76,9 @@ export class UsersController {
   ) {
     this.logger.log(`Request received to update profile for User ID: ${id}`);
 
-    this.logger.debug(`Payload for Profile update of User ${id}: ${JSON.stringify(updateProfileDto)}`);
+    this.logger.debug(
+      `Payload for Profile update of User ${id}: ${JSON.stringify(updateProfileDto)}`,
+    );
     const updatedProfile = await firstValueFrom(
       this.userClient.send(
         { cmd: 'updateProfile' },

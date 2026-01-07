@@ -2,7 +2,11 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JwtModule } from '@nestjs/jwt';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import {
+  ClientsModule,
+  ClientsProviderAsyncOptions,
+  Transport,
+} from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -10,6 +14,30 @@ import { ACCESS_TOKEN_EXPIRES_IN } from '@libs/constants/global';
 import { MICROSERVICES } from '@libs/constants/microservices';
 import configuration from './config/configuration';
 import { SessionCleanupService } from './common/services/sessions-cleanup.service';
+
+const MailServiceProvider: ClientsProviderAsyncOptions = {
+  name: MICROSERVICES.Mail.name,
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => {
+    const user = configService.get<string>('rabbitMQ.user');
+    const pass = configService.get<string>('rabbitMQ.password');
+    const host = configService.get<string>('rabbitMQ.host');
+    const port = configService.get<string>('rabbitMQ.port');
+    const queue = configService.get<string>('rabbitMQ.queueToken');
+
+    return {
+      transport: Transport.RMQ,
+      options: {
+        urls: [`amqp://${user}:${pass}@${host}:${port}`],
+        queue: queue,
+        queueOptions: {
+          durable: true,
+        },
+      },
+    };
+  },
+};
 
 @Module({
   imports: [
@@ -20,22 +48,17 @@ import { SessionCleanupService } from './common/services/sessions-cleanup.servic
       envFilePath: './apps/auth-service/.env',
     }),
     PassportModule,
-    ClientsModule.register([
-      {
-        name: MICROSERVICES.Mail.name,
-        transport: Transport.TCP,
-        options: {
-          host: MICROSERVICES.Mail.host,
-          port: MICROSERVICES.Mail.port,
-        },
-      },
+    ClientsModule.registerAsync([
+      MailServiceProvider,
       {
         name: MICROSERVICES.Users.name,
-        transport: Transport.TCP,
-        options: {
-          host: MICROSERVICES.Users.host,
-          port: MICROSERVICES.Users.port,
-        },
+        useFactory: () => ({
+          transport: Transport.TCP,
+          options: {
+            host: MICROSERVICES.Users.host,
+            port: MICROSERVICES.Users.port,
+          },
+        }),
       },
     ]),
     JwtModule.registerAsync({

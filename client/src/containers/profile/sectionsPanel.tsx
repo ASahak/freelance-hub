@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { VStack, Text, Flex, Icon } from '@chakra-ui/react';
 import Link from 'next/link';
 import { FiShield, FiSettings, FiUser } from 'react-icons/fi';
-import { RxFileText } from "react-icons/rx";
+import { RxFileText } from 'react-icons/rx';
 import { usePathname } from 'next/navigation';
 
 const sections = [

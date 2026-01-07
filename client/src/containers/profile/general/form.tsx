@@ -26,7 +26,11 @@ type FormData = yup.InferType<typeof PublicProfileSchema>;
 
 export const PublicProfileForm = memo(() => {
   const { user } = useAuth();
-  const { profile, isLoading: isProfileLoading, isFetched: isProfileFetched } = useProfile();
+  const {
+    profile,
+    isLoading: isProfileLoading,
+    isFetched: isProfileFetched,
+  } = useProfile();
 
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -39,7 +43,7 @@ export const PublicProfileForm = memo(() => {
       city: '',
       country: '',
       hourlyRate: '',
-      gender: null
+      gender: null,
     },
   });
   const {
@@ -54,17 +58,21 @@ export const PublicProfileForm = memo(() => {
     values,
   });
   const updateMutation = useMutation({
-    mutationFn: ({ name, country, city, hourlyRate, gender }: Partial<FormData>) => {
+    mutationFn: ({
+      name,
+      country,
+      city,
+      hourlyRate,
+      gender,
+    }: Partial<FormData>) => {
       return Promise.all([
         updateUser(user!.id, { name }),
-        updateProfile(
-          user!.id,
-          {
-            country,
-            city,
-            hourlyRate: Number(hourlyRate),
-            gender: gender as GenderEnum
-          }),
+        updateProfile(user!.id, {
+          country,
+          city,
+          hourlyRate: Number(hourlyRate),
+          gender: gender as GenderEnum,
+        }),
       ]);
     },
     onSuccess: ([updatedUser, updatedProfile]: [User, Profile]) => {

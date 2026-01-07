@@ -11,4 +11,11 @@ export default () => ({
   googleRedirectURI: process.env.GOOGLE_OAUTH_REDIRECT_URI,
   appOrigin: process.env.APP_ORIGIN,
   twoFactorSecret: process.env.TWO_FA_SECRET_KEY,
+  rabbitMQ: {
+    user: process.env.RABBITMQ_USER,
+    password: process.env.RABBITMQ_PASSWORD,
+    host: process.env.RABBITMQ_HOST,
+    port: process.env.RABBITMQ_PORT,
+    queueToken: process.env.RABBITMQ_QUEUE,
+  },
 });
