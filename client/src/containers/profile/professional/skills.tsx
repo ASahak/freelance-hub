@@ -87,7 +87,8 @@ export const Skills = () => {
               }),
               multiValue: (base) => ({
                 ...base,
-                backgroundColor: 'var(--chakra-colors-blue-200)',
+                backgroundColor: 'var(--chakra-colors-gray-200)',
+                fontWeight: 500,
               }),
             }}
           />

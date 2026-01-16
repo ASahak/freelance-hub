@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { UserRole } from '@/common/enums/user';
-import { Gender } from '@libs/types/profile.type';
+import { Gender, AvailabilityStatus } from '@libs/types/profile.type';
 
 export const PublicProfileSchema = yup.object().shape({
   name: yup.string().required('FullName is required.'),
@@ -10,6 +10,13 @@ export const PublicProfileSchema = yup.object().shape({
   gender: yup
     .string()
     .oneOf(Object.values(Gender), 'Invalid gender selected')
+    .nullable()
+    .notRequired()
+    .default(null)
+    .transform((curr, orig) => (orig === '' ? null : curr)),
+  availabilityStatus: yup
+    .string()
+    .oneOf(Object.values(AvailabilityStatus), 'Invalid status selected')
     .nullable()
     .notRequired()
     .default(null)

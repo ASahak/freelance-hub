@@ -1,14 +1,16 @@
 'use client';
 
-import { memo, useRef, ChangeEvent } from 'react';
+import React, { ChangeEvent, memo, useRef } from 'react';
 import {
-  Flex,
   Avatar as ChakraAvatar,
+  Badge,
   Button,
-  useToast,
-  Icon,
-  VStack,
+  Flex,
   Heading,
+  Icon,
+  Tooltip,
+  useToast,
+  VStack,
 } from '@chakra-ui/react';
 import { RxShare2, RxTrash } from 'react-icons/rx';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -18,12 +20,16 @@ import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { useAuth } from '@/providers/authProvider';
 import Skeleton from 'react-skeleton-builder';
 import { SmartImage } from '@/components/ui';
+import { useProfile } from '@/providers/profileProvider';
+import { AvailableBadgeColor } from '@/common/constants/profile';
+import { AvailabilityStatus } from '@libs/types/profile.type';
 
 export const Avatar = memo(() => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
+  const { profile } = useProfile();
 
   const uploadMutation = useMutation({
     mutationFn: uploadAvatar,
@@ -92,79 +98,107 @@ export const Avatar = memo(() => {
 
   return (
     <VStack spacing={3} w="full">
-      <Flex
-        w="14rem"
-        h="14rem"
-        pos="relative"
-        overflow="hidden"
-        rounded="full"
-        role="group"
-      >
-        {isUploading ? (
-          <Skeleton
-            styles={{ width: '14rem', height: '14rem' }}
-            grid={{ skeletons: [{ r: '100%' }] }}
-          />
-        ) : (
-          <>
-            {!user?.avatarUrl ? (
-              <ChakraAvatar size="2xl" w="full" h="full" name={user?.name} />
-            ) : (
-              <SmartImage
-                src={user.avatarUrl}
-                alt="Avatar"
-                fill
-                priority
-                containerProps={{ w: '14rem', h: '14rem' }}
-                sizes="25rem"
-                style={{
-                  objectFit: 'cover',
-                  borderRadius: '100%',
-                }}
-              />
-            )}
+      <Flex pos="relative">
+        <Flex
+          w="14rem"
+          h="14rem"
+          pos="relative"
+          overflow="hidden"
+          rounded="full"
+          role="group"
+          clipPath="circle(50%)"
+        >
+          {isUploading ? (
+            <Skeleton
+              styles={{ width: '14rem', height: '14rem' }}
+              grid={{ skeletons: [{ r: '100%' }] }}
+            />
+          ) : (
+            <>
+              {!user?.avatarUrl ? (
+                <ChakraAvatar size="2xl" w="full" h="full" name={user?.name} />
+              ) : (
+                <SmartImage
+                  src={user.avatarUrl}
+                  alt="Avatar"
+                  fill
+                  priority
+                  containerProps={{ w: '14rem', h: '14rem' }}
+                  sizes="25rem"
+                  style={{
+                    objectFit: 'cover',
+                    borderRadius: '100%',
+                  }}
+                />
+              )}
 
-            <Flex
-              pos="absolute"
-              w="full"
-              h="full"
-              opacity={0}
-              visibility="hidden"
-              transition=".2s"
-              bgColor="rgba(0, 0, 0, .7)"
-              _groupHover={{ opacity: 1, visibility: 'visible' }}
-            >
               <Flex
-                _groupHover={{ transform: 'translateY(0px)' }}
-                transition=".2s"
-                transform="translateY(10px)"
-                justifyContent="center"
-                alignItems="center"
+                pos="absolute"
                 w="full"
                 h="full"
-                gap={6}
+                opacity={0}
+                visibility="hidden"
+                transition=".2s"
+                bgColor="rgba(0, 0, 0, .7)"
+                _groupHover={{ opacity: 1, visibility: 'visible' }}
               >
-                <Button variant="unstyled" onClick={onChooseFile}>
-                  <Icon as={RxShare2} fontSize="2.8rem" color="white" />
-                </Button>
-                {user?.avatarUrl ? (
-                  <Button variant="unstyled" onClick={onRemove}>
-                    <Icon as={RxTrash} fontSize="2.8rem" color="red.400" />
+                <Flex
+                  _groupHover={{ transform: 'translateY(0px)' }}
+                  transition=".2s"
+                  transform="translateY(10px)"
+                  justifyContent="center"
+                  alignItems="center"
+                  w="full"
+                  h="full"
+                  gap={6}
+                >
+                  <Button variant="unstyled" onClick={onChooseFile}>
+                    <Icon as={RxShare2} fontSize="2.8rem" color="white" />
                   </Button>
-                ) : null}
+                  {user?.avatarUrl ? (
+                    <Button variant="unstyled" onClick={onRemove}>
+                      <Icon as={RxTrash} fontSize="2.8rem" color="red.400" />
+                    </Button>
+                  ) : null}
+                </Flex>
               </Flex>
-            </Flex>
-          </>
-        )}
+            </>
+          )}
 
-        {/* Hidden file input */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={onUpload}
-          accept="image/png, image/jpeg, image/webp"
-          style={{ display: 'none' }}
-        />
+          {/* Hidden file input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={onUpload}
+            accept="image/png, image/jpeg, image/webp"
+            style={{ display: 'none' }}
+          />
+        </Flex>
+        {profile ? (
+          <Tooltip
+            label={
+              profile.availabilityStatus === AvailabilityStatus.open
+                ? 'Open to offer'
+                : profile.availabilityStatus
+            }
+            textTransform="capitalize"
+            hasArrow
+            fontSize="1.4rem"
+            placement="right"
+          >
+            <Badge
+              w="2rem"
+              h="2rem"
+              rounded="full"
+              pos="absolute"
+              bottom={0}
+              zIndex={1}
+              right={3}
+              bgColor={AvailableBadgeColor[profile?.availabilityStatus]}
+              marginInlineEnd={4}
+            />
+          </Tooltip>
+        ) : null}
       </Flex>
       <Heading isTruncated w="full" textAlign="center">
         {user?.name}

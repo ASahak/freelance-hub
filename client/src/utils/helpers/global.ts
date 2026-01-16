@@ -18,3 +18,8 @@ export function getDirtyValues<T extends Record<string, any>>(
 
   return dirtyValues;
 }
+
+export const capitalize = (str: string): string => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

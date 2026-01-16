@@ -11,13 +11,18 @@ import { PublicProfileSchema } from '@/utils/validators';
 import { updateUser } from '@/services/user';
 import { User } from '@libs/types/user.type';
 import { getDirtyValues } from '@/utils/helpers/global';
+import { Availability } from './availability';
 import { FullName } from './fullName';
 import { Location } from './location';
 import { Rate } from './rate';
 import { QUERY_FACTORY } from '@/common/constants/queryFactory';
 import { Tile } from '@/components/ui';
 import { updateProfile } from '@/services/profile';
-import { Profile, Gender as GenderEnum } from '@libs/types/profile.type';
+import {
+  Profile,
+  Gender as GenderEnum,
+  AvailabilityStatus,
+} from '@libs/types/profile.type';
 import { useLiveStates } from '@/hooks';
 import { useProfile } from '@/providers/profileProvider';
 import { Gender } from './gender';
@@ -43,6 +48,7 @@ export const PublicProfileForm = memo(() => {
       city: '',
       country: '',
       hourlyRate: '',
+      availabilityStatus: null,
       gender: null,
     },
   });
@@ -57,6 +63,7 @@ export const PublicProfileForm = memo(() => {
   const liveStates = useLiveStates({
     values,
   });
+
   const updateMutation = useMutation({
     mutationFn: ({
       name,
@@ -64,12 +71,14 @@ export const PublicProfileForm = memo(() => {
       city,
       hourlyRate,
       gender,
+      availabilityStatus,
     }: Partial<FormData>) => {
       return Promise.all([
         updateUser(user!.id, { name }),
         updateProfile(user!.id, {
           country,
           city,
+          availabilityStatus: availabilityStatus as AvailabilityStatus,
           hourlyRate: Number(hourlyRate),
           gender: gender as GenderEnum,
         }),
@@ -86,6 +95,7 @@ export const PublicProfileForm = memo(() => {
       reset({
         name: updatedUser.name,
         country: updatedProfile.country,
+        availabilityStatus: updatedProfile.availabilityStatus,
         city: updatedProfile.city || '',
         hourlyRate: updatedProfile.hourlyRate?.toString() || '',
         gender: updatedProfile.gender || null,
@@ -118,6 +128,7 @@ export const PublicProfileForm = memo(() => {
       reset({
         ...liveStates.current.values,
         country: profile.country || '',
+        availabilityStatus: profile.availabilityStatus || '',
         city: profile.city || '',
         hourlyRate: profile.hourlyRate?.toString() || '',
         gender: profile.gender || null,
@@ -127,10 +138,11 @@ export const PublicProfileForm = memo(() => {
 
   return (
     <FormProvider {...methods}>
-      <VStack spacing={8} alignItems="start" w="full">
-        <Tile flex={1} w="full" display="flex" flexDir="column">
+      <Tile flex={1} w="full" display="flex" flexDir="column">
+        <VStack spacing={8} alignItems="start" w="full">
           <VStack spacing={8} w="full" alignItems="start" flex={1}>
             <FullName />
+            <Availability isLoading={isProfileLoading} />
             <Location isLoading={isProfileLoading} />
             <Rate />
             <Gender isLoading={isProfileLoading} />
@@ -145,8 +157,8 @@ export const PublicProfileForm = memo(() => {
               Save Changes
             </Button>
           </Flex>
-        </Tile>
-      </VStack>
+        </VStack>
+      </Tile>
     </FormProvider>
   );
 });

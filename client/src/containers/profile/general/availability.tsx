@@ -2,6 +2,7 @@
 
 import React, { memo } from 'react';
 import {
+  Badge,
   Button,
   FormControl,
   FormLabel,
@@ -16,10 +17,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { Spinner } from '@/components/ui';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Gender as GenderEnum } from '@libs/types/profile.type';
+import { AvailabilityStatus } from '@libs/types/profile.type';
 import { capitalize } from '@/utils/helpers/global';
+import { AvailableBadgeColor } from '@/common/constants/profile';
 
-export const Gender = memo(({ isLoading }: { isLoading: boolean }) => {
+export const Availability = memo(({ isLoading }: { isLoading: boolean }) => {
   const {
     control,
     formState: { errors },
@@ -27,11 +29,11 @@ export const Gender = memo(({ isLoading }: { isLoading: boolean }) => {
 
   return (
     <FormControl w="full">
-      <FormLabel htmlFor="gender" fontSize="1.4rem">
-        Gender
+      <FormLabel htmlFor="availabilityStatus" fontSize="1.4rem">
+        Availability Status
       </FormLabel>
       <Controller
-        name="gender"
+        name="availabilityStatus"
         control={control}
         render={({ field }) => (
           <Menu variant="base" closeOnSelect={false}>
@@ -40,7 +42,7 @@ export const Gender = memo(({ isLoading }: { isLoading: boolean }) => {
                 <MenuButton as={Button} variant="input" w="full">
                   <HStack justifyContent="space-between" alignItems="center">
                     <Text isTruncated>
-                      {capitalize(field.value || 'Select a gender...')}
+                      {capitalize(field.value || 'Select a status...')}
                     </Text>
                     {isLoading ? (
                       <Spinner w="2rem" h="2rem" size="2px" color="blue.300" />
@@ -51,23 +53,32 @@ export const Gender = memo(({ isLoading }: { isLoading: boolean }) => {
                 </MenuButton>
 
                 <MenuList w="30rem">
-                  {Object.values(GenderEnum).map((gender: string) => (
-                    <MenuItem
-                      key={gender}
-                      fontSize="1.4rem"
-                      fontWeight={500}
-                      onClick={() => {
-                        field.onChange(gender);
-                        onClose();
-                      }}
-                      {...(gender === field.value && {
-                        bgColor: 'blue.300 !important',
-                        color: '#fff !important',
-                      })}
-                    >
-                      {gender.toUpperCase()}
-                    </MenuItem>
-                  ))}
+                  {Object.values(AvailabilityStatus).map(
+                    (status: AvailabilityStatus) => (
+                      <MenuItem
+                        key={status}
+                        fontSize="1.4rem"
+                        fontWeight={500}
+                        onClick={() => {
+                          field.onChange(status);
+                          onClose();
+                        }}
+                        {...(status === field.value && {
+                          bgColor: 'blue.300 !important',
+                          color: '#fff !important',
+                        })}
+                      >
+                        <Badge
+                          w="2rem"
+                          h="2rem"
+                          rounded="full"
+                          bgColor={AvailableBadgeColor[status]}
+                          marginInlineEnd={4}
+                        />
+                        {capitalize(status)}
+                      </MenuItem>
+                    ),
+                  )}
                 </MenuList>
               </>
             )}
@@ -76,7 +87,7 @@ export const Gender = memo(({ isLoading }: { isLoading: boolean }) => {
       />
       <ErrorMessage
         errors={errors}
-        name="gender"
+        name="availabilityStatus"
         render={({ message }) => (
           <Text w="full" color="red.300" fontSize="1.3rem">
             {message}
